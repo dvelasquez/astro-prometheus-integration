@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+This is a project using AstroJS and the astro integration toolkit.
+
+This project is a prometheus middleware integration for astro.
+
+This project is divided in 3 sections:
+
+- `/package/`: Here is the code for the astro integration.
+- `/playground`: Here is an AstroJS application that imports the integration
+- `/`: root of the project, using changesets to release changes.
+
+This Project also uses biome for linting, pnpm as a package manager and changesets.

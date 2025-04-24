@@ -1,0 +1,23 @@
+{
+	"name": "root",
+	"private": true,
+	"packageManager": "pnpm@9.15.9",
+	"engines": {
+		"node": ">=20.18.1"
+	},
+	"scripts": {
+		"package:dev": "pnpm --filter astro-prometheus-integration dev",
+		"playground:dev": "pnpm --filter playground dev",
+		"dev": "pnpm --stream -r -parallel dev",
+		"changeset": "changeset",
+		"ci:version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile && pnpm dedupe",
+		"ci:publish": "pnpm exec changeset publish && git push --follow-tags",
+		"lint": "biome check .",
+		"lint:fix": "biome check --apply ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@changesets/cli": "^2.29.2",
+		"@changesets/changelog-github": "^0.5.1"
+	}
+}
