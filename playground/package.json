@@ -15,7 +15,7 @@
 		"@tailwindcss/vite": "^4.1.4",
 		"astro": "^5.7.4",
 		"astro-integration-kit": "^0.18.0",
-		"astro-prometheus-integration": "workspace:*",
+		"astro-prometheus-node-integration": "workspace:*",
 		"tailwindcss": "^4.1.4"
 	},
 	"devDependencies": {
