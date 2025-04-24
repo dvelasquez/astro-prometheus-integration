@@ -3,9 +3,9 @@
 	"version": "0.0.0",
 	"description": "TODO:",
 	"author": {
-		"email": "TODO:",
-		"name": "TODO:",
-		"url": "TODO:"
+		"email": "danilo.velasquez@gmail.com",
+		"name": "Danilo Velasquez",
+		"url": "https://github.com/dvelasquez"
 	},
 	"license": "MIT",
 	"keywords": [
@@ -13,9 +13,11 @@
 		"astro-component",
 		"withastro",
 		"astro",
-		"TODO:"
+		"analytics",
+		"monitoring",
+		"prometheus"
 	],
-	"homepage": "TODO:",
+	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -33,7 +35,8 @@
 	},
 	"type": "module",
 	"peerDependencies": {
-		"astro": "^5.1.3"
+		"astro": "^5.1.3",
+		"@astrojs/node": "^9.2.1"
 	},
 	"dependencies": {
 		"astro-integration-kit": "^0.18.0"
