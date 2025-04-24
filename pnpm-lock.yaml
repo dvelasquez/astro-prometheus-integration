@@ -24,7 +24,7 @@ importers:
         specifier: ^15.5.1
         version: 15.5.1
 
-  package:
+  packages/astro-prometheus-node-integration:
     dependencies:
       '@astrojs/node':
         specifier: ^9.2.1
@@ -54,9 +54,9 @@ importers:
       astro-integration-kit:
         specifier: ^0.18.0
         version: 0.18.0(astro@5.7.5(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.40.0)(typescript@5.8.3)(yaml@2.7.1))
-      astro-prometheus-integration:
+      astro-prometheus-node-integration:
         specifier: workspace:*
-        version: link:../package
+        version: link:../packages/astro-prometheus-node-integration
       tailwindcss:
         specifier: ^4.1.4
         version: 4.1.4

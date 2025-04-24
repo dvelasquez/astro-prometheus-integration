@@ -43,7 +43,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm --filter astro-prometheus-integration build
+        run: pnpm --filter astro-prometheus-node-integration build
 
       - name: Create Release Pull Request or Publish
         id: changesets

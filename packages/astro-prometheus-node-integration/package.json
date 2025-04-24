@@ -1,6 +1,6 @@
 {
-	"name": "astro-prometheus-integration",
-	"version": "0.1.0",
+	"name": "astro-prometheus-node-integration",
+	"version": "0.0.0",
 	"description": "TODO:",
 	"author": {
 		"email": "danilo.velasquez@gmail.com",
@@ -15,7 +15,8 @@
 		"astro",
 		"analytics",
 		"monitoring",
-		"prometheus"
+		"prometheus",
+		"node"
 	],
 	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration",
 	"publishConfig": {
