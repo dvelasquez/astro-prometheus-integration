@@ -2,6 +2,7 @@
 	"extends": "astro/tsconfigs/strict",
 	"compilerOptions": {
 		"jsx": "preserve",
+		"module": "node16",
 		"moduleResolution": "node16"
 	},
 	"exclude": ["dist"]

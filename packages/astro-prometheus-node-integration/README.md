@@ -43,11 +43,11 @@ yarn add astro-prometheus-integration
 2. Add the integration to your astro config
 
 ```diff
-+import integration from "astro-prometheus-integration";
++import prometheusIntegration from "astro-prometheus-integration";
 
 export default defineConfig({
   integrations: [
-+    integration(),
++    prometheusIntegration(),
   ],
 });
 ```
