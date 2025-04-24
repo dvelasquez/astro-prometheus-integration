@@ -3,7 +3,7 @@
 	"changelog": [
 		"@changesets/changelog-github",
 		{
-			"repo": "<repo>/<org>"
+			"repo": "dvelasquez/astro-prometheus-integration"
 		}
 	],
 	"commit": false,
