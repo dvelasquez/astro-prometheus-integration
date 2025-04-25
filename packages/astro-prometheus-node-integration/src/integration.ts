@@ -1,5 +1,6 @@
 import { defineIntegration } from "astro-integration-kit";
 import { z } from "astro/zod";
+import { initRegistry } from "./register.js";
 
 export const integration = defineIntegration({
 	name: "astro-prometheus-node-integration",
@@ -27,6 +28,8 @@ export const integration = defineIntegration({
 		return {
 			hooks: {
 				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
+					console.log("[INTEGRATION] astro:config:setup hook called");
+					initRegistry();
 					// Add the metrics endpoint
 					injectRoute({
 						pattern: options.metricsUrl,
