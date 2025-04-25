@@ -13,7 +13,7 @@
 		"ci:version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile && pnpm dedupe",
 		"ci:publish": "pnpm exec changeset publish && git push --follow-tags",
 		"lint": "biome check .",
-		"lint:fix": "biome check --apply .",
+		"lint:fix": "biome check --write .",
 		"prepare": "husky"
 	},
 	"devDependencies": {
@@ -24,6 +24,6 @@
 		"lint-staged": "^15.5.1"
 	},
 	"lint-staged": {
-		"*": ["biome check --apply"]
+		"*": ["biome check --write"]
 	}
 }

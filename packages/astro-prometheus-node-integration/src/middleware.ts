@@ -1,10 +1,21 @@
 import { defineMiddleware } from "astro/middleware";
-import { metrics } from "./register.js";
+import client from "prom-client";
 
 export const onRequest = defineMiddleware(async (context, next) => {
-	console.log("onRequest is called");
-	console.log("httpRequestsTotal", metrics.httpRequestsTotal);
-	console.log("httpRequestDuration", metrics.httpRequestDuration);
+	const metricsJson = await client.register.getMetricsAsJSON();
+	const httpRequestName = metricsJson.find((metric) =>
+		metric.name.includes("http_requests_total"),
+	);
+	const httpRequestDurationName = metricsJson.find((metric) =>
+		metric.name.includes("http_request_duration_seconds"),
+	);
+	const httpRequestsTotal = client.register.getSingleMetric(
+		httpRequestName?.name ?? "",
+	);
+	const httpRequestDuration = client.register.getSingleMetric(
+		httpRequestDurationName?.name ?? "",
+	);
+
 	// Start timer
 	const start = process.hrtime();
 
@@ -23,8 +34,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		status: response.status.toString(),
 	};
 
-	metrics.httpRequestsTotal?.inc(labels);
-	metrics.httpRequestDuration?.observe(labels, duration);
+	if (httpRequestDuration instanceof client.Histogram) {
+		httpRequestDuration.observe(labels, duration);
+	}
+	if (httpRequestsTotal instanceof client.Counter) {
+		httpRequestsTotal.inc(labels);
+	}
 
 	return response;
 });
