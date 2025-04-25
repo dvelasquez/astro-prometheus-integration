@@ -2,14 +2,12 @@ import client, { Counter, Histogram } from "prom-client";
 
 const register = client.register;
 
-// Create a metrics object to hold our metrics
 const metrics = {
 	httpRequestsTotal: null as Counter | null,
 	httpRequestDuration: null as Histogram | null,
 };
 
 const initRegistry = (prometheusConfig?: { prefix: string }) => {
-	console.log("initRegistry is called");
 	if (register) {
 		register.clear();
 	}
@@ -30,23 +28,26 @@ const initRegistry = (prometheusConfig?: { prefix: string }) => {
 	return register;
 };
 
+export const HTTP_REQUESTS_TOTAL = "http_requests_total";
+export const HTTP_REQUEST_DURATION = "http_request_duration_seconds";
+
 const initMetrics = ({
 	register,
 	prefix,
 }: { register: client.Registry; prefix: string }) => {
 	metrics.httpRequestsTotal = new Counter({
-		name: `${prefix}http_requests_total`,
-		help: "Total number of HTTP requests made to astro",
+		name: `${prefix}${HTTP_REQUESTS_TOTAL}`,
+		help: "Total number of HTTP requests",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
 	});
 
 	metrics.httpRequestDuration = new Histogram({
-		name: `${prefix}http_request_duration_seconds`,
-		help: "Duration of HTTP requests made to astro in seconds",
+		name: `${prefix}${HTTP_REQUEST_DURATION}`,
+		help: "Duration of HTTP requests in seconds",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
 	});
 };
 
-export { register, initRegistry, initMetrics, metrics };
+export { register, initRegistry };
