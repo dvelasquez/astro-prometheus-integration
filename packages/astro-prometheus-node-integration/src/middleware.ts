@@ -1,7 +1,10 @@
 import { defineMiddleware } from "astro/middleware";
-import { httpRequestDuration, httpRequestsTotal } from "./register.ts";
+import { metrics } from "./register.js";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+	console.log("onRequest is called");
+	console.log("httpRequestsTotal", metrics.httpRequestsTotal);
+	console.log("httpRequestDuration", metrics.httpRequestDuration);
 	// Start timer
 	const start = process.hrtime();
 
@@ -20,8 +23,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		status: response.status.toString(),
 	};
 
-	httpRequestsTotal.inc(labels);
-	httpRequestDuration.observe(labels, duration);
+	metrics.httpRequestsTotal?.inc(labels);
+	metrics.httpRequestDuration?.observe(labels, duration);
 
 	return response;
 });

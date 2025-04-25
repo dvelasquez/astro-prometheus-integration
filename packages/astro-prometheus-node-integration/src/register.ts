@@ -1,28 +1,41 @@
 import client, { Counter, Histogram } from "prom-client";
 
-// Create a singleton registry
 const register = client.register;
 
-// Clear any existing metrics (important for hot reloading scenarios)
-register.clear();
+// Create a metrics object to hold our metrics
+const metrics = {
+	httpRequestsTotal: null as Counter | null,
+	httpRequestDuration: null as Histogram | null,
+};
 
-const collectDefaultMetrics = client.collectDefaultMetrics;
+const initRegistry = () => {
+	console.log("initRegistry is called");
+	if (register) {
+		register.clear();
+	}
 
-// Collect default metrics
-collectDefaultMetrics({ register });
+	const collectDefaultMetrics = client.collectDefaultMetrics;
 
-export const httpRequestsTotal = new Counter({
-	name: "http_requests_total",
-	help: "Total number of HTTP requests made to astro",
-	labelNames: ["method", "path", "status"],
-	registers: [register],
-});
+	collectDefaultMetrics({ register });
+	initMetrics({ register });
 
-export const httpRequestDuration = new Histogram({
-	name: "http_request_duration_seconds",
-	help: "Duration of HTTP requests made to astro in seconds",
-	labelNames: ["method", "path", "status"],
-	registers: [register],
-});
+	return register;
+};
 
-export default register;
+const initMetrics = ({ register }: { register: client.Registry }) => {
+	metrics.httpRequestsTotal = new Counter({
+		name: "http_requests_total",
+		help: "Total number of HTTP requests made to astro",
+		labelNames: ["method", "path", "status"],
+		registers: [register],
+	});
+
+	metrics.httpRequestDuration = new Histogram({
+		name: "http_request_duration_seconds",
+		help: "Duration of HTTP requests made to astro in seconds",
+		labelNames: ["method", "path", "status"],
+		registers: [register],
+	});
+};
+
+export { register, initRegistry, initMetrics, metrics };
