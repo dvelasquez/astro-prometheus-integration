@@ -15,18 +15,8 @@ export default defineConfig({
 		prometheusNodeIntegration({
 			enabled: true, // explicitly enable it
 			metricsUrl: "/metrics", // explicitly set the metrics URL
-			prometheus: {
+			prometheusConfig: {
 				prefix: "myapp_", // All metrics will be prefixed with "myapp_"
-				defaultLabels: {
-					// These labels will be added to all metrics
-					environment: "production",
-					app: "my-astro-app",
-				},
-				customMetricNames: {
-					// Override default metric names
-					httpRequestsTotal: "custom_http_requests_total",
-					httpRequestDuration: "custom_http_duration_seconds",
-				},
 			},
 		}),
 		hmrIntegration({

@@ -8,7 +8,7 @@ const metrics = {
 	httpRequestDuration: null as Histogram | null,
 };
 
-const initRegistry = () => {
+const initRegistry = (prometheusConfig?: { prefix: string }) => {
 	console.log("initRegistry is called");
 	if (register) {
 		register.clear();
@@ -16,22 +16,33 @@ const initRegistry = () => {
 
 	const collectDefaultMetrics = client.collectDefaultMetrics;
 
-	collectDefaultMetrics({ register });
-	initMetrics({ register });
+	const config: client.DefaultMetricsCollectorConfiguration<client.RegistryContentType> =
+		{
+			register,
+		};
+	if (prometheusConfig?.prefix) {
+		config.prefix = prometheusConfig.prefix;
+	}
+
+	collectDefaultMetrics(config);
+	initMetrics({ register, prefix: prometheusConfig?.prefix ?? "" });
 
 	return register;
 };
 
-const initMetrics = ({ register }: { register: client.Registry }) => {
+const initMetrics = ({
+	register,
+	prefix,
+}: { register: client.Registry; prefix: string }) => {
 	metrics.httpRequestsTotal = new Counter({
-		name: "http_requests_total",
+		name: `${prefix}http_requests_total`,
 		help: "Total number of HTTP requests made to astro",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
 	});
 
 	metrics.httpRequestDuration = new Histogram({
-		name: "http_request_duration_seconds",
+		name: `${prefix}http_request_duration_seconds`,
 		help: "Duration of HTTP requests made to astro in seconds",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
