@@ -1,13 +1,15 @@
+import type { AstroSharedContext } from "astro";
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
+import { HTTP_REQUESTS_TOTAL, HTTP_REQUEST_DURATION } from "./register.js";
 
-export const onRequest = defineMiddleware(async (context, next) => {
+const findMetrics = async (context: AstroSharedContext) => {
 	const metricsJson = await client.register.getMetricsAsJSON();
 	const httpRequestName = metricsJson.find((metric) =>
-		metric.name.includes("http_requests_total"),
+		metric.name.endsWith(HTTP_REQUESTS_TOTAL),
 	);
 	const httpRequestDurationName = metricsJson.find((metric) =>
-		metric.name.includes("http_request_duration_seconds"),
+		metric.name.endsWith(HTTP_REQUEST_DURATION),
 	);
 	const httpRequestsTotal = client.register.getSingleMetric(
 		httpRequestName?.name ?? "",
@@ -15,6 +17,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	const httpRequestDuration = client.register.getSingleMetric(
 		httpRequestDurationName?.name ?? "",
 	);
+	if (!(httpRequestDuration instanceof client.Histogram)) {
+		console.warn("httpRequestDuration is not a Histogram");
+	}
+	if (!(httpRequestsTotal instanceof client.Counter)) {
+		console.warn("httpRequestsTotal is not a Counter");
+	}
+
+	return { httpRequestsTotal, httpRequestDuration };
+};
+
+export const onRequest = defineMiddleware(async (context, next) => {
+	const { httpRequestsTotal, httpRequestDuration } = await findMetrics(context);
 
 	// Start timer
 	const start = process.hrtime();
