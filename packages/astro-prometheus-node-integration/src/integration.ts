@@ -16,6 +16,11 @@ export const integration = defineIntegration({
 				.string()
 				.default("/metrics")
 				.describe("The URL to the metrics endpoint."),
+			prometheusConfig: z
+				.object({
+					prefix: z.string().default(""),
+				})
+				.optional(),
 		})
 		.default({}),
 	setup({ options }) {
@@ -29,7 +34,7 @@ export const integration = defineIntegration({
 			hooks: {
 				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
 					console.log("[INTEGRATION] astro:config:setup hook called");
-					initRegistry();
+					initRegistry(options.prometheusConfig);
 					// Add the metrics endpoint
 					injectRoute({
 						pattern: options.metricsUrl,
