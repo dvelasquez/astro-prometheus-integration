@@ -1,13 +1,13 @@
 import type { APIRoute } from "astro";
-import register from "../register.ts";
+import client from "prom-client";
 
 export const GET: APIRoute = async () => {
 	try {
-		const metrics = await register.metrics();
+		const metrics = await client.register.metrics();
 		return new Response(metrics, {
 			status: 200,
 			headers: {
-				"Content-Type": register.contentType,
+				"Content-Type": client.register.contentType ?? "text/plain",
 			},
 		});
 	} catch (error) {
