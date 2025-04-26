@@ -9,11 +9,22 @@ const metrics = {
 	httpServerDurationSeconds: null as Histogram | null,
 };
 
-const initRegistry = (collectDefaultMetricsConfig?: MetricsConfig) => {
+const initRegistry = ({
+	collectDefaultMetricsConfig,
+	registerContentType,
+}: {
+	collectDefaultMetricsConfig?: MetricsConfig;
+	registerContentType: string;
+}) => {
 	if (register) {
 		register.clear();
 	}
-
+	if (registerContentType === "OPENMETRICS") {
+		// OpenMetrics is not typed correctly, see https://github.com/siimon/prom-client/issues/653
+		client.register.setContentType(
+			client.Registry.OPENMETRICS_CONTENT_TYPE as any,
+		);
+	}
 	const collectDefaultMetrics = client.collectDefaultMetrics;
 
 	const baseConfig = collectDefaultMetricsConfig
@@ -28,6 +39,7 @@ const initRegistry = (collectDefaultMetricsConfig?: MetricsConfig) => {
 	if (collectDefaultMetricsConfig?.labels) {
 		register.setDefaultLabels(collectDefaultMetricsConfig.labels);
 	}
+
 	initMetrics({
 		register,
 		prefix: collectDefaultMetricsConfig?.prefix ?? "",
