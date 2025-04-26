@@ -1,5 +1,6 @@
 import { defineIntegration } from "astro-integration-kit";
 import { z } from "astro/zod";
+import { metricsConfigSchema } from "./metrics-config.js";
 import { initRegistry } from "./register.js";
 
 export const integration = defineIntegration({
@@ -16,11 +17,7 @@ export const integration = defineIntegration({
 				.string()
 				.default("/metrics")
 				.describe("The URL to the metrics endpoint."),
-			prometheusConfig: z
-				.object({
-					prefix: z.string().default(""),
-				})
-				.optional(),
+			collectDefaultMetricsConfig: metricsConfigSchema.optional(),
 		})
 		.default({}),
 	setup({ options }) {
@@ -33,7 +30,7 @@ export const integration = defineIntegration({
 		return {
 			hooks: {
 				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
-					initRegistry(options.prometheusConfig);
+					initRegistry(options.collectDefaultMetricsConfig);
 					injectRoute({
 						pattern: options.metricsUrl,
 						entrypoint: new URL("./routes/metrics.js", import.meta.url),

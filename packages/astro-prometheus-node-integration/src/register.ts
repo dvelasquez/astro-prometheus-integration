@@ -1,4 +1,5 @@
 import client, { Counter, Histogram } from "prom-client";
+import type { MetricsConfig } from "./metrics-config.js";
 
 const register = client.register;
 
@@ -8,23 +9,29 @@ const metrics = {
 	httpServerDurationSeconds: null as Histogram | null,
 };
 
-const initRegistry = (prometheusConfig?: { prefix: string }) => {
+const initRegistry = (collectDefaultMetricsConfig?: MetricsConfig) => {
 	if (register) {
 		register.clear();
 	}
 
 	const collectDefaultMetrics = client.collectDefaultMetrics;
 
-	const config: client.DefaultMetricsCollectorConfiguration<client.RegistryContentType> =
-		{
-			register,
-		};
-	if (prometheusConfig?.prefix) {
-		config.prefix = prometheusConfig.prefix;
-	}
+	const baseConfig = collectDefaultMetricsConfig
+		? { ...collectDefaultMetricsConfig }
+		: {};
+	const config = {
+		register,
+		...baseConfig,
+	} as client.DefaultMetricsCollectorConfiguration<client.RegistryContentType>;
 
 	collectDefaultMetrics(config);
-	initMetrics({ register, prefix: prometheusConfig?.prefix ?? "" });
+	if (collectDefaultMetricsConfig?.labels) {
+		register.setDefaultLabels(collectDefaultMetricsConfig.labels);
+	}
+	initMetrics({
+		register,
+		prefix: collectDefaultMetricsConfig?.prefix ?? "",
+	});
 
 	return register;
 };
@@ -36,7 +43,10 @@ export const HTTP_SERVER_DURATION_SECONDS = "http_server_duration_seconds";
 const initMetrics = ({
 	register,
 	prefix,
-}: { register: client.Registry; prefix: string }) => {
+}: {
+	register: client.Registry;
+	prefix: string;
+}) => {
 	metrics.httpRequestsTotal = new Counter({
 		name: `${prefix}${HTTP_REQUESTS_TOTAL}`,
 		help: "Total number of HTTP requests",
