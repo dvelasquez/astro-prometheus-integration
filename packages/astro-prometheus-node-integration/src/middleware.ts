@@ -53,7 +53,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// Calculate duration
 	const [seconds, nanoseconds] = process.hrtime(start);
 	const duration = seconds + nanoseconds / 1e9;
-	const path = context.url.pathname;
+	const path = context.routePattern;
 
 	// Record metrics
 	const labels = {
