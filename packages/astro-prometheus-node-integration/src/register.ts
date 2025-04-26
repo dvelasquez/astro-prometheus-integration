@@ -5,6 +5,7 @@ const register = client.register;
 const metrics = {
 	httpRequestsTotal: null as Counter | null,
 	httpRequestDuration: null as Histogram | null,
+	httpServerDurationSeconds: null as Histogram | null,
 };
 
 const initRegistry = (prometheusConfig?: { prefix: string }) => {
@@ -30,6 +31,7 @@ const initRegistry = (prometheusConfig?: { prefix: string }) => {
 
 export const HTTP_REQUESTS_TOTAL = "http_requests_total";
 export const HTTP_REQUEST_DURATION = "http_request_duration_seconds";
+export const HTTP_SERVER_DURATION_SECONDS = "http_server_duration_seconds";
 
 const initMetrics = ({
 	register,
@@ -44,7 +46,14 @@ const initMetrics = ({
 
 	metrics.httpRequestDuration = new Histogram({
 		name: `${prefix}${HTTP_REQUEST_DURATION}`,
-		help: "Duration of HTTP requests in seconds",
+		help: "Duration in seconds of initial server-side request processing, including middleware and Astro frontmatter, measured until the response is ready to send/stream.",
+		labelNames: ["method", "path", "status"],
+		registers: [register],
+	});
+
+	metrics.httpServerDurationSeconds = new Histogram({
+		name: `${prefix}${HTTP_SERVER_DURATION_SECONDS}`,
+		help: "Full server-side HTTP request duration in seconds, including processing, Astro rendering, and response streaming.",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
 	});
