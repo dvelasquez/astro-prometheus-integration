@@ -15,8 +15,13 @@ export default defineConfig({
 		prometheusNodeIntegration({
 			enabled: true, // explicitly enable it
 			metricsUrl: "/metrics", // explicitly set the metrics URL
-			prometheusConfig: {
+			collectDefaultMetricsConfig: {
 				prefix: "myapp_", // All metrics will be prefixed with "myapp_"
+				labels: {
+					env: "production",
+					version: "1.0.0",
+					hostname: "myapp.com",
+				},
 			},
 		}),
 		hmrIntegration({
