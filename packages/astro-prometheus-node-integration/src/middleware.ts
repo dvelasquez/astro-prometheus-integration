@@ -1,4 +1,3 @@
-import type { AstroSharedContext } from "astro";
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
 import {
@@ -7,7 +6,7 @@ import {
 	HTTP_SERVER_DURATION_SECONDS,
 } from "./register.js";
 
-const findMetrics = async (context: AstroSharedContext) => {
+const findMetrics = async () => {
 	const metricsJson = await client.register.getMetricsAsJSON();
 	const httpRequestName = metricsJson.find((metric) =>
 		metric.name.endsWith(HTTP_REQUESTS_TOTAL),
@@ -42,7 +41,7 @@ const findMetrics = async (context: AstroSharedContext) => {
 
 export const onRequest = defineMiddleware(async (context, next) => {
 	const { httpRequestsTotal, httpRequestDuration, httpServerDurationSeconds } =
-		await findMetrics(context);
+		await findMetrics();
 
 	// Start timer
 	const start = process.hrtime();
@@ -74,7 +73,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		httpServerDurationSeconds instanceof client.Histogram &&
 		response.body instanceof ReadableStream
 	) {
-		const ttlbStart = process.hrtime();
 		const originalBody = response.body;
 		const wrappedBody = new ReadableStream({
 			start(controller) {
@@ -82,7 +80,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 				function push() {
 					reader.read().then(({ done, value }) => {
 						if (done) {
-							const [s, ns] = process.hrtime(ttlbStart);
+							const [s, ns] = process.hrtime(start);
 							const ttlbDuration = s + ns / 1e9;
 							if (httpServerDurationSeconds instanceof client.Histogram) {
 								httpServerDurationSeconds.observe(labels, ttlbDuration);
