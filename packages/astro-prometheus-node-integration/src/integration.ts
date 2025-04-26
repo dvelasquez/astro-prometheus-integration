@@ -17,6 +17,10 @@ export const integration = defineIntegration({
 				.string()
 				.default("/metrics")
 				.describe("The URL to the metrics endpoint."),
+			registerContentType: z
+				.string()
+				.default("PROMETHEUS")
+				.describe("The content type of the metrics endpoint."),
 			collectDefaultMetricsConfig: metricsConfigSchema.optional(),
 		})
 		.default({}),
@@ -30,7 +34,15 @@ export const integration = defineIntegration({
 		return {
 			hooks: {
 				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
-					initRegistry(options.collectDefaultMetricsConfig);
+					initRegistry({
+						...(options.collectDefaultMetricsConfig
+							? {
+									collectDefaultMetricsConfig:
+										options.collectDefaultMetricsConfig,
+								}
+							: {}),
+						registerContentType: options.registerContentType,
+					});
 					injectRoute({
 						pattern: options.metricsUrl,
 						entrypoint: new URL("./routes/metrics.js", import.meta.url),
