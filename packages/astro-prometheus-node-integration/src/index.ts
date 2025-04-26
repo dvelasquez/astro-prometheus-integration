@@ -1,1 +1,3 @@
-export { integration } from "./integration.js";
+import * as Prometheus from "prom-client";
+import { integration } from "./integration.js";
+export { integration, Prometheus };

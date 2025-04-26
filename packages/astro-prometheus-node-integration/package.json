@@ -1,7 +1,7 @@
 {
 	"name": "astro-prometheus-node-integration",
 	"version": "0.0.1",
-	"description": "TODO:",
+	"description": "A prometheus integration for Astro.",
 	"author": {
 		"email": "danilo.velasquez@gmail.com",
 		"name": "Danilo Velasquez",
@@ -18,7 +18,7 @@
 		"prometheus",
 		"node"
 	],
-	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration",
+	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration/tree/main/packages/astro-prometheus-node-integration#readme",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -45,5 +45,13 @@
 	},
 	"devDependencies": {
 		"tsup": "^8.4.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration.git",
+		"directory": "packages/astro-prometheus-node-integration"
+	},
+	"bugs": {
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration/issues"
 	}
 }
