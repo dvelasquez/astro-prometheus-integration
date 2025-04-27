@@ -9,10 +9,19 @@ import type { DefaultMetricsCollectorConfiguration } from "prom-client";
  */
 export const metricsConfigSchema = z.object({
 	prefix: z.string().optional().describe("The prefix for the metrics."),
-	labels: z.record(z.string(), z.string()).optional().describe("The labels for the metrics."),
+	labels: z
+		.record(z.string(), z.string())
+		.optional()
+		.describe("The labels for the metrics."),
 	register: z.any().optional().describe("[NOT USED] Additional registry."),
-	gcDurationBuckets: z.array(z.number()).optional().describe("The buckets for the gc duration."),
-	eventLoopMonitoringPrecision: z.number().optional().describe("The precision for the event loop monitoring."),
+	gcDurationBuckets: z
+		.array(z.number())
+		.optional()
+		.describe("The buckets for the gc duration."),
+	eventLoopMonitoringPrecision: z
+		.number()
+		.optional()
+		.describe("The precision for the event loop monitoring."),
 	// Add more fields as needed from prom-client's config
 });
 
