@@ -22,6 +22,7 @@ const initRegistry = ({
 	if (registerContentType === "OPENMETRICS") {
 		// OpenMetrics is not typed correctly, see https://github.com/siimon/prom-client/issues/653
 		client.register.setContentType(
+			// biome-ignore lint/suspicious/noExplicitAny: types at prom-client are not up to date
 			client.Registry.OPENMETRICS_CONTENT_TYPE as any,
 		);
 	}
