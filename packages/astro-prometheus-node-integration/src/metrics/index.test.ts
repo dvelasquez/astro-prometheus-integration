@@ -1,7 +1,7 @@
 // @ts-expect-error: No types for parse-prometheus-text-format
 import parsePrometheusTextFormat from "parse-prometheus-text-format";
 import { Counter, Registry } from "prom-client";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { initRegistry } from "./index.js";
 
 describe("initRegistry", () => {
@@ -18,11 +18,9 @@ describe("initRegistry", () => {
 		});
 
 		const metricsText = await registry.metrics();
-		// biome-ignore lint/suspicious/noExplicitAny: parse-prometheus-text-format don't have types
 		const metrics = parsePrometheusTextFormat(metricsText) as any[];
 
 		// Check that at least one default metric is present
-		// biome-ignore lint/suspicious/noExplicitAny: parse-prometheus-text-format don't have types
 		expect(metrics.some((m: any) => m.name.startsWith("process_"))).toBe(true);
 	});
 
@@ -39,13 +37,11 @@ describe("initRegistry", () => {
 
 		// All custom metrics should have the prefix
 		expect(
-			// biome-ignore lint/suspicious/noExplicitAny: parse-prometheus-text-format don't have types
 			metrics.some((m: any) =>
 				m.name.startsWith(`${prefix}http_requests_total`),
 			),
 		).toBe(true);
 		expect(
-			// biome-ignore lint/suspicious/noExplicitAny: parse-prometheus-text-format don't have types
 			metrics.some((m: any) =>
 				m.name.startsWith(`${prefix}http_request_duration_seconds`),
 			),
@@ -61,7 +57,6 @@ describe("initRegistry", () => {
 		});
 
 		const metricsText = await registry.metrics();
-		// biome-ignore lint/suspicious/noExplicitAny: parse-prometheus-text-format don't have types
 		const metrics = parsePrometheusTextFormat(metricsText) as any[];
 
 		// All metrics should have the default label

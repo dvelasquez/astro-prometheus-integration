@@ -14,5 +14,22 @@
 	},
 	"files": {
 		"ignore": ["dist", ".astro"]
-	}
+	},
+	"overrides": [
+		{
+			"include": [
+				"**/*.test.ts",
+				"**/*.test.js",
+				"**/*.spec.ts",
+				"**/*.spec.js"
+			],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	]
 }
