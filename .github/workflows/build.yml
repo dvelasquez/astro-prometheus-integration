@@ -23,3 +23,6 @@ jobs:
 
       - name: Build
         run: pnpm --filter astro-prometheus-node-integration build
+
+      - name: Run Tests
+        run: pnpm --filter astro-prometheus-node-integration test -- --run
