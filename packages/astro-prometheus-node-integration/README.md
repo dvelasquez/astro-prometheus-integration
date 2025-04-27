@@ -16,40 +16,53 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 ---
 
+## Requirements
+
+- This integration requires the `@astrojs/node` adapter. Prometheus metrics require a persistent Node.js server process to aggregate and expose metrics.
+- **Not supported:** Serverless adapters (such as Vercel, Netlify, Cloudflare, etc.) are not compatible with this integration. In serverless environments, each request runs in isolation, so metrics cannot be aggregated across requests.
+
+> **Note:** If you deploy to a serverless platform, metrics will not be accurate or useful, as each request is handled by a separate, stateless server instance.
+
+---
+
 ## Installation
 
 ### Automatic (Recommended)
 
 ```bash
-pnpm astro add astro-prometheus-node-integration
+pnpm astro add astro-prometheus-node-integration @astrojs/node
 # or
-npx astro add astro-prometheus-node-integration
+npx astro add astro-prometheus-node-integration @astrojs/node
 # or
-yarn astro add astro-prometheus-node-integration
+yarn astro add astro-prometheus-node-integration @astrojs/node
 ```
 
 ### Manual
 
-1. Install the package:
+1. Install the packages:
 
 ```bash
-pnpm add astro-prometheus-node-integration
+pnpm add astro-prometheus-node-integration @astrojs/node
 # or
-npm install astro-prometheus-node-integration
+npm install astro-prometheus-node-integration @astrojs/node
 # or
-yarn add astro-prometheus-node-integration
+yarn add astro-prometheus-node-integration @astrojs/node
 ```
 
 2. Add the integration as the first one to your `astro.config.mjs` or `astro.config.mts`:
 
 ```js
 import { defineConfig } from "astro/config";
-import { integration as prometheusNodeIntegration } from "astro-prometheus-node-integration";
+import node from "@astrojs/node";
+import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
   integrations: [
     prometheusNodeIntegration(),
   ],
+  adapter: node({
+    mode: "standalone",
+  }),
 });
 ```
 
@@ -62,10 +75,16 @@ export default defineConfig({
 ```js
 // astro.config.mjs or astro.config.mts
 import { defineConfig } from "astro/config";
-import { integration as prometheusNodeIntegration } from "astro-prometheus-node-integration";
+import node from "@astrojs/node";
+import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [prometheusNodeIntegration()],
+  integrations: [
+    prometheusNodeIntegration(),
+  ],
+  adapter: node({
+    mode: "standalone",
+  }),
 });
 ```
 
@@ -73,7 +92,8 @@ export default defineConfig({
 
 ```js
 import { defineConfig } from "astro/config";
-import { integration as prometheusNodeIntegration } from "astro-prometheus-node-integration";
+import node from "@astrojs/node";
+import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
   integrations: [
@@ -90,6 +110,9 @@ export default defineConfig({
       },
     }),
   ],
+  adapter: node({
+    mode: "standalone",
+  }),
 });
 ```
 
@@ -162,7 +185,8 @@ This project is a monorepo:
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm dev
+pnpm node-integration:dev
+pnpm playground:dev
 ```
 
 - Edit files in `packages/astro-prometheus-node-integration/`.
