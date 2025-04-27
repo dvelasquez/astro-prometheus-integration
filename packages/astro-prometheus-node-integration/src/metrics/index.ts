@@ -1,5 +1,6 @@
+// Metric registration and initialization for Astro Prometheus Node integration
 import client, { Counter, Histogram } from "prom-client";
-import type { MetricsConfig } from "./metrics-config.js";
+import type { MetricsConfig } from "./config.js";
 
 const register = client.register;
 
