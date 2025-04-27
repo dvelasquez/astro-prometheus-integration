@@ -45,6 +45,9 @@ jobs:
       - name: Build
         run: pnpm --filter astro-prometheus-node-integration build
 
+      - name: Run Tests
+        run: pnpm --filter astro-prometheus-node-integration test -- --run
+
       - name: Create Release Pull Request or Publish
         id: changesets
         if: ${{ github.event_name == 'push' }}

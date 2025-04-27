@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { initRegistry } from "../metrics/index.js";
 import { createPrometheusMiddleware } from "./prometheus-middleware.js";
 
-function createMockContext(method = "GET", path = "/test", status = 200) {
+function createMockContext(method = "GET", path = "/test") {
 	return {
 		request: { method },
 		routePattern: path,
@@ -25,7 +25,7 @@ describe("createPrometheusMiddleware integration", () => {
 	});
 
 	it("increments http_requests_total", async () => {
-		const context = createMockContext("POST", "/foo", 201);
+		const context = createMockContext("POST", "/foo");
 		const next = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
 		await middleware(context as any, next);
 		const metricsText = await registry.metrics();
@@ -46,7 +46,7 @@ describe("createPrometheusMiddleware integration", () => {
 			registers: [registry],
 		});
 		customCounter.inc(3);
-		const context = createMockContext("GET", "/custom", 200);
+		const context = createMockContext("GET", "/custom");
 		const next = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
 		await middleware(context as any, next);
 		const metricsText = await registry.metrics();
@@ -56,7 +56,7 @@ describe("createPrometheusMiddleware integration", () => {
 	});
 
 	it("records http_request_duration_seconds histogram", async () => {
-		const context = createMockContext("GET", "/api/data", 200);
+		const context = createMockContext("GET", "/api/data");
 		const next = vi.fn().mockResolvedValue(
 			new Response(JSON.stringify({ success: true }), {
 				status: 200,
@@ -76,7 +76,7 @@ describe("createPrometheusMiddleware integration", () => {
 	});
 
 	it("records http_server_duration_seconds for responses with ReadableStream body", async () => {
-		const context = createMockContext("GET", "/streaming", 200);
+		const context = createMockContext("GET", "/streaming");
 
 		// Create a simple readable stream
 		const encoder = new TextEncoder();
@@ -120,7 +120,7 @@ describe("createPrometheusMiddleware integration", () => {
 	});
 
 	it("records http_server_duration_seconds for responses without body", async () => {
-		const context = createMockContext("DELETE", "/resource/123", 204);
+		const context = createMockContext("DELETE", "/resource/123");
 		const next = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
 
 		await middleware(context as any, next);
