@@ -1,5 +1,27 @@
 # astro-prometheus-node-integration
 
+## 0.1.0
+
+### Minor Changes
+
+- [`aa29376`](https://github.com/dvelasquez/astro-prometheus-integration/commit/aa29376ec1448b9a526664c784e4142480be6ea1) - feat: Add Prometheus metrics integration
+
+  - Added prom-client as a dependency for metrics collection
+  - Implemented middleware for tracking HTTP request metrics
+  - Added /metrics endpoint for Prometheus scraping
+  - Added configuration options for enabling/disabling integration and customizing metrics URL
+  - Tracks total HTTP requests and request duration with method, path, and status labels
+  - Collects default Node.js metrics through prom-client
+
+- [`62abe6c`](https://github.com/dvelasquez/astro-prometheus-integration/commit/62abe6c0fa0bb380925f4f5bf6a17d68feea5459) - - Added support for configurable metrics content type and global default labels.
+  - Unified metrics config and improved support for global default labels.
+  - Added SSR test pages in playground for metrics delay with parameter support.
+  - Fixed path to routePattern.
+  - Added measurement and recording of time to last byte (TTLB) in middleware.
+  - Improved type safety and added metric validation warnings.
+  - Added support for prefixed custom metrics.
+  - Added nodemon for server restarts and prefix configuration option to Prometheus.
+
 ## 0.0.1
 
 ### Patch Changes
