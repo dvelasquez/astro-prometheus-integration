@@ -5,7 +5,7 @@ import { hmrIntegration } from "astro-integration-kit/dev";
 import { defineConfig } from "astro/config";
 
 // Import the named export 'integration'
-const { integration: prometheusNodeIntegration } = await import(
+const { default: prometheusNodeIntegration } = await import(
 	"astro-prometheus-node-integration"
 );
 
