@@ -1,9 +1,9 @@
 // Integration for Astro Prometheus Node: defines the integration and its options schema using Zod
 import { defineIntegration } from "astro-integration-kit";
 import { z } from "astro/zod";
+import Prometheus from "prom-client";
 import { metricsConfigSchema } from "./metrics/config.js";
 import { initRegistry } from "./metrics/index.js";
-import Prometheus from "prom-client";
 
 const integrationSchema = z
 	.object({
