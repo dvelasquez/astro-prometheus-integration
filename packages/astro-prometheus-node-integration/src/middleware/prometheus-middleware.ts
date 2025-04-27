@@ -1,10 +1,11 @@
+// Prometheus metrics middleware for Astro
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
 import {
 	HTTP_REQUESTS_TOTAL,
 	HTTP_REQUEST_DURATION,
 	HTTP_SERVER_DURATION_SECONDS,
-} from "./register.js";
+} from "../metrics/index.js";
 
 const findMetrics = async () => {
 	const metricsJson = await client.register.getMetricsAsJSON();
