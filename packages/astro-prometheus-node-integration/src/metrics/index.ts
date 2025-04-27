@@ -2,8 +2,6 @@
 import client, { Counter, Histogram } from "prom-client";
 import type { MetricsConfig } from "./config.js";
 
-const register = client.register;
-
 const metrics = {
 	httpRequestsTotal: null as Counter | null,
 	httpRequestDuration: null as Histogram | null,
@@ -11,14 +9,16 @@ const metrics = {
 };
 
 const initRegistry = ({
+	register,
 	collectDefaultMetricsConfig,
 	registerContentType,
 }: {
+	register: client.Registry;
 	collectDefaultMetricsConfig?: MetricsConfig;
 	registerContentType: string;
 }) => {
 	if (register) {
-		register.clear();
+		clearRegistry(register);
 	}
 	if (registerContentType === "OPENMETRICS") {
 		// OpenMetrics is not typed correctly, see https://github.com/siimon/prom-client/issues/653
@@ -83,4 +83,9 @@ const initMetrics = ({
 	});
 };
 
-export { register, initRegistry };
+export const clearRegistry = (register: client.Registry) => {
+	register.clear();
+	register.resetMetrics();
+}; 
+
+export { initRegistry, initMetrics };

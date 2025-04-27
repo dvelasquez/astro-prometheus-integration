@@ -3,6 +3,7 @@ import { defineIntegration } from "astro-integration-kit";
 import { z } from "astro/zod";
 import { metricsConfigSchema } from "./metrics/config.js";
 import { initRegistry } from "./metrics/index.js";
+import Prometheus from "prom-client";
 
 const integrationSchema = z
 	.object({
@@ -37,7 +38,11 @@ export const integration = defineIntegration({
 		return {
 			hooks: {
 				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
+					// Get the global register instance
+					const register = Prometheus.register;
+
 					initRegistry({
+						register,
 						...(options.collectDefaultMetricsConfig
 							? {
 									collectDefaultMetricsConfig:
