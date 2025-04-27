@@ -1,5 +1,17 @@
 # astro-prometheus-node-integration
 
+## 0.1.1
+
+### Patch Changes
+
+- [`d54c8d9`](https://github.com/dvelasquez/astro-prometheus-integration/commit/d54c8d9309bf4a8a33569be2e34672465a75f081) - This release includes several improvements to the codebase:
+
+  - Refactored middleware to accept a provided register for better testability
+  - Added unit tests for the middleware and metrics initialization
+  - Updated Biome configuration for better developer experience
+  - Fixed code organization for improved comprehension and maintainability
+  - Added proper type checking for test files
+
 ## 0.1.0
 
 ### Minor Changes
