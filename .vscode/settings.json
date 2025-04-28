@@ -1,7 +1,9 @@
 {
 	"editor.defaultFormatter": "biomejs.biome",
 	"editor.codeActionsOnSave": {
-		"source.fixAll.biome": "explicit"
+		"source.fixAll.biome": "always"
 	},
-	"biome.enable": true
+	"biome.enable": true,
+	"prettier.enable": false,
+	"editor.formatOnSave": true
 }
