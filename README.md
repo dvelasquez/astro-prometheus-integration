@@ -1,12 +1,29 @@
 # astro-prometheus-integration
 
-TODO:description
+[![npm version](https://img.shields.io/npm/v/astro-prometheus-node-integration.svg)](https://www.npmjs.com/package/astro-prometheus-node-integration)
 
-To see how to get started, check out the [package README](./package/README.md)
+Monorepo for Astro Prometheus Integration. This project provides a Prometheus metrics middleware for AstroJS, enabling easy observability for your Astro sites.
 
-## Licensing
+## Monorepo Structure
 
-[MIT Licensed](./LICENSE). Made with ❤️ by [TODO:user](https://github.com/TODO:github-user).
+- **Root**: Release management using changesets.
+- **Demo**: Example Astro app to test the integration installation.
+- **Playground**: Development environment for the integration with autoreload.
+- **packages/astro-prometheus-node-integration**: The Astro integration package exposing Prometheus metrics.
+
+## Getting Started
+
+To see how to get started, check out the [astro-prometheus-node-integration README](./packages/astro-prometheus-node-integration/README.md)
+
+## Contributing
+
+- Edit the integration in `packages/astro-prometheus-node-integration/`.
+- Use the playground for local development and testing.
+- PRs and issues are welcome!
+
+## License
+
+MIT Licensed. Made with ❤️ by Danilo Velasquez ([danilo.velasquez@gmail.com](mailto:danilo.velasquez@gmail.com)).
 
 ---
 
