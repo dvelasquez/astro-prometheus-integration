@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json --exec \"astro dev\"",
+		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
 		"start": "astro dev",
 		"build": "astro check && astro build",
 		"preview": "astro preview",

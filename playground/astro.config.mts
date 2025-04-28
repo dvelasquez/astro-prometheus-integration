@@ -14,8 +14,12 @@ export default defineConfig({
 	integrations: [
 		prometheusNodeIntegration({
 			enabled: true, // explicitly enable it
-			metricsUrl: "/metrics", // explicitly set the metrics URL
+			metricsUrl: "/_/metrics", // explicitly set the metrics URL
 			registerContentType: "PROMETHEUS",
+			standaloneMetrics: {
+				enabled: true,
+				port: 6080,
+			},
 			collectDefaultMetricsConfig: {
 				prefix: "myapp_", // All metrics will be prefixed with "myapp_"
 				labels: {
