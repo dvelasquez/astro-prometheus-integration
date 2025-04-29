@@ -2,7 +2,12 @@
 import parsePrometheusTextFormat from "parse-prometheus-text-format";
 import { Counter, Registry } from "prom-client";
 import { beforeEach, describe, expect, it } from "vitest";
-import { initRegistry } from "./index.js";
+import {
+	HTTP_REQUESTS_TOTAL,
+	HTTP_REQUEST_DURATION,
+	HTTP_SERVER_DURATION_SECONDS,
+	initRegistry,
+} from "./index.js";
 
 describe("initRegistry", () => {
 	let registry: Registry;
@@ -22,6 +27,24 @@ describe("initRegistry", () => {
 
 		// Check that at least one default metric is present
 		expect(metrics.some((m: any) => m.name.startsWith("process_"))).toBe(true);
+	});
+
+	it("check that all custom metrics are registered", async () => {
+		initRegistry({
+			register: registry,
+			registerContentType: "PROMETHEUS",
+		});
+
+		const metricsText = await registry.metrics();
+		const metrics = parsePrometheusTextFormat(metricsText) as any[];
+
+		expect(metrics.some((m: any) => m.name === HTTP_REQUESTS_TOTAL)).toBe(true);
+		expect(metrics.some((m: any) => m.name === HTTP_REQUEST_DURATION)).toBe(
+			true,
+		);
+		expect(
+			metrics.some((m: any) => m.name === HTTP_SERVER_DURATION_SECONDS),
+		).toBe(true);
 	});
 
 	it("applies prefix to all metrics", async () => {

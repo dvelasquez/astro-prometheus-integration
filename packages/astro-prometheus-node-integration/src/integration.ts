@@ -22,6 +22,19 @@ const integrationSchema = z
 			.default("PROMETHEUS")
 			.describe("The content type of the metrics endpoint."),
 		collectDefaultMetricsConfig: metricsConfigSchema.optional(),
+		standaloneMetrics: z
+			.object({
+				enabled: z
+					.boolean()
+					.default(false)
+					.describe("Expose metrics on a standalone HTTP server."),
+				port: z
+					.number()
+					.default(7080)
+					.describe("Port for standalone metrics server."),
+			})
+			.default({ enabled: false, port: 7080 })
+			.describe("Standalone metrics server configuration."),
 	})
 	.default({});
 
@@ -37,7 +50,8 @@ export const integration = defineIntegration({
 
 		return {
 			hooks: {
-				"astro:config:setup": ({ injectRoute, addMiddleware }) => {
+				"astro:config:setup": ({ injectRoute, addMiddleware, logger }) => {
+					logger.info("setting up integration");
 					// Get the global register instance
 					const register = Prometheus.register;
 
@@ -51,10 +65,25 @@ export const integration = defineIntegration({
 							: {}),
 						registerContentType: options.registerContentType,
 					});
-					injectRoute({
-						pattern: options.metricsUrl,
-						entrypoint: new URL("./routes/metrics.js", import.meta.url),
-					});
+
+					if (options.standaloneMetrics?.enabled) {
+						// Start standalone metrics server
+						import("./routes/standalone-metrics-server.ts").then(
+							({ startStandaloneMetricsServer }) => {
+								startStandaloneMetricsServer({
+									register,
+									port: options.standaloneMetrics.port,
+									metricsUrl: options.metricsUrl,
+									logger,
+								});
+							},
+						);
+					} else {
+						injectRoute({
+							pattern: options.metricsUrl,
+							entrypoint: new URL("./routes/metrics.js", import.meta.url),
+						});
+					}
 					addMiddleware({
 						order: "pre",
 						entrypoint: new URL(
@@ -62,6 +91,7 @@ export const integration = defineIntegration({
 							import.meta.url,
 						),
 					});
+					logger.info("integration setup complete");
 				},
 			},
 		};
