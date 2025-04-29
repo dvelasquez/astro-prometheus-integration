@@ -42,7 +42,7 @@ describe("startStandaloneMetricsServer", () => {
 		};
 
 		// Reset global flag for each test
-		(globalThis as any).__astroPromStandaloneServerStarted = false;
+		globalThis.__astroPromStandaloneServerStarted = false;
 	});
 
 	it("responds with metrics at the configured URL and port", async () => {
