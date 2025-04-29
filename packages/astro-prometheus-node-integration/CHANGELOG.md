@@ -1,5 +1,16 @@
 # astro-prometheus-node-integration
 
+## 0.2.0
+
+### Minor Changes
+
+- [`55fc2aa`](https://github.com/dvelasquez/astro-prometheus-integration/commit/55fc2aabe871363258040f1c469e37df8a2f1897) - Added standalone metrics server option that allows running the Prometheus metrics endpoint on a separate server instance. This feature enables better separation of concerns and more flexible deployment options.
+
+  - Added standalone metrics server configuration option
+  - Added integration tests for standalone metrics functionality
+  - Added default metrics test coverage
+  - Improved package exports by removing test files from npm package
+
 ## 0.1.1
 
 ### Patch Changes
