@@ -126,6 +126,7 @@ export default defineConfig({
 | `metricsUrl`                | string    | `/metrics`     | The URL path where metrics are exposed.                                                      |
 | `registerContentType`       | string    | `PROMETHEUS`   | Content type for the metrics endpoint. Use `PROMETHEUS` or `OPENMETRICS`.                    |
 | `collectDefaultMetricsConfig` | object  | `{}`           | Configuration for [prom-client collectDefaultMetrics](https://github.com/siimon/prom-client#collectdefaultmetricsconfig). Supports `prefix`, `labels`, etc. |
+| `standaloneMetrics`         | object    | `{ enabled: false, port: 7080 }` | Expose metrics on a standalone HTTP server. If enabled, disables the default Astro route and starts a Node.js server on the specified port. |
 
 #### `collectDefaultMetricsConfig` fields
 - `prefix` (string): Prefix for all metric names.
@@ -172,6 +173,44 @@ All metrics can be prefixed and labeled globally using the `collectDefaultMetric
 - The endpoint returns metrics in Prometheus or OpenMetrics format, depending on the `registerContentType` option.
 - Example:
   - [http://localhost:4321/metrics](http://localhost:4321/metrics)
+
+---
+
+## Standalone Metrics Server (New Feature)
+
+Some organizations require exposing Prometheus metrics on a separate port, not on the main Astro application port. This integration supports this via the `standaloneMetrics` option.
+
+### How It Works
+- If `standaloneMetrics.enabled` is `true`, the integration will **not** inject the `/metrics` route into your Astro app.
+- Instead, it will start a standalone HTTP server (using Node.js) on the configured port (default: `7080`).
+- The metrics will be available at `http://<host>:<port>/metrics` (e.g., `http://localhost:7080/metrics`).
+- This is useful for keeping metrics endpoints internal and not exposed to the public internet.
+
+### Configuration Example
+
+```js
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
+import prometheusNodeIntegration from "astro-prometheus-node-integration";
+
+export default defineConfig({
+  integrations: [
+    prometheusNodeIntegration({
+      metricsUrl: "/_/metrics",  // Metrics URL is also configurable in this mode
+      standaloneMetrics: {
+        enabled: true, // Enable standalone metrics server
+        port: 8080,    // (Optional) Port for the metrics server (default: 7080)
+      },
+    }),
+  ],
+  adapter: node({
+    mode: "standalone",
+  }),
+});
+```
+
+- To disable the standalone server and use the default Astro route, set `standaloneMetrics.enabled: false` (or omit the option).
+- When enabled, the `/metrics` endpoint will **not** be available on your main Astro app port.
 
 ---
 
