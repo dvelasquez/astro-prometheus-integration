@@ -1,5 +1,11 @@
 # astro-prometheus-node-integration
 
+## 0.2.1
+
+### Patch Changes
+
+- [`51828b3`](https://github.com/dvelasquez/astro-prometheus-integration/commit/51828b35b10523591359e2bf94ddf0951c8c8f9d) - Updated tsup configuration to exclude tests.
+
 ## 0.2.0
 
 ### Minor Changes
