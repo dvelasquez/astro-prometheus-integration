@@ -29,7 +29,12 @@
 			"default": "./dist/index.js"
 		}
 	},
-	"files": ["dist"],
+	"files": [
+		"dist/**/*",
+		"!dist/**/*.test.js",
+		"!dist/**/*.test.d.ts",
+		"!dist/**/*.test.js.map"
+	],
 	"scripts": {
 		"dev": "tsup --watch",
 		"build": "tsup",
