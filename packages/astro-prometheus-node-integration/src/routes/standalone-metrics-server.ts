@@ -19,10 +19,10 @@ export function startStandaloneMetricsServer({
 	logger,
 }: StandaloneMetricsServerOptions) {
 	// Only start one server per process
-	if ((globalThis as any).__astroPromStandaloneServerStarted) {
+	if (globalThis.__astroPromStandaloneServerStarted) {
 		return;
 	}
-	(globalThis as any).__astroPromStandaloneServerStarted = true;
+	globalThis.__astroPromStandaloneServerStarted = true;
 
 	const server = createServer(async (req, res) => {
 		if (req.method === "GET" && req.url === metricsUrl) {
