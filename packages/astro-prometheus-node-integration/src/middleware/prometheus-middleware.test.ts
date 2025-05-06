@@ -3,6 +3,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { initRegistry } from "../metrics/index.js";
 import { createPrometheusMiddleware } from "./prometheus-middleware.js";
 
+// Define a default structure for the global options before module import
+// globalThis.__PROMETHEUS_OPTIONS__ = { ... removed ... };
+
 function createMockContext(method = "GET", path = "/test") {
 	return {
 		request: { method },
@@ -22,6 +25,18 @@ describe("createPrometheusMiddleware integration", () => {
 			registerContentType: "PROMETHEUS",
 		});
 		middleware = createPrometheusMiddleware(registry);
+		// Set specific options for each test run
+		globalThis.__PROMETHEUS_OPTIONS__ = {
+			metricsUrl: "/metrics",
+			registerContentType: "PROMETHEUS",
+			enabled: true,
+			standaloneMetrics: {
+				enabled: false,
+				port: 9090,
+			},
+			// Ensure collectDefaultMetricsConfig is explicitly undefined or set if needed per test
+			collectDefaultMetricsConfig: undefined,
+		};
 	});
 
 	it("increments http_requests_total", async () => {
