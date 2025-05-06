@@ -1,11 +1,9 @@
 // Integration for Astro Prometheus Node: defines the integration and its options schema using Zod
 import { defineIntegration } from "astro-integration-kit";
 import { z } from "astro/zod";
-import Prometheus from "prom-client";
 import { metricsConfigSchema } from "./metrics/config.js";
-import { initRegistry } from "./metrics/index.js";
 
-const integrationSchema = z
+export const integrationSchema = z
 	.object({
 		enabled: z
 			.boolean()
@@ -50,40 +48,28 @@ export const integration = defineIntegration({
 
 		return {
 			hooks: {
-				"astro:config:setup": ({ injectRoute, addMiddleware, logger }) => {
+				"astro:config:setup": ({
+					injectRoute,
+					addMiddleware,
+					logger,
+					updateConfig,
+				}) => {
 					logger.info("setting up integration");
 					// Get the global register instance
-					const register = Prometheus.register;
 
-					initRegistry({
-						register,
-						...(options.collectDefaultMetricsConfig
-							? {
-									collectDefaultMetricsConfig:
-										options.collectDefaultMetricsConfig,
-								}
-							: {}),
-						registerContentType: options.registerContentType,
-					});
-
-					if (options.standaloneMetrics?.enabled) {
-						// Start standalone metrics server
-						import("./routes/standalone-metrics-server.ts").then(
-							({ startStandaloneMetricsServer }) => {
-								startStandaloneMetricsServer({
-									register,
-									port: options.standaloneMetrics.port,
-									metricsUrl: options.metricsUrl,
-									logger,
-								});
-							},
-						);
-					} else {
+					if (!options.standaloneMetrics?.enabled) {
 						injectRoute({
 							pattern: options.metricsUrl,
 							entrypoint: new URL("./routes/metrics.js", import.meta.url),
 						});
 					}
+					updateConfig({
+						vite: {
+							define: {
+								__PROMETHEUS_OPTIONS__: options,
+							},
+						},
+					});
 					addMiddleware({
 						order: "pre",
 						entrypoint: new URL(
