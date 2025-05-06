@@ -1,11 +1,9 @@
 import { createServer } from "node:http";
-import type { AstroIntegrationLogger } from "astro";
 import type { Registry } from "prom-client";
 interface StandaloneMetricsServerOptions {
 	register: Registry;
 	port: number;
 	metricsUrl: string;
-	logger: AstroIntegrationLogger;
 }
 
 /**
@@ -16,7 +14,6 @@ export function startStandaloneMetricsServer({
 	register,
 	port,
 	metricsUrl,
-	logger,
 }: StandaloneMetricsServerOptions) {
 	// Only start one server per process
 	if (globalThis.__astroPromStandaloneServerStarted) {
@@ -43,7 +40,15 @@ export function startStandaloneMetricsServer({
 	});
 
 	server.listen(port, () => {
-		// eslint-disable-next-line no-console
-		logger.info(`Standalone metrics server listening on port ${port}`);
+		const formattedTime = new Date().toLocaleTimeString("en-US", {
+			hour12: false,
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		});
+
+		console.info(
+			`\x1b[90m${formattedTime}\x1b[0m \x1b[34m[astro-prometheus-node-integration]\x1b[0m Standalone metrics server listening on port ${port}`,
+		);
 	});
 }

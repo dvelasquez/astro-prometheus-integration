@@ -5,7 +5,9 @@ import {
 	HTTP_REQUESTS_TOTAL,
 	HTTP_REQUEST_DURATION,
 	HTTP_SERVER_DURATION_SECONDS,
+	initRegistry,
 } from "../metrics/index.js";
+import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.ts";
 
 const findMetrics = async (register: client.Registry) => {
 	const metricsJson = await register.getMetricsAsJSON();
@@ -41,6 +43,25 @@ const findMetrics = async (register: client.Registry) => {
 };
 
 export const createPrometheusMiddleware = (register: client.Registry) => {
+	const options = __PROMETHEUS_OPTIONS__;
+	initRegistry({
+		register,
+		...(options?.collectDefaultMetricsConfig
+			? {
+					collectDefaultMetricsConfig: options.collectDefaultMetricsConfig,
+				}
+			: {}),
+		registerContentType: options?.registerContentType || "PROMETHEUS",
+	});
+
+	if (options?.standaloneMetrics?.enabled) {
+		startStandaloneMetricsServer({
+			register,
+			port: options.standaloneMetrics.port,
+			metricsUrl: options.metricsUrl,
+		});
+	}
+
 	return defineMiddleware(async (context, next) => {
 		const {
 			httpRequestsTotal,
