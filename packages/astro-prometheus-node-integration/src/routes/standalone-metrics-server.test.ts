@@ -1,6 +1,14 @@
 import http from "node:http";
 import { Counter, Registry } from "prom-client";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+	type MockInstance,
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+} from "vitest";
 import { startStandaloneMetricsServer } from "./standalone-metrics-server.js";
 
 function getFreePort(): Promise<number> {
@@ -17,8 +25,7 @@ describe("startStandaloneMetricsServer", () => {
 	let registry: Registry;
 	let port: number;
 	let metricsUrl: string;
-	let logger: any;
-
+	let logSpy: MockInstance<typeof console.info>;
 	beforeEach(async () => {
 		registry = new Registry();
 		// Add a test metric
@@ -31,18 +38,13 @@ describe("startStandaloneMetricsServer", () => {
 
 		port = await getFreePort();
 		metricsUrl = "/test-metrics";
-		logger = {
-			info: vi.fn(),
-			warn: () => {},
-			error: () => {},
-			debug: () => {},
-			options: {},
-			label: "test",
-			fork: () => logger,
-		};
 
 		// Reset global flag for each test
 		globalThis.__astroPromStandaloneServerStarted = false;
+		logSpy = vi.spyOn(console, "info");
+	});
+	afterEach(() => {
+		logSpy.mockRestore();
 	});
 
 	it("responds with metrics at the configured URL and port", async () => {
@@ -50,7 +52,6 @@ describe("startStandaloneMetricsServer", () => {
 			register: registry,
 			port,
 			metricsUrl,
-			logger,
 		});
 
 		// Wait a bit for the server to start
@@ -61,7 +62,7 @@ describe("startStandaloneMetricsServer", () => {
 		const text = await res.text();
 		expect(text).toContain("test_counter");
 		expect(text).toContain("42");
-		expect(logger.info).toHaveBeenCalledWith(
+		expect(logSpy).toHaveBeenCalledWith(
 			expect.stringContaining(
 				`Standalone metrics server listening on port ${port}`,
 			),
@@ -73,7 +74,6 @@ describe("startStandaloneMetricsServer", () => {
 			register: registry,
 			port,
 			metricsUrl,
-			logger,
 		});
 
 		await new Promise((r) => setTimeout(r, 100));
@@ -89,17 +89,15 @@ describe("startStandaloneMetricsServer", () => {
 			register: registry,
 			port,
 			metricsUrl,
-			logger,
 		});
 		startStandaloneMetricsServer({
 			register: registry,
 			port,
 			metricsUrl,
-			logger,
 		});
 
 		await new Promise((r) => setTimeout(r, 100));
 
-		expect(logger.info).toHaveBeenCalledTimes(1);
+		expect(logSpy).toHaveBeenCalledTimes(1);
 	});
 });
