@@ -1,7 +1,7 @@
 import * as Prometheus from "prom-client";
-import { integration } from "./integration.js";
+import { integration, integrationSchema } from "./integration.js";
 
 // Public API for Astro Prometheus Node integration
-export { integration, Prometheus };
+export { integration, integrationSchema, Prometheus };
 
 export default integration;
