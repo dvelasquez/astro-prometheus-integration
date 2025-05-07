@@ -1,5 +1,11 @@
 # astro-prometheus-node-integration
 
+## 0.3.1
+
+### Patch Changes
+
+- [`4459990`](https://github.com/dvelasquez/astro-prometheus-integration/commit/4459990a7d73588717df517060dae76cda2eff71) - Exported integrationSchema type.
+
 ## 0.3.0
 
 ### Minor Changes
