@@ -71,9 +71,30 @@ export const createPrometheusMiddleware = (register: client.Registry) => {
 
 		// Start timer
 		const start = process.hrtime();
-
-		// Process the request
-		const response = await next();
+		let response: Response | undefined;
+		try {
+			response = await next();
+		} catch (err) {
+			// Calculate duration
+			const [seconds, nanoseconds] = process.hrtime(start);
+			const duration = seconds + nanoseconds / 1e9;
+			const path = context.routePattern;
+			const labels = {
+				method: context.request.method,
+				path: path,
+				status: "500",
+			};
+			if (httpRequestDuration instanceof client.Histogram) {
+				httpRequestDuration.observe(labels, duration);
+			}
+			if (httpRequestsTotal instanceof client.Counter) {
+				httpRequestsTotal.inc(labels);
+			}
+			if (httpServerDurationSeconds instanceof client.Histogram) {
+				httpServerDurationSeconds.observe(labels, duration);
+			}
+			throw err;
+		}
 
 		// Calculate duration
 		const [seconds, nanoseconds] = process.hrtime(start);
@@ -104,19 +125,36 @@ export const createPrometheusMiddleware = (register: client.Registry) => {
 				start(controller) {
 					const reader = originalBody.getReader();
 					function push() {
-						reader.read().then(({ done, value }) => {
-							if (done) {
+						reader
+							.read()
+							.then(({ done, value }) => {
+								if (done) {
+									const [s, ns] = process.hrtime(start);
+									const ttlbDuration = s + ns / 1e9;
+									if (httpServerDurationSeconds instanceof client.Histogram) {
+										httpServerDurationSeconds.observe(labels, ttlbDuration);
+									}
+									controller.close();
+									return;
+								}
+								controller.enqueue(value);
+								push();
+							})
+							.catch((error) => {
 								const [s, ns] = process.hrtime(start);
 								const ttlbDuration = s + ns / 1e9;
 								if (httpServerDurationSeconds instanceof client.Histogram) {
-									httpServerDurationSeconds.observe(labels, ttlbDuration);
+									httpServerDurationSeconds.observe(
+										{
+											method: context.request.method,
+											path: path,
+											status: "500",
+										},
+										ttlbDuration,
+									);
 								}
-								controller.close();
-								return;
-							}
-							controller.enqueue(value);
-							push();
-						});
+								throw error;
+							});
 					}
 					push();
 				},
