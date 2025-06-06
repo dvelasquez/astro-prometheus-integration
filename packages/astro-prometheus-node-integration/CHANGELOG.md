@@ -1,5 +1,16 @@
 # astro-prometheus-node-integration
 
+## 0.3.2
+
+### Patch Changes
+
+- [#22](https://github.com/dvelasquez/astro-prometheus-integration/pull/22) [`a088f4d`](https://github.com/dvelasquez/astro-prometheus-integration/commit/a088f4dba80bdd34f0055f027840f7b8cbae0e56) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Fix Prometheus metrics not recording 500 server errors
+
+  - The middleware now properly records metrics for requests that result in unhandled exceptions (HTTP 500 errors).
+  - Added a try/catch around the request handler to ensure that error responses increment the appropriate counters and histograms.
+  - Improved the streaming response handler to also record 500 errors if a streaming failure occurs.
+  - Added a unit test to verify that metrics are correctly recorded for 500 error cases.
+
 ## 0.3.1
 
 ### Patch Changes

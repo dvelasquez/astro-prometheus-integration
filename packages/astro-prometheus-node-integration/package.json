@@ -1,6 +1,6 @@
 {
 	"name": "astro-prometheus-node-integration",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "A prometheus integration for Astro.",
 	"author": {
 		"email": "danilo.velasquez@gmail.com",
