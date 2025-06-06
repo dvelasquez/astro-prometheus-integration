@@ -148,4 +148,22 @@ describe("createPrometheusMiddleware integration", () => {
 			'method="DELETE",path="/resource/123",status="204"',
 		);
 	});
+
+	it("records metrics for 500 errors when next() throws", async () => {
+		const context = createMockContext("GET", "/error");
+		const next = vi.fn().mockImplementation(() => {
+			throw new Error("Simulated server error");
+		});
+
+		await expect(middleware(context as any, next)).rejects.toThrow(
+			"Simulated server error",
+		);
+		const metricsText = await registry.metrics();
+
+		expect(metricsText).toContain(
+			'http_requests_total{method="GET",path="/error",status="500"}',
+		);
+		expect(metricsText).toContain("http_request_duration_seconds_bucket{le=");
+		expect(metricsText).toContain('method="GET",path="/error",status="500"');
+	});
 });
