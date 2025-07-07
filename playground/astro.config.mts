@@ -17,7 +17,7 @@ export default defineConfig({
 			metricsUrl: "/_/metrics", // explicitly set the metrics URL
 			registerContentType: "PROMETHEUS",
 			standaloneMetrics: {
-				enabled: true,
+				enabled: false,
 				port: 6080,
 			},
 			collectDefaultMetricsConfig: {

@@ -59,6 +59,7 @@ export const integration = defineIntegration({
 
 					if (!options.standaloneMetrics?.enabled) {
 						injectRoute({
+							prerender: false,
 							pattern: options.metricsUrl,
 							entrypoint: new URL("./routes/metrics.js", import.meta.url),
 						});
