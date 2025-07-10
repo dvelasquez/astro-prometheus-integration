@@ -3,8 +3,8 @@ import parsePrometheusTextFormat from "parse-prometheus-text-format";
 import { Counter, Registry } from "prom-client";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-	HTTP_REQUESTS_TOTAL,
 	HTTP_REQUEST_DURATION,
+	HTTP_REQUESTS_TOTAL,
 	HTTP_SERVER_DURATION_SECONDS,
 	initRegistry,
 } from "./index.js";

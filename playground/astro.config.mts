@@ -1,8 +1,8 @@
 import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
-import { defineConfig } from "astro/config";
 
 // Import the named export 'integration'
 const { default: prometheusNodeIntegration } = await import(
@@ -17,7 +17,7 @@ export default defineConfig({
 			metricsUrl: "/_/metrics", // explicitly set the metrics URL
 			registerContentType: "PROMETHEUS",
 			standaloneMetrics: {
-				enabled: true,
+				enabled: false,
 				port: 6080,
 			},
 			collectDefaultMetricsConfig: {
