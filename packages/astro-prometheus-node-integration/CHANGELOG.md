@@ -1,5 +1,11 @@
 # astro-prometheus-node-integration
 
+## 0.3.4
+
+### Patch Changes
+
+- [`e132a8a`](https://github.com/dvelasquez/astro-prometheus-integration/commit/e132a8acd499adb8619eeae749626c68ad43fba3) - Small bump to trigger release.
+
 ## 0.3.3
 
 ### Patch Changes
