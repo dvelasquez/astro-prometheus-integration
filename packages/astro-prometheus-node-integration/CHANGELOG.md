@@ -1,5 +1,11 @@
 # astro-prometheus-node-integration
 
+## 0.3.3
+
+### Patch Changes
+
+- [`6eb6c74`](https://github.com/dvelasquez/astro-prometheus-integration/commit/6eb6c7405003fffe69a3eca443018c08e1720168) - Added prerender:false to metric endpoint so is always dynamic and not prerendered.
+
 ## 0.3.2
 
 ### Patch Changes
