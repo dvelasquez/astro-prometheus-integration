@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import client from "prom-client";
 
+export const prerender = false;
+
 // Prometheus metrics endpoint for Astro
 export const GET: APIRoute = async () => {
 	try {
