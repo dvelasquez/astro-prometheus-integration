@@ -1,6 +1,7 @@
 // Integration for Astro Prometheus Node: defines the integration and its options schema using Zod
-import { defineIntegration } from "astro-integration-kit";
+
 import { z } from "astro/zod";
+import { defineIntegration } from "astro-integration-kit";
 import { metricsConfigSchema } from "./metrics/config.js";
 
 export const integrationSchema = z
@@ -61,6 +62,7 @@ export const integration = defineIntegration({
 						injectRoute({
 							pattern: options.metricsUrl,
 							entrypoint: new URL("./routes/metrics.js", import.meta.url),
+							prerender: false,
 						});
 					}
 					updateConfig({

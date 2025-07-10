@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import type { Registry } from "prom-client";
+
 interface StandaloneMetricsServerOptions {
 	register: Registry;
 	port: number;

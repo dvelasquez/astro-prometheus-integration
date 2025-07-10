@@ -1,7 +1,7 @@
 // @ts-check
-import { defineConfig } from "astro/config";
 
 import node from "@astrojs/node";
+import { defineConfig } from "astro/config";
 
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 

@@ -1,12 +1,12 @@
 import http from "node:http";
 import { Counter, Registry } from "prom-client";
 import {
-	type MockInstance,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
+	type MockInstance,
 	vi,
 } from "vitest";
 import { startStandaloneMetricsServer } from "./standalone-metrics-server.js";
