@@ -24,6 +24,8 @@
 		"lint-staged": "^16.0.0"
 	},
 	"lint-staged": {
-		"*": ["biome check --write"]
+		"*": [
+			"biome check --write"
+		]
 	}
 }
