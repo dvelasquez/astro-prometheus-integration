@@ -2,8 +2,8 @@
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
 import {
-	HTTP_REQUESTS_TOTAL,
 	HTTP_REQUEST_DURATION,
+	HTTP_REQUESTS_TOTAL,
 	HTTP_SERVER_DURATION_SECONDS,
 	initRegistry,
 } from "../metrics/index.js";
