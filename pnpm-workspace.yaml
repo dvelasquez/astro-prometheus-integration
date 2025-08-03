@@ -2,3 +2,8 @@ packages:
   - packages/*
   - playground
   - demo
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp

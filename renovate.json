@@ -2,11 +2,11 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:recommended"],
 	"packageRules": [
-	  {
-	    "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-	    "automerge": true,
-	    "automergeType": "branch"
-	  }
+		{
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"automerge": true,
+			"automergeType": "branch"
+		}
 	],
 	"platformAutomerge": true,
 	"automergeStrategy": "auto",
