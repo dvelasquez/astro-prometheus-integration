@@ -51,10 +51,10 @@ jobs:
           cd playground
           pnpm build
 
-      - name: Install Playwright Browsers
-        run: |
-          cd playground
-          npx playwright install --with-deps
+      - name: Setup Playwright
+        uses: microsoft/playwright-github-action@v1
+        with:
+          browsers: chromium
 
       - name: Run E2E Tests
         run: |
