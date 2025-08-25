@@ -1,33 +1,33 @@
 {
-  "name": "playground",
-  "type": "module",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed",
-    "test:e2e:debug": "playwright test --debug",
-    "test:e2e:report": "playwright show-report"
-  },
-  "dependencies": {
-    "@astrojs/node": "^9.2.1",
-    "@tailwindcss/vite": "^4.1.4",
-    "astro": "^5.7.4",
-    "astro-integration-kit": "^0.19.0",
-    "astro-prometheus-node-integration": "workspace:*",
-    "tailwindcss": "^4.1.4"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@playwright/test": "^1.55.0",
-    "@types/node": "^22.14.1",
-    "nodemon": "3.1.10",
-    "typescript": "^5.8.3"
-  }
+	"name": "playground",
+	"type": "module",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
+		"start": "astro dev",
+		"build": "astro check && astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:debug": "playwright test --debug",
+		"test:e2e:report": "playwright show-report"
+	},
+	"dependencies": {
+		"@astrojs/node": "^9.2.1",
+		"@tailwindcss/vite": "^4.1.4",
+		"astro": "^5.7.4",
+		"astro-integration-kit": "^0.19.0",
+		"astro-prometheus-node-integration": "workspace:*",
+		"tailwindcss": "^4.1.4"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.4",
+		"@playwright/test": "^1.55.0",
+		"@types/node": "^22.14.1",
+		"nodemon": "3.1.10",
+		"typescript": "^5.8.3"
+	}
 }
