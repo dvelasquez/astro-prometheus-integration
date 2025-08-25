@@ -16,17 +16,17 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 - ✅ Integration configuration validation
 
 ### 2. **Standalone Metrics Server Tests** (`standalone-metrics.spec.ts`)
-- ✅ Standalone server functionality (when enabled)
-- ✅ Fallback to main app endpoint (when disabled)
+- ✅ Server functionality (when enabled)
+- ✅ Fallback behavior (when disabled)
 - ✅ Port configuration validation
 
 ### 3. **OpenMetrics Tests** (`openmetrics.spec.ts`)
-- ✅ OpenMetrics content type (when configured)
-- ✅ Prometheus format (current default)
-- ✅ Content type headers validation
+- ✅ Content type handling
+- ✅ Format validation
+- ✅ Configuration switching
 
 ### 4. **Test Utilities** (`utils/metrics-helper.ts`)
-- 🔧 Helper class for common metrics testing patterns
+- 🔧 Helper class for common testing patterns
 - 🔧 Metric value extraction and validation
 - 🔧 Custom prefix and label verification
 - 🔧 Traffic generation for testing
@@ -35,10 +35,10 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 ## 🚀 Running the Tests
 
 ### Prerequisites
-1. **Start the playground development server**:
+1. **Build the packages** (required before testing):
    ```bash
    cd playground
-   npm run dev
+   npm run build:all
    ```
 
 2. **Install Playwright browsers** (if not already installed):
@@ -48,7 +48,12 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 
 ### Test Commands
 
-#### Run All E2E Tests
+#### Build and Run All E2E Tests (Recommended)
+```bash
+npm run test:e2e:build
+```
+
+#### Run Tests Only (requires previous build)
 ```bash
 npm run test:e2e
 ```
@@ -73,102 +78,170 @@ npm run test:e2e:debug
 npm run test:e2e:report
 ```
 
+### Using the Test Runner Script
+```bash
+cd playground
+./e2e/run-tests.sh
+```
+
 ## 🔧 Test Configuration
 
 ### Playwright Config (`playwright.config.ts`)
 - **Base URL**: `http://localhost:4321`
-- **Web Server**: Automatically starts `npm run dev`
+- **Web Server**: Automatically starts `npm run preview`
 - **Browser**: Chromium (Chrome)
 - **Screenshots**: On failure
 - **Videos**: On failure
 - **Traces**: On retry
 
 ### Test Environment
-- **Port**: 4321 (Astro dev server)
+- **Port**: 4321 (Astro preview server)
 - **Metrics Endpoint**: `/_/metrics`
 - **Integration**: Enabled with custom prefix `myapp_`
 - **Labels**: `env=production`, `version=1.0.0`, `hostname=myapp.com`
 
-## 📊 Test Scenarios
+## 🏗️ Build Workflow
 
-### Metrics Endpoint Validation
-- Verifies `/metrics` endpoint returns 200 OK
-- Checks Prometheus text format
-- Validates custom prefix application
-- Confirms custom labels presence
-- Ensures default Node.js metrics collection
+The e2e tests use a **build-first approach** for production-like testing:
 
-### Page Navigation Testing
-- Tests multiple page visits
-- Verifies metrics collection for different routes
-- Handles different HTTP methods
-- Validates duration metrics accuracy
+### **1. Build Integration Package**
+```bash
+cd packages/astro-prometheus-node-integration
+pnpm build
+```
 
-### Error Handling
-- Tests 500 error responses
-- Validates 404 error handling
-- Ensures metrics are collected for errors
-- Verifies proper status code recording
+### **2. Build Playground**
+```bash
+cd playground
+pnpm build
+```
 
-### Performance Verification
-- Confirms no expensive operations per request
-- Validates metrics caching functionality
-- Tests metric consistency across requests
-- Measures response time improvements
+### **3. Start Preview Server**
+```bash
+pnpm preview
+```
 
-### Configuration Testing
-- Custom metrics URL validation
-- Prefix application verification
-- Label propagation testing
+### **4. Run E2E Tests**
+```bash
+npm run test:e2e
+```
+
+### **Automated Workflow**
+```bash
+# Build both packages and run tests
+npm run test:e2e:build
+
+# Or use the shell script
+./e2e/run-tests.sh
+```
+
+## 📊 Test Scenarios Covered
+
+### **Metrics Endpoint Validation**
+- HTTP 200 OK responses
+- Prometheus text format
+- Custom prefix application
+- Custom labels presence
+- Default Node.js metrics
+
+### **Functionality Testing**
+- Page navigation metrics
+- HTTP method handling (GET/POST)
+- Duration measurement
+- Error response handling
+- Performance optimization
+
+### **Configuration Testing**
+- Custom metrics URL
+- Prefix application
+- Label propagation
 - Content type handling
 
-## 🛠️ Test Utilities
+## 🛠️ Advanced Features
 
-### MetricsHelper Class
+### **MetricsHelper Class**
 ```typescript
 import { createMetricsHelper } from './utils/metrics-helper';
 
 const metricsHelper = createMetricsHelper(page);
 
-// Check if metric exists
+// Check metric existence
 await metricsHelper.hasMetric('myapp_http_requests_total');
 
-// Get metric value
+// Get metric values
 const value = await metricsHelper.getMetricValue('myapp_http_requests_total');
 
-// Wait for metric value
+// Wait for specific values
 await metricsHelper.waitForMetricValue('myapp_http_requests_total', 5);
 
-// Verify custom prefix
+// Verify configuration
 await metricsHelper.hasCustomPrefix('myapp_');
-
-// Verify custom labels
 await metricsHelper.hasCustomLabels({ env: 'production' });
 ```
 
-## 🔍 Debugging Tests
+### **Test Utilities**
+- **Traffic Generation**: Create test data
+- **Metric Validation**: Comprehensive checking
+- **Error Handling**: Graceful failure handling
+- **Performance Testing**: Caching verification
 
-### Enable Debug Mode
+## 🎯 Key Benefits
+
+1. **Production-Like Testing**: Tests against built/preview version
+2. **Comprehensive Coverage**: Tests all integration features
+3. **Real Browser Testing**: Actual user interactions
+4. **Performance Validation**: Ensures optimization works
+5. **Error Scenarios**: Tests failure modes
+6. **Configuration Testing**: Validates all options
+7. **Maintainable**: Well-structured, documented tests
+8. **Debugging**: Rich debugging tools and reports
+
+## 🚨 What This Tests
+
+### **✅ Working Features**
+- Metrics endpoint accessibility
+- Custom prefix and labels
+- Default metrics collection
+- Page navigation tracking
+- Error handling
+- Performance optimization
+- Configuration options
+- Form submission handling (POST requests)
+
+### **⚠️ Edge Cases**
+- 404 errors
+- 500 errors
+- Different HTTP methods (GET/POST)
+- Rapid page navigation
+- Metrics consistency
+- Content type handling
+
+## 🔍 Debugging & Troubleshooting
+
+### **Common Issues**
+- **Build failures**: Check both packages build successfully
+- **Preview server issues**: Ensure port 4321 is available
+- **Metrics not found**: Wait for collection, check config
+- **Test timeouts**: Increase timeouts, add explicit waits
+
+### **Debug Commands**
 ```bash
+# Interactive debugging
 npm run test:e2e:debug
-```
 
-### View Detailed Logs
-```bash
+# Detailed logging
 DEBUG=pw:api npm run test:e2e
-```
 
-### Generate Test Report
-```bash
+# View reports
 npm run test:e2e:report
-```
 
-### Take Screenshots on Failure
-Screenshots are automatically captured on test failures and saved to `test-results/`.
+# Rebuild and test
+npm run test:e2e:build
+```
 
 ## 📝 Adding New Tests
 
-### Test Structure
+### **Test Structure**
 ```typescript
 import { test, expect } from '@playwright/test';
 import { createMetricsHelper } from './utils/metrics-helper';
@@ -186,34 +259,23 @@ test.describe('New Feature', () => {
 });
 ```
 
-### Best Practices
+### **Best Practices**
 1. **Use descriptive test names** that explain the expected behavior
 2. **Group related tests** using `test.describe()`
 3. **Use the MetricsHelper** for common metrics operations
 4. **Add appropriate waits** for async operations
 5. **Test both success and failure scenarios**
 6. **Validate metrics format and content**
+7. **Test against built/preview version** for production-like behavior
 
-## 🚨 Common Issues
+## 🚀 Next Steps
 
-### Server Not Starting
-- Ensure `npm run dev` works manually
-- Check port 4321 is available
-- Verify all dependencies are installed
+1. **Build and test**: `npm run test:e2e:build`
+2. **Explore the UI**: `npm run test:e2e:ui`
+3. **Customize tests**: Add your specific use cases
+4. **CI Integration**: Add to your build pipeline
+5. **Expand coverage**: Add more specific scenarios
 
-### Metrics Not Found
-- Wait for metrics collection (use `waitForTimeout`)
-- Check integration is properly configured
-- Verify metrics endpoint is accessible
+---
 
-### Test Timeouts
-- Increase timeout in Playwright config
-- Add explicit waits for async operations
-- Check for long-running operations
-
-## 📚 Additional Resources
-
-- [Playwright Documentation](https://playwright.dev/)
-- [Astro Testing Guide](https://docs.astro.build/en/guides/testing/)
-- [Prometheus Metrics Format](https://prometheus.io/docs/instrumenting/exposition_formats/)
-- [Integration Testing Best Practices](https://playwright.dev/docs/best-practices)
+**🎯 Your Astro Prometheus integration now has enterprise-grade e2e testing against production builds!**
