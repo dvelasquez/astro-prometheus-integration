@@ -5,5 +5,5 @@
 		"module": "node16",
 		"moduleResolution": "node16"
 	},
-	"exclude": ["dist"]
+	"exclude": ["dist", "e2e", "node_modules"]
 }
