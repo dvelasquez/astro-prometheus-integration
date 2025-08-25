@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # E2E Test Runner for Astro Prometheus Integration
-# This script sets up the environment and runs the Playwright tests
+# This script builds the packages and runs Playwright tests against the preview server
 
 set -e
 
@@ -28,30 +28,33 @@ if [ ! -d "node_modules/.cache/ms-playwright" ]; then
     npx playwright install
 fi
 
-# Check if the dev server is running
-echo "🔍 Checking if dev server is running on port 4321..."
-if ! curl -s http://localhost:4321 > /dev/null 2>&1; then
-    echo "⚠️  Warning: Dev server is not running on port 4321"
-    echo "   Please start it with: npm run dev"
-    echo "   Then run the tests in another terminal"
-    echo ""
-    echo "   Or let Playwright start it automatically (recommended)"
-    echo ""
-    read -p "Continue with tests? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "❌ Tests cancelled"
-        exit 1
-    fi
-else
-    echo "✅ Dev server is running"
+echo ""
+echo "🔨 Building packages..."
+echo "======================"
+
+# Build the integration package first
+echo "📦 Building astro-prometheus-node-integration..."
+cd ../packages/astro-prometheus-node-integration
+if ! pnpm build; then
+    echo "❌ Failed to build astro-prometheus-node-integration"
+    exit 1
+fi
+cd ../../playground
+
+# Build the playground
+echo "🏗️  Building playground..."
+if ! pnpm build; then
+    echo "❌ Failed to build playground"
+    exit 1
 fi
 
 echo ""
-echo "🧪 Running E2E Tests..."
-echo "========================"
+echo "✅ Build completed successfully!"
+echo ""
+echo "🧪 Running E2E Tests against preview server..."
+echo "============================================="
 
-# Run the tests
+# Run the tests (Playwright will automatically start the preview server)
 if npm run test:e2e; then
     echo ""
     echo "🎉 All tests passed!"
@@ -64,6 +67,9 @@ if npm run test:e2e; then
     echo ""
     echo "🐛 To run tests in debug mode:"
     echo "   npm run test:e2e:debug"
+    echo ""
+    echo "🚀 To rebuild and test again:"
+    echo "   npm run test:e2e:build"
 else
     echo ""
     echo "❌ Some tests failed!"
@@ -75,9 +81,9 @@ else
     echo "   npm run test:e2e:report"
     echo ""
     echo "💡 Common issues:"
-    echo "   - Ensure dev server is running (npm run dev)"
-    echo "   - Check that integration is properly configured"
-    echo "   - Verify metrics endpoint is accessible"
+    echo "   - Check that both packages built successfully"
+    echo "   - Verify integration is properly configured"
     echo "   - Check browser console for errors"
+    echo "   - Ensure port 4321 is available for preview server"
     exit 1
 fi

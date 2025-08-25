@@ -130,11 +130,11 @@ test.describe("Astro Prometheus Integration", () => {
 
 	test.describe("Error Handling", () => {
 		test("should collect metrics for error responses", async ({ page }) => {
-			// Visit the error page
-			await page.goto(`${baseURL}/test/throw-error`);
+			// Visit the error page and check for 500 status
+			const response = await page.goto(`${baseURL}/test/throw-error`);
 
-			// Should get an error response
-			await expect(page.locator("body")).toContainText("Error: Test error");
+			// Should get a 500 error response
+			expect(response?.status()).toBe(500);
 
 			// Wait for error processing
 			await page.waitForTimeout(100);
