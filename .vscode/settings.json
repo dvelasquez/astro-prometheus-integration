@@ -7,9 +7,7 @@
 	"prettier.enable": false,
 	"editor.formatOnSave": true,
 	"yaml.schemas": {
-		"/home/d13z/dev/d13z/schema-poc/rule.schema.json": [
-			"rule-*.yml"
-		],
+		"/home/d13z/dev/d13z/schema-poc/rule.schema.json": ["rule-*.yml"],
 		"https://www.artillery.io/schema.json": []
 	}
 }
