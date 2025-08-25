@@ -8,40 +8,40 @@ const method = Astro.request.method;
 let delayMs: number;
 let delaySource: string;
 let submittedData: any = null;
-let message: string = "";
+let message = "";
 
 if (method === "POST") {
-  // Handle POST request - process form data
-  try {
-    const formData = await Astro.request.formData();
-    const submittedDelay = formData.get("delay");
-    
-    if (submittedDelay !== null && !Number.isNaN(Number(submittedDelay))) {
-      delayMs = Number(submittedDelay);
-      delaySource = "form submission";
-      submittedData = { delay: delayMs };
-      message = `Form submitted successfully with delay: ${delayMs}ms`;
-    } else {
-      delayMs = Math.floor(Math.random() * 1000);
-      delaySource = "random (invalid form data)";
-      message = "Invalid delay value submitted, using random delay";
-    }
-  } catch (error) {
-    delayMs = Math.floor(Math.random() * 1000);
-    delaySource = "random (form processing error)";
-    message = "Error processing form data, using random delay";
-  }
+	// Handle POST request - process form data
+	try {
+		const formData = await Astro.request.formData();
+		const submittedDelay = formData.get("delay");
+
+		if (submittedDelay !== null && !Number.isNaN(Number(submittedDelay))) {
+			delayMs = Number(submittedDelay);
+			delaySource = "form submission";
+			submittedData = { delay: delayMs };
+			message = `Form submitted successfully with delay: ${delayMs}ms`;
+		} else {
+			delayMs = Math.floor(Math.random() * 1000);
+			delaySource = "random (invalid form data)";
+			message = "Invalid delay value submitted, using random delay";
+		}
+	} catch (error) {
+		delayMs = Math.floor(Math.random() * 1000);
+		delaySource = "random (form processing error)";
+		message = "Error processing form data, using random delay";
+	}
 } else {
-  // Handle GET request - use URL parameters or generate random
-  const urlParamDelay = Astro.url.searchParams.get("delay");
-  
-  if (urlParamDelay !== null && !Number.isNaN(Number(urlParamDelay))) {
-    delayMs = Number(urlParamDelay);
-    delaySource = "URL parameter";
-  } else {
-    delayMs = Math.floor(Math.random() * 1000);
-    delaySource = "random";
-  }
+	// Handle GET request - use URL parameters or generate random
+	const urlParamDelay = Astro.url.searchParams.get("delay");
+
+	if (urlParamDelay !== null && !Number.isNaN(Number(urlParamDelay))) {
+		delayMs = Number(urlParamDelay);
+		delaySource = "URL parameter";
+	} else {
+		delayMs = Math.floor(Math.random() * 1000);
+		delaySource = "random";
+	}
 }
 ---
 
