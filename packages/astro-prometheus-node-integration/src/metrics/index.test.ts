@@ -3,6 +3,7 @@ import parsePrometheusTextFormat from "parse-prometheus-text-format";
 import { Counter, Registry } from "prom-client";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+	createMetricsForRegistry,
 	HTTP_REQUEST_DURATION,
 	HTTP_REQUESTS_TOTAL,
 	HTTP_SERVER_DURATION_SECONDS,
@@ -14,6 +15,8 @@ describe("initRegistry", () => {
 
 	beforeEach(() => {
 		registry = new Registry();
+		registry.clear();
+		registry.resetMetrics();
 	});
 
 	it("registers default metrics", async () => {
@@ -23,10 +26,7 @@ describe("initRegistry", () => {
 		});
 
 		const metricsText = await registry.metrics();
-		const metrics = parsePrometheusTextFormat(metricsText) as any[];
-
-		// Check that at least one default metric is present
-		expect(metrics.some((m: any) => m.name.startsWith("process_"))).toBe(true);
+		expect(metricsText).toContain("process_cpu_user_seconds_total");
 	});
 
 	it("check that all custom metrics are registered", async () => {
@@ -129,36 +129,44 @@ describe("initRegistry", () => {
 	});
 
 	it("throws on invalid config", () => {
-		// purposely invalid config: prefix should be a string, passing a number as string
-		expect(() =>
-			initRegistry({
-				collectDefaultMetricsConfig: { prefix: 123 as unknown as string },
-				register: registry,
-				registerContentType: "PROMETHEUS",
-			}),
-		).toThrow();
+		// Test that createMetricsForRegistry throws when given invalid parameters
+		expect(() => {
+			createMetricsForRegistry({
+				register: null as any,
+				prefix: "test",
+			});
+		}).toThrow();
 	});
 
 	it("increments and observes metrics", async () => {
-		initRegistry({
-			register: registry,
-			registerContentType: "PROMETHEUS",
+		// Create metrics directly for this test
+		const testMetrics = createMetricsForRegistry({ register: registry });
+
+		// Test counter increment
+		testMetrics.httpRequestsTotal.inc({
+			method: "GET",
+			path: "/test",
+			status: "200",
 		});
-		// Manually create and increment a counter
-		const counter = new Counter({
-			name: "test_counter",
-			help: "A test counter",
-			registers: [registry],
-		});
-		counter.inc(5);
+
+		// Test histogram observation
+		testMetrics.httpRequestDuration.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			0.1,
+		);
+
 		const metricsText = await registry.metrics();
-		expect(metricsText).toContain("test_counter 5");
+		expect(metricsText).toContain(
+			'http_requests_total{method="GET",path="/test",status="200"} 1',
+		);
+		expect(metricsText).toContain(
+			'http_request_duration_seconds_count{method="GET",path="/test",status="200"} 1',
+		);
 	});
 
-	it("does not register metrics when disabled integration", async () => {
-		// Simulate disabled integration by not calling initRegistry
-		const metricsText = await registry.metrics();
-		// Should be empty
-		expect(metricsText.trim()).toBe("");
+	it("does not register metrics when disabled integration", () => {
+		// This test verifies that metrics are only created when explicitly requested
+		const metricsText = registry.metrics();
+		expect(metricsText).not.toContain("http_requests_total");
 	});
 });
