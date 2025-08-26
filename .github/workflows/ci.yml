@@ -1,16 +1,18 @@
-name: Build and Test
+name: CI
 
-on: [pull_request]
+on:
+  push:
+    branches: [main, develop]
 
-# Add permissions for github-script to comment on PRs
+# Add permissions for potential future use of github-script
 permissions:
   issues: write
   pull-requests: write
   contents: read
 
 jobs:
-  build:
-    name: Build and Unit Tests
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,6 +33,26 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+  build-and-test:
+    name: Build and Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PNPM
+        run: corepack enable && pnpm -v
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Build Integration Package
         run: pnpm --filter astro-prometheus-node-integration build
 
@@ -40,7 +62,7 @@ jobs:
   e2e-tests:
     name: E2E Tests
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-and-test
     timeout-minutes: 15
     
     steps:
@@ -96,36 +118,3 @@ jobs:
           name: playwright-html-report
           path: playground/playwright-report/
           retention-days: 30
-
-      - name: Comment PR with Test Results
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            
-            try {
-              const testResultsPath = 'playground/test-results/';
-              if (fs.existsSync(testResultsPath)) {
-                const files = fs.readdirSync(testResultsPath);
-                const hasFailures = files.some(file => file.includes('failed'));
-                
-                if (hasFailures) {
-                  github.rest.issues.createComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `❌ **E2E Tests Failed**\n\nSome end-to-end tests failed. Check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.\n\n**Test artifacts are available for download above.**`
-                  });
-                } else {
-                  github.rest.issues.createComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `✅ **E2E Tests Passed**\n\nAll end-to-end tests passed successfully! The Astro Prometheus integration is working correctly.\n\n**Test artifacts are available for download above.**`
-                  });
-                }
-              }
-            } catch (error) {
-              console.log('Could not read test results:', error.message);
-            }

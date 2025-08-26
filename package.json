@@ -14,7 +14,9 @@
 		"ci:publish": "pnpm exec changeset publish && git push --follow-tags",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"prepare": "husky"
+		"prepare": "husky",
+		"test:e2e": "pnpm --filter playground test:e2e",
+		"test:e2e:build": "pnpm --filter playground test:e2e:build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.2",
