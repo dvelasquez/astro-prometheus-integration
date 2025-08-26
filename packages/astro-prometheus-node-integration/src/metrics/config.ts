@@ -25,7 +25,17 @@ export const metricsConfigSchema = z.object({
 	// Add more fields as needed from prom-client's config
 });
 
+// Export the inferred type that properly handles optional properties
 export type MetricsConfig = z.infer<typeof metricsConfigSchema>;
+
+// Also export a type that explicitly allows undefined for optional properties
+export type MetricsConfigWithUndefined = {
+	prefix?: string | undefined;
+	labels?: Record<string, string> | undefined;
+	register?: any | undefined;
+	gcDurationBuckets?: number[] | undefined;
+	eventLoopMonitoringPrecision?: number | undefined;
+};
 
 // For reference, also export the prom-client type
 export type { DefaultMetricsCollectorConfiguration };

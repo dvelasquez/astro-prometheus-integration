@@ -8,7 +8,14 @@
 		"start": "astro dev",
 		"build": "astro check && astro build",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"build:all": "cd ../packages/astro-prometheus-node-integration && pnpm build && cd ../../playground && pnpm build",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:debug": "playwright test --debug",
+		"test:e2e:report": "playwright show-report",
+		"test:e2e:build": "pnpm build:all && pnpm test:e2e"
 	},
 	"dependencies": {
 		"@astrojs/node": "^9.2.1",
@@ -20,6 +27,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.4",
+		"@playwright/test": "^1.55.0",
 		"@types/node": "^22.14.1",
 		"nodemon": "3.1.10",
 		"typescript": "^5.8.3"
