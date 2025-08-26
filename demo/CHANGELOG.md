@@ -1,5 +1,12 @@
 # demo
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`56321f7`](https://github.com/dvelasquez/astro-prometheus-integration/commit/56321f7302fe1a06603bbe03b2e94d081c110fd8)]:
+  - astro-prometheus-node-integration@1.0.0
+
 ## 0.0.11
 
 ### Patch Changes
