@@ -1,5 +1,5 @@
 ---
-"@astro-prometheus-node-integration": major
+"astro-prometheus-node-integration": major
 ---
 
 # 🚀 Performance Optimization: Metrics Creation & Comprehensive E2E Testing
