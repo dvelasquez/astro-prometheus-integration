@@ -3,6 +3,11 @@ import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
 import { createMetricsForRegistry, initRegistry } from "../metrics/index.js";
 import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.js";
+import {
+	measureTTLBWithAsyncTiming,
+	measureTTLBWithStreamWrapping,
+	type TimingOptions,
+} from "./timing-utils.js";
 
 // Cache metrics per registry to avoid conflicts between different test registries
 const metricsCache = new Map<
@@ -46,8 +51,12 @@ const initializeMetricsCache = async (register: client.Registry) => {
 };
 
 // Factory function for creating middleware (for testing purposes)
-export const createPrometheusMiddleware = async (register: client.Registry) => {
+export const createPrometheusMiddleware = async (
+	register: client.Registry,
+	optionsOverride?: any,
+) => {
 	const cachedMetrics = await initializeMetricsCache(register);
+	const options = optionsOverride ?? __PROMETHEUS_OPTIONS__;
 
 	return defineMiddleware(async (context, next) => {
 		const {
@@ -58,14 +67,16 @@ export const createPrometheusMiddleware = async (register: client.Registry) => {
 
 		// Start timer
 		const start = process.hrtime();
-		let response: Response | undefined;
+		let response: Response;
 		try {
 			response = await next();
 		} catch (err) {
 			// Record error metrics
 			const errorLabels = {
 				method: context.request.method,
-				path: context.routePattern,
+				path:
+					context.routePattern ??
+					(new URL(context.request.url).pathname || "/"),
 				status: "500",
 			};
 			if (httpRequestsTotal instanceof client.Counter) {
@@ -77,7 +88,8 @@ export const createPrometheusMiddleware = async (register: client.Registry) => {
 		// Calculate duration
 		const [seconds, nanoseconds] = process.hrtime(start);
 		const duration = seconds + nanoseconds / 1e9;
-		const path = context.routePattern;
+		const path =
+			context.routePattern ?? (new URL(context.request.url).pathname || "/");
 
 		// Record metrics
 		const labels = {
@@ -96,32 +108,22 @@ export const createPrometheusMiddleware = async (register: client.Registry) => {
 
 		// Handle streaming responses for http_server_duration_seconds
 		if (response.body instanceof ReadableStream) {
-			const streamStart = process.hrtime();
-			const originalBody = response.body;
-			const newBody = new ReadableStream({
-				start(controller) {
-					const reader = originalBody.getReader();
-					function pump(): Promise<void> {
-						return reader.read().then(({ done, value }) => {
-							if (done) {
-								controller.close();
-								// Record server duration when stream ends
-								const [streamSeconds, streamNanoseconds] =
-									process.hrtime(streamStart);
-								const streamDuration = streamSeconds + streamNanoseconds / 1e9;
-								if (httpServerDurationSeconds instanceof client.Histogram) {
-									httpServerDurationSeconds.observe(labels, streamDuration);
-								}
-								return;
-							}
-							controller.enqueue(value);
-							return pump();
-						});
-					}
-					return pump();
-				},
-			});
-			response = new Response(newBody, response);
+			const timingOptions: TimingOptions = {
+				start,
+				labels,
+				histogram: httpServerDurationSeconds,
+			};
+
+			const useOptimized = options?.experimental?.useOptimizedTTLBMeasurement;
+
+			if (
+				useOptimized &&
+				httpServerDurationSeconds instanceof client.Histogram
+			) {
+				response = measureTTLBWithAsyncTiming(response, timingOptions);
+			} else if (httpServerDurationSeconds instanceof client.Histogram) {
+				response = measureTTLBWithStreamWrapping(response, timingOptions);
+			}
 		} else {
 			// For non-streaming responses, record server duration immediately
 			if (httpServerDurationSeconds instanceof client.Histogram) {
@@ -143,17 +145,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// ✅ Use cached metrics directly (no lookup overhead)
 	const { httpRequestsTotal, httpRequestDuration, httpServerDurationSeconds } =
 		metricsCache.get(client.register)!;
+	const options = __PROMETHEUS_OPTIONS__;
 
 	// Start timer
 	const start = process.hrtime();
-	let response: Response | undefined;
+	let response: Response;
 	try {
 		response = await next();
 	} catch (err) {
 		// Calculate duration
 		const [seconds, nanoseconds] = process.hrtime(start);
 		const duration = seconds + nanoseconds / 1e9;
-		const path = context.routePattern;
+		const path =
+			context.routePattern ?? (new URL(context.request.url).pathname || "/");
 		const labels = {
 			method: context.request.method,
 			path: path,
@@ -174,7 +178,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// Calculate duration
 	const [seconds, nanoseconds] = process.hrtime(start);
 	const duration = seconds + nanoseconds / 1e9;
-	const path = context.routePattern;
+	const path =
+		context.routePattern ?? (new URL(context.request.url).pathname || "/");
 
 	// Record metrics
 	const labels = {
@@ -195,50 +200,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		httpServerDurationSeconds instanceof client.Histogram &&
 		response.body instanceof ReadableStream
 	) {
-		const originalBody = response.body;
-		const wrappedBody = new ReadableStream({
-			start(controller) {
-				const reader = originalBody.getReader();
-				function push() {
-					reader
-						.read()
-						.then(({ done, value }) => {
-							if (done) {
-								const [s, ns] = process.hrtime(start);
-								const ttlbDuration = s + ns / 1e9;
-								if (httpServerDurationSeconds instanceof client.Histogram) {
-									httpServerDurationSeconds.observe(labels, ttlbDuration);
-								}
-								controller.close();
-								return;
-							}
-							controller.enqueue(value);
-							push();
-						})
-						.catch((error) => {
-							const [s, ns] = process.hrtime(start);
-							const ttlbDuration = s + ns / 1e9;
-							if (httpServerDurationSeconds instanceof client.Histogram) {
-								httpServerDurationSeconds.observe(
-									{
-										method: context.request.method,
-										path: path,
-										status: "500",
-									},
-									ttlbDuration,
-								);
-							}
-							throw error;
-						});
-				}
-				push();
-			},
-		});
-		return new Response(wrappedBody, {
-			status: response.status,
-			statusText: response.statusText,
-			headers: response.headers,
-		});
+		const timingOptions: TimingOptions = {
+			start,
+			labels,
+			histogram: httpServerDurationSeconds,
+		};
+
+		const useOptimized = options?.experimental?.useOptimizedTTLBMeasurement;
+
+		if (useOptimized) {
+			response = measureTTLBWithAsyncTiming(response, timingOptions);
+		} else {
+			response = measureTTLBWithStreamWrapping(response, timingOptions);
+		}
 	}
 
 	// If no body, record TTLB immediately
