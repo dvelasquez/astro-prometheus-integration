@@ -134,6 +134,38 @@ export default defineConfig({
 - `gcDurationBuckets` (number[]): Buckets for GC duration histogram.
 - `eventLoopMonitoringPrecision` (number): Precision for event loop monitoring.
 
+### Experimental Features
+
+> **⚠️ Warning:** These features are experimental and may change in future releases. Use with caution in production environments.
+
+#### `experimental.useOptimizedTTLBMeasurement`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+This experimental feature allows you to choose between two different methods for measuring Time To Last Byte (TTLB) for streaming responses:
+
+- **`false` (default)**: Uses the legacy stream wrapping method that provides maximum accuracy but higher CPU usage due to stream processing overhead.
+
+- **`true`**: Uses the optimized async timing method that provides millisecond accuracy with minimal CPU overhead by deferring timing work and avoiding stream wrapping.
+
+**Use Cases:**
+- Set to `true` for high-concurrency applications where CPU efficiency is critical
+- Set to `false` when maximum timing accuracy is required and CPU usage is not a concern
+
+**Performance Impact:**
+- **Legacy method**: Higher accuracy, higher CPU usage, more memory overhead
+- **Optimized method**: Millisecond accuracy, lower CPU usage, minimal memory overhead
+
+**Example Configuration:**
+```js
+prometheusNodeIntegration({
+  experimental: {
+    useOptimizedTTLBMeasurement: true, // Enable optimized TTLB measurement
+  },
+}),
+```
+
 ---
 
 ## Custom Metrics Provided
@@ -164,6 +196,28 @@ The integration provides the following Prometheus metrics:
   - **Description:** Measures the total time from request start to the last byte sent to the client (TTLB).
 
 All metrics can be prefixed and labeled globally using the `collectDefaultMetricsConfig` option.
+
+### TTLB Measurement Methods
+
+The `http_server_duration_seconds` metric measures Time To Last Byte (TTLB) using different methods depending on your configuration:
+
+#### Legacy Stream Wrapping Method (Default)
+- **Accuracy**: Maximum precision (nanosecond level)
+- **CPU Usage**: Higher due to stream processing overhead
+- **Memory**: Additional overhead from stream wrapping
+- **Use Case**: When maximum timing accuracy is critical
+
+#### Optimized Async Timing Method (Experimental)
+- **Accuracy**: Millisecond precision (sufficient for most use cases)
+- **CPU Usage**: Minimal overhead using `setImmediate()` and deferred work
+- **Memory**: Minimal overhead, no stream wrapping
+- **Use Case**: High-concurrency applications where CPU efficiency matters
+
+The optimized method is particularly beneficial for:
+- Applications handling thousands of concurrent requests
+- Microservices where resource efficiency is critical
+- Environments with limited CPU resources
+- Production deployments where performance is prioritized over maximum precision
 
 ---
 

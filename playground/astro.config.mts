@@ -28,6 +28,9 @@ export default defineConfig({
 					hostname: "myapp.com",
 				},
 			},
+			experimental: {
+				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
+			},
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(

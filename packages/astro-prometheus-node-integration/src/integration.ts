@@ -34,6 +34,17 @@ export const integrationSchema = z
 			})
 			.default({ enabled: false, port: 7080 })
 			.describe("Standalone metrics server configuration."),
+		experimental: z
+			.object({
+				useOptimizedTTLBMeasurement: z
+					.boolean()
+					.default(false)
+					.describe(
+						"Use the optimized TTLB measurement method that provides millisecond accuracy with minimal CPU overhead. When false, uses the legacy stream wrapping method for maximum accuracy but higher CPU usage.",
+					),
+			})
+			.default({ useOptimizedTTLBMeasurement: false })
+			.describe("Experimental features that may change in future releases."),
 	})
 	.default({});
 
