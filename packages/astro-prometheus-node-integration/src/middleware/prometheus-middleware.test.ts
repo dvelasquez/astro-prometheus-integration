@@ -160,6 +160,69 @@ describe("createPrometheusMiddleware integration", () => {
 		expect(metricsText).toContain("http_server_duration_seconds_count");
 	});
 
+	it("uses optimized TTLB measurement when experimental flag is enabled", async () => {
+		// Set the experimental flag to true
+		globalThis.__PROMETHEUS_OPTIONS__ = {
+			...globalThis.__PROMETHEUS_OPTIONS__,
+			experimental: {
+				useOptimizedTTLBMeasurement: true,
+			},
+		};
+
+		const context = createMockContext("GET", "/optimized-streaming");
+
+		// Create a simple readable stream
+		const encoder = new TextEncoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				controller.enqueue(encoder.encode("chunk 1"));
+				controller.enqueue(encoder.encode("chunk 2"));
+				controller.close();
+			},
+		});
+
+		const next = vi.fn().mockResolvedValue(
+			new Response(stream, {
+				status: 200,
+				headers: { "Content-Type": "text/plain" },
+			}),
+		);
+
+		const response = (await middleware(context as any, next)) as Response;
+
+		// Consume the stream to trigger the metrics recording
+		if (response?.body) {
+			const reader = response.body.getReader();
+			let done = false;
+			while (!done) {
+				const result = await reader.read();
+				done = result.done;
+			}
+		}
+
+		// Add a small delay to ensure metrics are flushed to registry
+		await new Promise((resolve) => setTimeout(resolve, 10));
+
+		const metricsText = await registry.metrics();
+
+		// Verify server duration histogram metrics are present
+		expect(metricsText).toContain("http_server_duration_seconds");
+		expect(metricsText).toContain("http_server_duration_seconds_bucket{le=");
+		expect(metricsText).toContain(
+			'method="GET",path="/optimized-streaming",status="200"',
+		);
+		expect(metricsText).toContain("http_server_duration_seconds_sum");
+		expect(metricsText).toContain("http_server_duration_seconds_count");
+
+		// Reset the experimental flag for other tests
+		globalThis.__PROMETHEUS_OPTIONS__ = {
+			...globalThis.__PROMETHEUS_OPTIONS__,
+			experimental: {
+				useOptimizedTTLBMeasurement: false,
+			},
+		};
+	});
+
 	it("records http_server_duration_seconds for responses without body", async () => {
 		const context = createMockContext("DELETE", "/resource/123");
 		const next = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
