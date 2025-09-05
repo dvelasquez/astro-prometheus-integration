@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/utils/constants.ts"],"sourcesContent":["export const ALLOWED_ADAPTERS = [\"@astrojs/node\"];\nexport const INTEGRATION_NAME = \"astro-opentelemetry-integration\";\n"],"mappings":";AAAO,IAAM,mBAAmB,CAAC,eAAe;AACzC,IAAM,mBAAmB;","names":[]}
