@@ -1,0 +1,70 @@
+{
+	"name": "astro-otel-node-integration",
+	"version": "0.0.0",
+	"description": "An Open Telemetry integration for Astro.",
+	"author": {
+		"email": "danilo.velasquez@gmail.com",
+		"name": "Danilo Velasquez",
+		"url": "https://github.com/dvelasquez"
+	},
+	"license": "MIT",
+	"keywords": [
+		"astro-integration",
+		"astro-component",
+		"withastro",
+		"astro",
+		"analytics",
+		"monitoring",
+		"otel",
+		"opentelemetry",
+		"observability",
+		"node"
+	],
+	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration/tree/main/packages/astro-otel-node-integration#readme",
+	"publishConfig": {
+		"access": "public"
+	},
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist/**/*",
+		"!dist/**/*.test.js",
+		"!dist/**/*.test.d.ts",
+		"!dist/**/*.test.js.map"
+	],
+	"scripts": {
+		"dev": "tsup --watch",
+		"build": "tsup",
+		"test": "vitest"
+	},
+	"type": "module",
+	"peerDependencies": {
+		"@astrojs/node": "^9.0.0",
+		"astro": "^5.0.0"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "1.9.0",
+		"@opentelemetry/auto-instrumentations-node": "0.62.2",
+		"@opentelemetry/sdk-metrics": "2.1.0",
+		"@opentelemetry/sdk-node": "0.204.0",
+		"@opentelemetry/sdk-trace-node": "2.1.0",
+		"astro-integration-kit": "^0.19.0"
+	},
+	"devDependencies": {
+		"tsup": "^8.4.0",
+		"vitest": "3.2.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration.git",
+		"directory": "packages/astro-prometheus-node-integration"
+	},
+	"bugs": {
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration/issues"
+	}
+}
