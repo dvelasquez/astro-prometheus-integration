@@ -34,7 +34,7 @@ export default defineConfig({
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(
-				"../packages/astro-prometheus-node-integration/dist",
+				"../../packages/astro-prometheus-node-integration/dist",
 			),
 		}),
 	],

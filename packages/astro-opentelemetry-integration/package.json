@@ -1,5 +1,5 @@
 {
-	"name": "astro-otel-node-integration",
+	"name": "astro-opentelemetry-integration",
 	"version": "0.0.0",
 	"description": "An Open Telemetry integration for Astro.",
 	"author": {
@@ -20,7 +20,7 @@
 		"observability",
 		"node"
 	],
-	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration/tree/main/packages/astro-otel-node-integration#readme",
+	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration/tree/main/packages/astro-opentelemetry-integration#readme",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -29,6 +29,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
+		},
+		"./sdk": {
+			"types": "./dist/sdk.d.ts",
+			"default": "./dist/sdk.js"
 		}
 	},
 	"files": [
@@ -50,9 +54,12 @@
 	"dependencies": {
 		"@opentelemetry/api": "1.9.0",
 		"@opentelemetry/auto-instrumentations-node": "0.62.2",
+		"@opentelemetry/instrumentation-http": "^0.204.0",
+		"@opentelemetry/resources": "^2.1.0",
 		"@opentelemetry/sdk-metrics": "2.1.0",
 		"@opentelemetry/sdk-node": "0.204.0",
 		"@opentelemetry/sdk-trace-node": "2.1.0",
+		"@opentelemetry/semantic-conventions": "^1.37.0",
 		"astro-integration-kit": "^0.19.0"
 	},
 	"devDependencies": {
@@ -62,7 +69,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dvelasquez/astro-prometheus-integration.git",
-		"directory": "packages/astro-prometheus-node-integration"
+		"directory": "packages/astro-opentelemetry-integration"
 	},
 	"bugs": {
 		"url": "https://github.com/dvelasquez/astro-prometheus-integration/issues"

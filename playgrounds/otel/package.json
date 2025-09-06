@@ -1,15 +1,15 @@
 {
-	"name": "playground",
+	"name": "otel-playground",
 	"type": "module",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
+		"dev": "nodemon -w ../../packages/astro-opentelemetry-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
 		"start": "astro dev",
 		"build": "astro check && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"build:all": "cd ../packages/astro-prometheus-node-integration && pnpm build && cd ../../playground && pnpm build",
+		"build:all": "cd ../../packages/astro-opentelemetry-integration && pnpm build && cd ../../playground && pnpm build",
 		"test:e2e": "playwright test",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:headed": "playwright test --headed",
@@ -22,7 +22,7 @@
 		"@tailwindcss/vite": "^4.1.4",
 		"astro": "^5.7.4",
 		"astro-integration-kit": "^0.19.0",
-		"astro-prometheus-node-integration": "workspace:*",
+		"astro-opentelemetry-integration": "workspace:*",
 		"tailwindcss": "^4.1.4"
 	},
 	"devDependencies": {

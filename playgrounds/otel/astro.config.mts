@@ -5,36 +5,19 @@ import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
 
 // Import the named export 'integration'
-const { default: prometheusNodeIntegration } = await import(
-	"astro-prometheus-node-integration"
+const { default: opentelemetryIntegration } = await import(
+	"astro-opentelemetry-integration"
 );
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
-		prometheusNodeIntegration({
+		opentelemetryIntegration({
 			enabled: true, // explicitly enable it
-			metricsUrl: "/_/metrics", // explicitly set the metrics URL
-			registerContentType: "PROMETHEUS",
-			standaloneMetrics: {
-				enabled: false,
-				port: 6080,
-			},
-			collectDefaultMetricsConfig: {
-				prefix: "myapp_", // All metrics will be prefixed with "myapp_"
-				labels: {
-					env: "production",
-					version: "1.0.0",
-					hostname: "myapp.com",
-				},
-			},
-			experimental: {
-				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
-			},
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(
-				"../packages/astro-prometheus-node-integration/dist",
+				"../../packages/astro-opentelemetry-integration/dist",
 			),
 		}),
 	],
