@@ -14,6 +14,8 @@ export default defineConfig({
 	integrations: [
 		opentelemetryIntegration({
 			enabled: true, // explicitly enable it
+			serviceName: "otel-playground",
+			serviceVersion: "0.0.1",
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(

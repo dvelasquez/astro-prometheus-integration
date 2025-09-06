@@ -9,6 +9,10 @@ import {
 	ATTR_SERVICE_NAME,
 	ATTR_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
+import {
+	OTEL_SERVICE_NAME,
+	OTEL_SERVICE_VERSION,
+} from "./utils/getAttributes.js";
 
 console.log("Initializing OpenTelemetry for Astro...");
 
@@ -16,8 +20,8 @@ const sdk = new NodeSDK({
 	// A Resource describes the entity producing telemetry.
 	// We'll make this configurable later.
 	resource: resourceFromAttributes({
-		[ATTR_SERVICE_NAME]: "astro-app",
-		[ATTR_SERVICE_VERSION]: "1.0.0",
+		[ATTR_SERVICE_NAME]: OTEL_SERVICE_NAME,
+		[ATTR_SERVICE_VERSION]: OTEL_SERVICE_VERSION,
 	}),
 
 	// For Phase 1, we use a simple processor and a console exporter.
