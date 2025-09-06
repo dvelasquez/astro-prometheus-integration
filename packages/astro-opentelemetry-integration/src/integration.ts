@@ -9,15 +9,24 @@ export const integrationSchema = z
 			.boolean()
 			.default(true)
 			.describe(
-				"Enable the integration. You might want to disable it in dev  mode.",
+				"Enable the integration. You might want to disable it in dev mode.",
 			),
+		serviceName: z
+			.string()
+			.default("unknown_service")
+			.describe("The name of the service."),
+		serviceVersion: z
+			.string()
+			.default("unknown_version")
+			.describe("The version of the service."),
 	})
 	.default({});
 
 const ALLOWED_ADAPTERS = ["@astrojs/node"];
+const INTEGRATION_NAME = "astro-opentelemetry-integration";
 
 export const integration = defineIntegration({
-	name: "astro-opentelemetry-integration",
+	name: INTEGRATION_NAME,
 	optionsSchema: integrationSchema,
 	setup({ options }) {
 		if (!options.enabled) {
@@ -25,6 +34,8 @@ export const integration = defineIntegration({
 				hooks: {},
 			};
 		}
+
+		globalThis["__OTEL_OPTIONS__"] = options;
 
 		return {
 			hooks: {
@@ -42,12 +53,14 @@ export const integration = defineIntegration({
 						!ALLOWED_ADAPTERS.includes(config.adapter.name)
 					) {
 						throw new Error(
-							`astro-opentelemetry-integration currently only works with one of the following adapters: ${ALLOWED_ADAPTERS.join(", ")}`,
+							`${INTEGRATION_NAME} currently only works with one of the following adapters: ${ALLOWED_ADAPTERS.join(", ")}`,
 						);
 					}
 
 					if (command === "dev") {
-						logger.info("prepending OpenTelemetry SDK to dev mode");
+						logger.info(
+							"prepending ${INTEGRATION_NAME} OpenTelemetry SDK to dev mode",
+						);
 						import("./sdk.js");
 					}
 
@@ -59,7 +72,7 @@ export const integration = defineIntegration({
 						vite: {
 							plugins: [
 								{
-									name: "otel-sdk-prepend",
+									name: `${INTEGRATION_NAME}-sdk-prepend`,
 									enforce: "pre",
 									generateBundle(_options, bundle) {
 										const entryFileName = serverEntry || "entry.mjs";
@@ -70,7 +83,7 @@ export const integration = defineIntegration({
 												chunk.type === "chunk"
 											) {
 												logger.info(
-													`Prepending OpenTelemetry SDK to output file: ${fileName}`,
+													`Prepending ${INTEGRATION_NAME} OpenTelemetry SDK to output file: ${fileName}`,
 												);
 												chunk.code = `import 'astro-opentelemetry-integration/sdk';\n${chunk.code}`;
 												break;

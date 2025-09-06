@@ -9,8 +9,12 @@ import {
 	ATTR_URL_SCHEME,
 } from "@opentelemetry/semantic-conventions";
 import type { APIContext, MiddlewareNext } from "astro";
+import {
+	OTEL_SERVICE_NAME,
+	OTEL_SERVICE_VERSION,
+} from "../utils/getAttributes.js";
 
-const tracer = trace.getTracer("astro-opentelemetry-integration", "0.0.0");
+const tracer = trace.getTracer(OTEL_SERVICE_NAME, OTEL_SERVICE_VERSION);
 
 export async function onRequest(ctx: APIContext, next: MiddlewareNext) {
 	const { request, url } = ctx;
