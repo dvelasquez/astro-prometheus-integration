@@ -19,7 +19,7 @@
 		"test:e2e:build": "pnpm --filter playground test:e2e:build"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
+		"@biomejs/biome": "2.2.3",
 		"@changesets/cli": "^2.29.2",
 		"@changesets/changelog-github": "^0.5.1",
 		"husky": "^9.1.7",
