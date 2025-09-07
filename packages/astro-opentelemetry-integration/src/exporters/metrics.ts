@@ -5,6 +5,8 @@ import { PrometheusExporter } from "@opentelemetry/exporter-prometheus";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import type { IntegrationSchema } from "../integrationSchema.ts";
 
+const prometheusConfig = globalThis.__OTEL_PRESETS__?.prometheusConfig;
+
 export const metricsProtoExporter = new PeriodicExportingMetricReader({
 	exporter: new ProtoExporter({}),
 });
@@ -14,9 +16,11 @@ export const metricsHttpExporter = new PeriodicExportingMetricReader({
 export const metricsGrpcExporter = new PeriodicExportingMetricReader({
 	exporter: new GrpcExporter({}),
 });
-export const metricsPrometheusExporter = new PrometheusExporter({
-	withResourceConstantLabels: /service/,
-});
+export const metricsPrometheusExporter = new PrometheusExporter(
+	prometheusConfig ?? {
+		withResourceConstantLabels: /service/,
+	},
+);
 
 type MetricsPresets = NonNullable<
 	IntegrationSchema["presets"]

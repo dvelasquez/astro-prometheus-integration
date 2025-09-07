@@ -32,6 +32,45 @@ export const integrationSchema = z
 					.default("console")
 					.describe("The trace exporter to use.")
 					.optional(),
+				prometheusConfig: z
+					.object({
+						host: z
+							.string()
+							.default("0.0.0.0")
+							.describe("The host to listen on.")
+							.optional(),
+						port: z
+							.number()
+							.default(9464)
+							.describe("The port to listen on.")
+							.optional(),
+						endpoint: z
+							.string()
+							.default("/metrics")
+							.describe("The endpoint to use for the metrics.")
+							.optional(),
+						prefix: z
+							.string()
+							.default("metrics")
+							.describe("The prefix to use for the metrics.")
+							.optional(),
+						appendTimestamp: z
+							.boolean()
+							.default(true)
+							.describe("Whether to append the timestamp to the metrics.")
+							.optional(),
+						withResourceConstantLabels: z
+							.string()
+							.describe(
+								"The regular expression to match the resource constant labels.",
+							)
+							.optional()
+							.default("/service/"),
+					})
+					.describe(
+						"The configuration for the Prometheus exporter, more info here https://www.npmjs.com/package/@opentelemetry/exporter-prometheus.",
+					)
+					.optional(),
 			})
 			.optional(),
 	})
