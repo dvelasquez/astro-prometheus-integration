@@ -13,6 +13,7 @@ export const integration = defineIntegration({
 		}
 
 		globalThis.__OTEL_OPTIONS__ = options.otel;
+		globalThis.__OTEL_PRESETS__ = options.presets;
 
 		return {
 			hooks: {
