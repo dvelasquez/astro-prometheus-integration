@@ -21,7 +21,7 @@ export default defineConfig({
 				port: 6080,
 			},
 			collectDefaultMetricsConfig: {
-				prefix: "myapp_", // All metrics will be prefixed with "myapp_"
+				// prefix: "myapp_", // All metrics will be prefixed with "myapp_"
 				labels: {
 					env: "production",
 					version: "1.0.0",

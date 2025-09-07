@@ -16,11 +16,9 @@ export const metricsHttpExporter = new PeriodicExportingMetricReader({
 export const metricsGrpcExporter = new PeriodicExportingMetricReader({
 	exporter: new GrpcExporter({}),
 });
-export const metricsPrometheusExporter = new PrometheusExporter(
-	prometheusConfig ?? {
-		withResourceConstantLabels: /service/,
-	},
-);
+export const metricsPrometheusExporter = new PrometheusExporter({
+	...prometheusConfig,
+});
 
 type MetricsPresets = NonNullable<
 	IntegrationSchema["presets"]
@@ -34,8 +32,9 @@ export function getMetricsExporter(presets: MetricsPresets) {
 			return metricsHttpExporter;
 		case "grpc":
 			return metricsGrpcExporter;
-		case "prometheus":
+		case "prometheus": {
 			return metricsPrometheusExporter;
+		}
 		case "none":
 			return null;
 		default:
