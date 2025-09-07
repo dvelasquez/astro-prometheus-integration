@@ -1,29 +1,6 @@
-// Integration for Astro OpenTelemetry: defines the integration and its options schema using Zod
-
-import { z } from "astro/zod";
 import { defineIntegration } from "astro-integration-kit";
-
-export const integrationSchema = z
-	.object({
-		enabled: z
-			.boolean()
-			.default(true)
-			.describe(
-				"Enable the integration. You might want to disable it in dev mode.",
-			),
-		serviceName: z
-			.string()
-			.default("unknown_service")
-			.describe("The name of the service."),
-		serviceVersion: z
-			.string()
-			.default("unknown_version")
-			.describe("The version of the service."),
-	})
-	.default({});
-
-const ALLOWED_ADAPTERS = ["@astrojs/node"];
-const INTEGRATION_NAME = "astro-opentelemetry-integration";
+import { integrationSchema } from "./integrationSchema.js";
+import { ALLOWED_ADAPTERS, INTEGRATION_NAME } from "./utils/constants.js";
 
 export const integration = defineIntegration({
 	name: INTEGRATION_NAME,
@@ -35,7 +12,7 @@ export const integration = defineIntegration({
 			};
 		}
 
-		globalThis["__OTEL_OPTIONS__"] = options;
+		globalThis.__OTEL_OPTIONS__ = options.otel;
 
 		return {
 			hooks: {
@@ -59,7 +36,7 @@ export const integration = defineIntegration({
 
 					if (command === "dev") {
 						logger.info(
-							"prepending ${INTEGRATION_NAME} OpenTelemetry SDK to dev mode",
+							`prepending ${INTEGRATION_NAME} OpenTelemetry SDK to dev mode`,
 						);
 						import("./sdk.js");
 					}
