@@ -22,6 +22,6 @@ export function getTraceExporter(presets: TracePresets) {
 		case "grpc":
 			return traceGrpcExporter;
 		default:
-			return traceConsoleExporter;
+			return null;
 	}
 }
