@@ -5,21 +5,21 @@ import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
 
 // Import the named export 'integration'
-const { default: opentelemetryIntegration } = await import(
+const { default: openTelemetryIntegration } = await import(
 	"astro-opentelemetry-integration"
 );
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
-		opentelemetryIntegration({
+		openTelemetryIntegration({
 			enabled: true, // explicitly enable it
 			otel: {
 				serviceName: "otel-playground",
 				serviceVersion: "0.0.1",
 			},
 			presets: {
-				metricExporter: "grpc",
+				metricExporter: "prometheus",
 				traceExporter: "grpc",
 			},
 		}),
