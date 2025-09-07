@@ -1,6 +1,7 @@
 import { OTLPMetricExporter as GrpcExporter } from "@opentelemetry/exporter-metrics-otlp-grpc";
 import { OTLPMetricExporter as HttpExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPMetricExporter as ProtoExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
+import { PrometheusExporter } from "@opentelemetry/exporter-prometheus";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import type { IntegrationSchema } from "../integrationSchema.ts";
 
@@ -12,6 +13,9 @@ export const metricsHttpExporter = new PeriodicExportingMetricReader({
 });
 export const metricsGrpcExporter = new PeriodicExportingMetricReader({
 	exporter: new GrpcExporter({}),
+});
+export const metricsPrometheusExporter = new PrometheusExporter({
+	withResourceConstantLabels: /service/,
 });
 
 type MetricsPresets = NonNullable<
@@ -26,6 +30,8 @@ export function getMetricsExporter(presets: MetricsPresets) {
 			return metricsHttpExporter;
 		case "grpc":
 			return metricsGrpcExporter;
+		case "prometheus":
+			return metricsPrometheusExporter;
 		case "none":
 			return null;
 		default:

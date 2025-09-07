@@ -23,7 +23,7 @@ export const integrationSchema = z
 		presets: z
 			.object({
 				metricExporter: z
-					.enum(["proto", "http", "grpc", "none"])
+					.enum(["proto", "http", "grpc", "prometheus", "none"])
 					.default("none")
 					.describe("The metric exporter to use.")
 					.optional(),
