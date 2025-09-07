@@ -20,6 +20,20 @@ export const integrationSchema = z
 					.describe("The version of the service."),
 			})
 			.default({}),
+		presets: z
+			.object({
+				metricExporter: z
+					.enum(["proto", "http", "grpc", "none"])
+					.default("none")
+					.describe("The metric exporter to use.")
+					.optional(),
+				traceExporter: z
+					.enum(["proto", "http", "grpc", "console"])
+					.default("console")
+					.describe("The trace exporter to use.")
+					.optional(),
+			})
+			.optional(),
 	})
 	.default({});
 

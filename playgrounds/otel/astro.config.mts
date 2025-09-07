@@ -14,8 +14,14 @@ export default defineConfig({
 	integrations: [
 		opentelemetryIntegration({
 			enabled: true, // explicitly enable it
-			serviceName: "otel-playground",
-			serviceVersion: "0.0.1",
+			otel: {
+				serviceName: "otel-playground",
+				serviceVersion: "0.0.1",
+			},
+			presets: {
+				metricExporter: "grpc",
+				traceExporter: "grpc",
+			},
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(
