@@ -20,7 +20,10 @@ export default defineConfig({
 			},
 			presets: {
 				metricExporter: "prometheus",
-				traceExporter: "grpc",
+				prometheusConfig: {
+					port: 8080,
+					endpoint: "/prometheus",
+				},
 			},
 		}),
 		hmrIntegration({
