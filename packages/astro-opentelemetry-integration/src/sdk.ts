@@ -1,3 +1,4 @@
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { NodeSDK, type NodeSDKConfiguration } from "@opentelemetry/sdk-node";
@@ -21,7 +22,7 @@ const sdkConfig: Partial<NodeSDKConfiguration> = {
 	}),
 	// Auto-instrumentations automatically patch popular libraries.
 	// HttpInstrumentation traces outgoing HTTP requests made by your server.
-	instrumentations: [new HttpInstrumentation()],
+	instrumentations: [new HttpInstrumentation(), getNodeAutoInstrumentations()],
 };
 const traceExporter = getTraceExporter(
 	globalThis.__OTEL_PRESETS__?.traceExporter,
