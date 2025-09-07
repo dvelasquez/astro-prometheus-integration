@@ -1,12 +1,17 @@
+import { metrics } from "@opentelemetry/api";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
+import type { MeterProvider } from "@opentelemetry/sdk-metrics";
 import { NodeSDK, type NodeSDKConfiguration } from "@opentelemetry/sdk-node";
 import {
 	ATTR_SERVICE_NAME,
 	ATTR_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
-import { getMetricsExporter } from "./exporters/metrics.ts";
+import {
+	getMetricsExporter,
+	initializeHostMetrics,
+} from "./exporters/metrics.ts";
 import { getTraceExporter } from "./exporters/traces.ts";
 import {
 	OTEL_SERVICE_NAME,
@@ -57,6 +62,15 @@ const sdk = new NodeSDK(sdkConfig);
 
 // Start the SDK and gracefully shut it down on process exit.
 sdk.start();
+
+// Initialize host metrics after SDK is started (for Prometheus exporter)
+if (globalThis.__OTEL_PRESETS__?.metricExporter === "prometheus") {
+	// Get the MeterProvider from the global metrics API and cast it to SDK MeterProvider
+	const meterProvider = metrics.getMeterProvider() as MeterProvider;
+	if (meterProvider) {
+		initializeHostMetrics(meterProvider);
+	}
+}
 
 process.on("SIGTERM", () => {
 	sdk
