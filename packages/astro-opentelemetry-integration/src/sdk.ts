@@ -44,8 +44,12 @@ if (traceExporter) {
 if (metricsExporter) {
 	sdkConfig.metricReaders = [metricsExporter];
 }
+
 // Only add the Node auto instrumentations if the metric exporter is prometheus
-if (globalThis.__OTEL_PRESETS__.metricExporter === "prometheus") {
+if (
+	globalThis.__OTEL_PRESETS__.metricExporter === "prometheus" &&
+	metricsExporter
+) {
 	sdkConfig?.instrumentations?.push(getNodeAutoInstrumentations());
 }
 
