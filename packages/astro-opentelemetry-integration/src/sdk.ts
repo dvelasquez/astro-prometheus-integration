@@ -1,14 +1,12 @@
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import {
-	ConsoleSpanExporter,
-	SimpleSpanProcessor,
-} from "@opentelemetry/sdk-trace-node";
+import { NodeSDK, type NodeSDKConfiguration } from "@opentelemetry/sdk-node";
 import {
 	ATTR_SERVICE_NAME,
 	ATTR_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
+import { getMetricsExporter } from "./exporters/metrics.ts";
+import { getTraceExporter } from "./exporters/traces.ts";
 import {
 	OTEL_SERVICE_NAME,
 	OTEL_SERVICE_VERSION,
@@ -16,22 +14,31 @@ import {
 
 console.log("Initializing OpenTelemetry for Astro...");
 
-const sdk = new NodeSDK({
-	// A Resource describes the entity producing telemetry.
-	// We'll make this configurable later.
+const sdkConfig: Partial<NodeSDKConfiguration> = {
 	resource: resourceFromAttributes({
 		[ATTR_SERVICE_NAME]: OTEL_SERVICE_NAME,
 		[ATTR_SERVICE_VERSION]: OTEL_SERVICE_VERSION,
 	}),
-
-	// For Phase 1, we use a simple processor and a console exporter.
-	// This means spans are sent to the console as soon as they end.
-	spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
-
 	// Auto-instrumentations automatically patch popular libraries.
 	// HttpInstrumentation traces outgoing HTTP requests made by your server.
 	instrumentations: [new HttpInstrumentation()],
-});
+};
+const traceExporter = getTraceExporter(
+	globalThis.__OTEL_PRESETS__?.traceExporter,
+);
+const metricsExporter = getMetricsExporter(
+	globalThis.__OTEL_PRESETS__?.metricExporter,
+);
+
+if (traceExporter) {
+	sdkConfig.traceExporter = traceExporter;
+}
+
+if (metricsExporter) {
+	sdkConfig.metricReaders = [metricsExporter];
+}
+
+const sdk = new NodeSDK(sdkConfig);
 
 // Start the SDK and gracefully shut it down on process exit.
 sdk.start();
