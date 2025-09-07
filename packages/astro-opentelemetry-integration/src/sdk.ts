@@ -15,6 +15,7 @@ import {
 
 console.log("Initializing OpenTelemetry for Astro...");
 
+// Set the default shared configuration for the SDK
 const sdkConfig: Partial<NodeSDKConfiguration> = {
 	resource: resourceFromAttributes({
 		[ATTR_SERVICE_NAME]: OTEL_SERVICE_NAME,
@@ -22,21 +23,30 @@ const sdkConfig: Partial<NodeSDKConfiguration> = {
 	}),
 	// Auto-instrumentations automatically patch popular libraries.
 	// HttpInstrumentation traces outgoing HTTP requests made by your server.
-	instrumentations: [new HttpInstrumentation(), getNodeAutoInstrumentations()],
+	instrumentations: [new HttpInstrumentation()],
 };
+
+// Get the trace exporter
 const traceExporter = getTraceExporter(
 	globalThis.__OTEL_PRESETS__?.traceExporter,
 );
+
+// Get the metrics exporter
 const metricsExporter = getMetricsExporter(
 	globalThis.__OTEL_PRESETS__?.metricExporter,
 );
-
+//Add the trace exporter to the SDK configuration conditionally
 if (traceExporter) {
 	sdkConfig.traceExporter = traceExporter;
 }
 
+//Add the metrics exporter to the SDK configuration conditionally
 if (metricsExporter) {
 	sdkConfig.metricReaders = [metricsExporter];
+}
+// Only add the Node auto instrumentations if the metric exporter is prometheus
+if (globalThis.__OTEL_PRESETS__.metricExporter === "prometheus") {
+	sdkConfig?.instrumentations?.push(getNodeAutoInstrumentations());
 }
 
 const sdk = new NodeSDK(sdkConfig);
