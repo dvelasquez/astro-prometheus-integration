@@ -1,8 +1,9 @@
 import { metrics } from "@opentelemetry/api";
 import type { MeterProvider } from "@opentelemetry/sdk-metrics";
 import { NodeSDK } from "@opentelemetry/sdk-node";
-import { buildSDKConfig, isPrometheusEnabled } from "./config/sdk-config.js";
+import { buildSDKConfig } from "./config/sdk-config.js";
 import { initializeHostMetrics } from "./exporters/metrics.js";
+import { setupMetricsErrorHandling } from "./utils/error-handling.js";
 import {
 	getGlobalSDK,
 	getSDKPromise,
@@ -99,10 +100,11 @@ async function initializeSDKSafely(): Promise<void> {
 			// Store SDK reference globally
 			setGlobalSDK(sdk);
 
-			// Initialize host metrics if needed
-			if (isPrometheusEnabled()) {
-				await initializeHostMetricsSafely();
-			}
+			// Initialize host metrics for all exporters (OpenTelemetry best practice)
+			await initializeHostMetricsSafely();
+
+			// Set up error handling for export failures (OpenTelemetry best practice)
+			setupMetricsErrorHandling();
 
 			// Set up graceful shutdown (only once)
 			setupGracefulShutdown(sdk);

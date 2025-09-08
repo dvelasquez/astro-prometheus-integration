@@ -11,21 +11,6 @@ import type { IntegrationSchema } from "../integrationSchema.ts";
 
 const prometheusConfig = globalThis.__OTEL_PRESETS__?.prometheusConfig;
 
-export const metricsProtoExporter = new PeriodicExportingMetricReader({
-	exporter: new ProtoExporter({}),
-});
-export const metricsHttpExporter = new PeriodicExportingMetricReader({
-	exporter: new HttpExporter({}),
-});
-export const metricsGrpcExporter = new PeriodicExportingMetricReader({
-	exporter: new GrpcExporter({}),
-});
-
-// Create PrometheusExporter instance
-export const metricsPrometheusExporter = new PrometheusExporter({
-	...prometheusConfig,
-});
-
 // Global variable to track if host metrics have been initialized
 let hostMetricsInitialized = false;
 
@@ -33,29 +18,70 @@ type MetricsPresets = NonNullable<
 	IntegrationSchema["presets"]
 >["metricExporter"];
 
+/**
+ * Get metrics exporter with proper configuration based on OpenTelemetry best practices
+ * Uses OTEL_ environment variables automatically handled by the SDK
+ */
 export function getMetricsExporter(presets: MetricsPresets) {
 	switch (presets) {
 		case "proto":
-			return metricsProtoExporter;
+			return new PeriodicExportingMetricReader({
+				exporter: new ProtoExporter(),
+			});
+
 		case "http":
-			return metricsHttpExporter;
+			return new PeriodicExportingMetricReader({
+				exporter: new HttpExporter(),
+			});
+
 		case "grpc":
-			return metricsGrpcExporter;
+			return new PeriodicExportingMetricReader({
+				exporter: new GrpcExporter(),
+			});
+
 		case "prometheus":
-			return metricsPrometheusExporter;
+			return new PrometheusExporter({
+				port: Number.parseInt(
+					process.env.OTEL_PROMETHEUS_PORT ||
+						prometheusConfig?.port?.toString() ||
+						"9464",
+					10,
+				),
+				endpoint:
+					process.env.OTEL_PROMETHEUS_ENDPOINT ||
+					prometheusConfig?.endpoint ||
+					"/metrics",
+				host:
+					process.env.OTEL_PROMETHEUS_HOST ||
+					prometheusConfig?.host ||
+					"0.0.0.0",
+				prefix:
+					process.env.OTEL_PROMETHEUS_PREFIX ||
+					prometheusConfig?.prefix ||
+					"metrics",
+				appendTimestamp:
+					process.env.OTEL_PROMETHEUS_APPEND_TIMESTAMP === "true" ||
+					(prometheusConfig?.appendTimestamp ?? true),
+				withResourceConstantLabels:
+					process.env.OTEL_PROMETHEUS_RESOURCE_LABELS ||
+					prometheusConfig?.withResourceConstantLabels ||
+					"/service/",
+			});
+
 		case "none":
 			return null;
+
 		default:
 			return null;
 	}
 }
 
-// Function to initialize host metrics after the MeterProvider is created
+/**
+ * Initialize host metrics for all exporters (not just Prometheus)
+ * This follows OpenTelemetry best practices for comprehensive observability
+ */
 export function initializeHostMetrics(meterProvider: MeterProvider) {
-	if (
-		!hostMetricsInitialized &&
-		globalThis.__OTEL_PRESETS__?.metricExporter === "prometheus"
-	) {
+	if (!hostMetricsInitialized) {
 		const hostMetrics = new HostMetrics({
 			meterProvider,
 			name: "astro-host-metrics",
