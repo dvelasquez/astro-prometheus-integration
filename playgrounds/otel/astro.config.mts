@@ -19,8 +19,8 @@ export default defineConfig({
 				serviceVersion: "0.0.1",
 			},
 			presets: {
-				metricExporter: "prometheus",
-				// traceExporter: "http",
+				metricExporter: "http",
+				traceExporter: "http",
 				prometheusConfig: {
 					port: 8080,
 					endpoint: "/prometheus",
