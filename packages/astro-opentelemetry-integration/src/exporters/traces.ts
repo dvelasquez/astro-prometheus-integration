@@ -5,22 +5,23 @@ import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
 import type { IntegrationSchema } from "../integrationSchema.ts";
 
 export const traceConsoleExporter = new ConsoleSpanExporter();
-export const traceProtoExporter = new ProtoExporter({});
-export const traceHttpExporter = new HttpExporter({});
-export const traceGrpcExporter = new GrpcExporter({});
 
 type TracePresets = NonNullable<IntegrationSchema["presets"]>["traceExporter"];
 
+/**
+ * Get trace exporter with proper configuration based on OpenTelemetry best practices
+ * Uses OTEL_ environment variables automatically handled by the SDK
+ */
 export function getTraceExporter(presets: TracePresets) {
 	switch (presets) {
 		case "console":
 			return traceConsoleExporter;
 		case "proto":
-			return traceProtoExporter;
+			return new ProtoExporter();
 		case "http":
-			return traceHttpExporter;
+			return new HttpExporter();
 		case "grpc":
-			return traceGrpcExporter;
+			return new GrpcExporter();
 		default:
 			return null;
 	}
