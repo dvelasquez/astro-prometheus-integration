@@ -3,6 +3,7 @@ import type { MeterProvider } from "@opentelemetry/sdk-metrics";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { buildSDKConfig } from "./config/sdk-config.js";
 import { initializeHostMetrics } from "./exporters/metrics.js";
+import { GET_APP_CONSOLE_NAME } from "./utils/constants.js";
 import { setupMetricsErrorHandling } from "./utils/error-handling.js";
 import {
 	getGlobalSDK,
@@ -24,11 +25,14 @@ import {
  */
 async function initializeHostMetricsSafely(): Promise<void> {
 	if (isHostMetricsInitialized()) {
-		console.log("Host metrics already initialized");
+		console.log(GET_APP_CONSOLE_NAME(), "Host metrics already initialized");
 		return;
 	}
 
-	console.log("Initializing host metrics for Prometheus");
+	console.log(
+		GET_APP_CONSOLE_NAME(),
+		"Initializing host metrics for Prometheus",
+	);
 	const meterProvider = metrics.getMeterProvider() as MeterProvider;
 	if (meterProvider) {
 		initializeHostMetrics(meterProvider);
@@ -47,8 +51,14 @@ function setupGracefulShutdown(sdk: NodeSDK): void {
 	process.on("SIGTERM", () => {
 		sdk
 			.shutdown()
-			.then(() => console.log("Telemetry terminated"))
-			.catch((error) => console.log("Error terminating telemetry", error))
+			.then(() => console.log(GET_APP_CONSOLE_NAME(), "Telemetry terminated"))
+			.catch((error) =>
+				console.log(
+					GET_APP_CONSOLE_NAME(),
+					"Error terminating telemetry",
+					error,
+				),
+			)
 			.finally(() => process.exit(0));
 	});
 
@@ -62,13 +72,19 @@ function setupGracefulShutdown(sdk: NodeSDK): void {
 async function initializeSDKSafely(): Promise<void> {
 	// Check if already initialized
 	if (isSDKInitialized()) {
-		console.log("OpenTelemetry SDK already initialized, skipping...");
+		console.log(
+			GET_APP_CONSOLE_NAME(),
+			"OpenTelemetry SDK already initialized, skipping...",
+		);
 		return;
 	}
 
 	// Check if currently initializing
 	if (isSDKInitializing()) {
-		console.log("OpenTelemetry SDK is initializing, waiting...");
+		console.log(
+			GET_APP_CONSOLE_NAME(),
+			"OpenTelemetry SDK is initializing, waiting...",
+		);
 		const existingPromise = getSDKPromise();
 		if (existingPromise) {
 			return existingPromise;
@@ -80,11 +96,15 @@ async function initializeSDKSafely(): Promise<void> {
 
 	const initPromise = (async () => {
 		try {
-			console.log("Initializing OpenTelemetry for Astro...");
+			console.log(
+				GET_APP_CONSOLE_NAME(),
+				"Initializing OpenTelemetry for Astro...",
+			);
 
 			// Check if OpenTelemetry is already initialized globally
 			if (getGlobalSDK()) {
 				console.log(
+					GET_APP_CONSOLE_NAME(),
 					"OpenTelemetry SDK already exists globally, skipping initialization",
 				);
 				return;
@@ -110,9 +130,16 @@ async function initializeSDKSafely(): Promise<void> {
 			setupGracefulShutdown(sdk);
 
 			setSDKInitialized(true);
-			console.log("OpenTelemetry for Astro initialized successfully.");
+			console.log(
+				GET_APP_CONSOLE_NAME(),
+				"OpenTelemetry for Astro initialized successfully.",
+			);
 		} catch (error) {
-			console.error("Failed to initialize OpenTelemetry SDK:", error);
+			console.error(
+				GET_APP_CONSOLE_NAME(),
+				"Failed to initialize OpenTelemetry SDK:",
+				error,
+			);
 			throw error;
 		} finally {
 			setSDKInitializing(false);

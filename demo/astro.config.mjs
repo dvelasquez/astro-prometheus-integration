@@ -2,8 +2,8 @@
 
 import node from "@astrojs/node";
 import { defineConfig } from "astro/config";
-
-import prometheusNodeIntegration from "astro-prometheus-node-integration";
+import openTelemetryIntegration from "astro-opentelemetry-integration";
+// import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,5 +11,18 @@ export default defineConfig({
 		mode: "standalone",
 	}),
 
-	integrations: [prometheusNodeIntegration()],
+	integrations: [
+		// prometheusNodeIntegration(),
+		openTelemetryIntegration({
+			enabled: true,
+			otel: {
+				serviceName: "demo",
+				serviceVersion: "0.0.1",
+			},
+			presets: {
+				metricExporter: "prometheus",
+				traceExporter: "console",
+			},
+		}),
+	],
 });

@@ -362,7 +362,10 @@ describe("config/sdk-config", () => {
 			});
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				"Prometheus metrics enabled - adding comprehensive auto instrumentations",
+				expect.any(String),
+				expect.stringContaining(
+					"Prometheus metrics enabled - adding comprehensive auto instrumentations",
+				),
 			);
 
 			consoleSpy.mockRestore();
