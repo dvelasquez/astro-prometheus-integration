@@ -6,8 +6,13 @@
 		"node": ">=20.18.1"
 	},
 	"scripts": {
-		"node-integration:dev": "pnpm --filter astro-prometheus-node-integration dev",
-		"playground:dev": "pnpm --filter playground dev",
+		"prometheus:dev": "pnpm --filter astro-prometheus-node-integration dev",
+		"otel:dev": "pnpm --filter astro-opentelemetry-integration dev",
+		"prometheus:playground:dev": "pnpm --filter prometheus-playground dev",
+		"otel:playground:dev": "pnpm --filter otel-playground dev",
+		"prometheus:playground:build": "pnpm --filter prometheus-playground... build",
+		"otel:playground:build": "pnpm --filter otel-playground... build",
+		"build:all": "pnpm prometheus:playground:build && pnpm otel:playground:build",
 		"dev": "pnpm --stream -r -parallel dev",
 		"changeset": "changeset",
 		"ci:version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile && pnpm dedupe",
