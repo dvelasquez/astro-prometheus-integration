@@ -14,6 +14,7 @@ import {
 import { getMetricsExporter } from "../exporters/metrics.js";
 import { getTraceExporter } from "../exporters/traces.js";
 import type { IntegrationSchema } from "../integrationSchema.js";
+import { GET_APP_CONSOLE_NAME } from "../utils/constants.ts";
 import {
 	OTEL_SERVICE_NAME,
 	OTEL_SERVICE_VERSION,
@@ -93,6 +94,7 @@ export function buildSDKConfig(
 	// Only add the Node auto instrumentations if the metric exporter is prometheus
 	if (isPrometheusEnabled() && metricsExporter) {
 		console.log(
+			GET_APP_CONSOLE_NAME(),
 			"Prometheus metrics enabled - adding comprehensive auto instrumentations",
 		);
 
