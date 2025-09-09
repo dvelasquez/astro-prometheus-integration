@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # Jaeger OTLP gRPC receiver
+      - "4318:4318"    # Jaeger OTLP HTTP receiver
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - otel-network
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./collector-config.yaml:/etc/otelcol/config.yaml
+    ports:
+      - "4319:4317"   # OTLP gRPC receiver (mapped to avoid conflict)
+      - "4320:4318"   # OTLP HTTP receiver (mapped to avoid conflict)
+      - "55679:55679" # zpages extension
+    depends_on:
+      - jaeger
+    networks:
+      - otel-network
+
+networks:
+  otel-network:
+    driver: bridge

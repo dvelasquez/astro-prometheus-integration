@@ -1,5 +1,5 @@
 {
-	"name": "playground",
+	"name": "prometheus-playground",
 	"type": "module",
 	"version": "0.0.1",
 	"private": true,
@@ -9,7 +9,7 @@
 		"build": "astro check && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"build:all": "cd ../packages/astro-prometheus-node-integration && pnpm build && cd ../../playground && pnpm build",
+		"build:all": "pnpm --filter prometheus-playground... build",
 		"test:e2e": "playwright test",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:headed": "playwright test --headed",
