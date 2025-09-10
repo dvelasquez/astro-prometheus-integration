@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   push:
     branches: [main, develop]
 
@@ -64,6 +66,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-test
     timeout-minutes: 15
+    # Only run E2E tests when relevant files change or on PRs
+    if: |
+      github.event_name == 'pull_request' || 
+      github.event_name == 'push' && (
+        contains(github.event.head_commit.modified, 'packages/astro-prometheus-node-integration/') ||
+        contains(github.event.head_commit.modified, 'playgrounds/prometheus/') ||
+        contains(github.event.head_commit.modified, '.github/workflows/ci.yml')
+      )
     
     steps:
       - name: Checkout
@@ -98,7 +108,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ github.run_id }}
           path: playgrounds/prometheus/test-results/
           retention-days: 30
 
@@ -106,6 +116,84 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-html-report
+          name: playwright-html-report-${{ github.run_id }}
           path: playgrounds/prometheus/playwright-report/
           retention-days: 30
+
+      - name: Comment PR with Test Results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const testResultsPath = 'playgrounds/prometheus/test-results/';
+              if (fs.existsSync(testResultsPath)) {
+                const files = fs.readdirSync(testResultsPath);
+                const hasFailures = files.some(file => file.includes('failed'));
+                
+                if (hasFailures) {
+                  github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: `❌ **E2E Tests Failed**\n\nSome end-to-end tests failed. Check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.\n\n**Test artifacts are available for download above.**`
+                  });
+                } else {
+                  github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: `✅ **E2E Tests Passed**\n\nAll end-to-end tests passed successfully! The Astro Prometheus integration is working correctly.\n\n**Test artifacts are available for download above.**`
+                  });
+                }
+              }
+            } catch (error) {
+              console.log('Could not read test results:', error.message);
+            }
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [lint, build-and-test, e2e-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PNPM
+        run: corepack enable && pnpm -v
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.19.0
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter astro-prometheus-node-integration build
+
+      - name: Run Tests
+        run: pnpm --filter astro-prometheus-node-integration test -- --run
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm run ci:version
+          publish: pnpm run ci:publish
+          commit: "[ci] release"
+          title: "[ci] release"
+        env:
+          # Needs the repo permissions
+          GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
+          # Needs access to publish to npm
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
