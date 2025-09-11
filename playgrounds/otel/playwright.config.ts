@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { getTestEnvVars } from "./e2e/test-config";
 
 /**
  * Read environment variables from file.
@@ -82,5 +83,8 @@ export default defineConfig({
 		url: "http://localhost:8000",
 		reuseExistingServer: !process.env.CI,
 		timeout: 120 * 1000, // 2 minutes timeout for server startup
+		env: {
+			...getTestEnvVars(), // Apply optimized batch settings for testing
+		},
 	},
 });
