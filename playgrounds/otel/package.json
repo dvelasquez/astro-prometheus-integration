@@ -18,11 +18,15 @@
 		"test:e2e:http:mock": "ASTRO_OTEL_PRESET=http playwright test e2e/http-mock.spec.ts",
 		"test:e2e:grpc:mock-server": "ASTRO_OTEL_PRESET=grpc playwright test e2e/grpc-mock-server.spec.ts --workers=1",
 		"test:e2e:http:mock-server": "ASTRO_OTEL_PRESET=http playwright test e2e/http-mock-server.spec.ts --workers=1",
+		"test:e2e:all-presets": "pnpm test:e2e:prometheus && pnpm test:e2e:http:mock && pnpm test:e2e:grpc:mock",
+		"test:e2e:all-mock-server": "pnpm test:e2e:http:mock-server && pnpm test:e2e:grpc:mock-server",
+		"test:e2e:ci": "ASTRO_OTEL_PRESET=prometheus playwright test e2e/prometheus.spec.ts && pnpm test:e2e:http:mock-server && pnpm test:e2e:grpc:mock-server",
+		"test:e2e:ci:reliable": "pnpm test:e2e:prometheus && pnpm test:e2e:http:mock-server && pnpm test:e2e:grpc:mock-server",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:headed": "playwright test --headed",
 		"test:e2e:debug": "playwright test --debug",
 		"test:e2e:report": "playwright show-report",
-		"test:e2e:build": "pnpm build:all && pnpm test:e2e"
+		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
 		"@astrojs/node": "^9.2.1",

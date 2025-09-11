@@ -1,199 +1,197 @@
-name: CI
+name: 🚀 CI Pipeline
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   push:
     branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
-# Add permissions for potential future use of github-script
-permissions:
-  issues: write
-  pull-requests: write
-  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
-    name: Lint
+    name: 🔍 Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      - name: 🔍 Run linting
         run: pnpm lint
 
   build-and-test:
-    name: Build and Unit Tests
+    name: 🏗️ Build & Test
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Everything
+      - name: 🏗️ Build packages
         run: pnpm build:all
 
-      - name: Run Unit Tests
-        run: pnpm --filter astro-prometheus-node-integration test -- --run
+      - name: 🧪 Run unit tests
+        run: |
+          pnpm --filter astro-prometheus-node-integration test -- --run
+          pnpm --filter astro-opentelemetry-integration test -- --run
 
-  e2e-tests:
-    name: E2E Tests
+  e2e-prometheus:
+    name: 🧪 E2E Tests - Prometheus
     runs-on: ubuntu-latest
     needs: build-and-test
-    timeout-minutes: 15
-    # Only run E2E tests when relevant files change or on PRs
-    if: |
-      github.event_name == 'pull_request' || 
-      github.event_name == 'push' && (
-        contains(github.event.head_commit.modified, 'packages/astro-prometheus-node-integration/') ||
-        contains(github.event.head_commit.modified, 'playgrounds/prometheus/') ||
-        contains(github.event.head_commit.modified, '.github/workflows/ci.yml')
-      )
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build All
+      - name: 🏗️ Build packages
         run: pnpm build:all
 
-      - name: Install Playwright Chromium
-        working-directory: playgrounds/prometheus
-        run: npx playwright install chromium --with-deps
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
 
-      - name: Run E2E Tests
+      - name: 🧪 Run Prometheus E2E tests
+        run: pnpm test:e2e:ci
         working-directory: playgrounds/prometheus
-        run: pnpm test:e2e --reporter=line
-        env:
-          CI: true
 
-      - name: Upload Test Results
-        if: always()
+      - name: 📊 Upload Prometheus test results
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-report-${{ github.run_id }}
+          name: prometheus-e2e-results
           path: playgrounds/prometheus/test-results/
           retention-days: 30
 
-      - name: Upload Playwright Report
-        if: always()
+      - name: 📊 Upload Prometheus Playwright report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-html-report-${{ github.run_id }}
+          name: prometheus-playwright-report
           path: playgrounds/prometheus/playwright-report/
           retention-days: 30
 
-      - name: Comment PR with Test Results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            
-            try {
-              const testResultsPath = 'playgrounds/prometheus/test-results/';
-              if (fs.existsSync(testResultsPath)) {
-                const files = fs.readdirSync(testResultsPath);
-                const hasFailures = files.some(file => file.includes('failed'));
-                
-                if (hasFailures) {
-                  github.rest.issues.createComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `❌ **E2E Tests Failed**\n\nSome end-to-end tests failed. Check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.\n\n**Test artifacts are available for download above.**`
-                  });
-                } else {
-                  github.rest.issues.createComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `✅ **E2E Tests Passed**\n\nAll end-to-end tests passed successfully! The Astro Prometheus integration is working correctly.\n\n**Test artifacts are available for download above.**`
-                  });
-                }
-              }
-            } catch (error) {
-              console.log('Could not read test results:', error.message);
-            }
-
-  release:
-    name: Release
+  e2e-otel:
+    name: 🧪 E2E Tests - OpenTelemetry
     runs-on: ubuntu-latest
-    needs: [lint, build-and-test, e2e-tests]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: write
-      id-token: write
+    needs: build-and-test
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm --filter astro-prometheus-node-integration build
+      - name: 🏗️ Build packages
+        run: pnpm build:all
 
-      - name: Run Tests
-        run: pnpm --filter astro-prometheus-node-integration test -- --run
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
+      - name: 🧪 Run OpenTelemetry E2E tests
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/otel
+
+      - name: 📊 Upload OpenTelemetry test results
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          version: pnpm run ci:version
-          publish: pnpm run ci:publish
-          commit: "[ci] release"
-          title: "[ci] release"
-        env:
-          # Needs the repo permissions
-          GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
-          # Needs access to publish to npm
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          name: otel-e2e-results
+          path: playgrounds/otel/test-results/
+          retention-days: 30
+
+      - name: 📊 Upload OpenTelemetry Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: otel-playwright-report
+          path: playgrounds/otel/playwright-report/
+          retention-days: 30
+
+  ci-summary:
+    name: 📋 CI Summary
+    runs-on: ubuntu-latest
+    needs: [e2e-prometheus, e2e-otel]
+    if: always()
+    steps:
+      - name: 📋 Create CI Summary
+        run: |
+          echo "## 🚀 CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Prometheus E2E Tests" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.e2e-prometheus.result }}" == "success" ]; then
+            echo "✅ **PASSED** - All Prometheus integration tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **FAILED** - Prometheus tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ OpenTelemetry E2E Tests" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.e2e-otel.result }}" == "success" ]; then
+            echo "✅ **PASSED** - All OpenTelemetry integration tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **FAILED** - OpenTelemetry tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "- **Prometheus**: OpenMetrics format, integration functionality, standalone metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- **OpenTelemetry**: Prometheus preset, HTTP mock-server, gRPC mock-server" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Test results and Playwright reports available in the Actions tab" >> $GITHUB_STEP_SUMMARY

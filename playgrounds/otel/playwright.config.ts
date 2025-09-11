@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import { getTestEnvVars } from "./e2e/test-config";
+import { getTestEnvVars } from "./e2e/test-config.js";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
