@@ -49,7 +49,8 @@ export class MockOTLPServer {
 					MockOTLPServer.usedPorts.delete(this.port);
 					MockOTLPServer.activeServers.delete(this);
 					this.server = null;
-					resolve();
+					// Small delay to ensure port is fully released
+					setTimeout(resolve, 100);
 				});
 
 				// Force resolve after timeout to prevent hanging
