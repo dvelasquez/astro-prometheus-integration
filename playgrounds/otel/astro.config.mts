@@ -16,6 +16,7 @@ const prometheusPreset: IntegrationSchema["presets"] = {
 		port: 8080,
 		endpoint: "/prometheus",
 		withResourceConstantLabels: "/service/",
+		prefix: "myapp_",
 	},
 };
 
