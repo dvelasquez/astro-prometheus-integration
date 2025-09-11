@@ -14,6 +14,8 @@
 		"test:e2e:prometheus": "ASTRO_OTEL_PRESET=prometheus playwright test",
 		"test:e2e:grpc": "ASTRO_OTEL_PRESET=grpc playwright test",
 		"test:e2e:http": "ASTRO_OTEL_PRESET=http playwright test",
+		"test:e2e:grpc:mock": "ASTRO_OTEL_PRESET=grpc playwright test e2e/grpc-mock.spec.ts",
+		"test:e2e:http:mock": "ASTRO_OTEL_PRESET=http playwright test e2e/http-mock.spec.ts",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:headed": "playwright test --headed",
 		"test:e2e:debug": "playwright test --debug",
