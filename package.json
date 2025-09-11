@@ -20,15 +20,21 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"prepare": "husky",
-		"test:e2e": "pnpm --filter playground test:e2e",
-		"test:e2e:build": "pnpm --filter playground test:e2e:build"
+		"test:e2e": "pnpm test:e2e:prometheus && pnpm test:e2e:otel",
+		"test:e2e:prometheus": "pnpm --filter prometheus-playground test:e2e:ci",
+		"test:e2e:otel": "pnpm --filter otel-playground test:e2e:ci",
+		"test:e2e:prometheus:all": "pnpm --filter prometheus-playground test:e2e:all",
+		"test:e2e:otel:all": "pnpm --filter otel-playground test:e2e:all-presets",
+		"test:e2e:build": "pnpm build:all && pnpm test:e2e",
+		"test:e2e:ci": "pnpm test:e2e:prometheus && pnpm test:e2e:otel"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
-		"@changesets/cli": "^2.29.2",
 		"@changesets/changelog-github": "^0.5.1",
+		"@changesets/cli": "^2.29.2",
 		"husky": "^9.1.7",
-		"lint-staged": "^16.0.0"
+		"lint-staged": "^16.0.0",
+		"playwright": "^1.55.0"
 	},
 	"lint-staged": {
 		"*": [

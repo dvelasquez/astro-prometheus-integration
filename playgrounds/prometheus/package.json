@@ -11,11 +11,16 @@
 		"astro": "astro",
 		"build:all": "pnpm --filter prometheus-playground... build",
 		"test:e2e": "playwright test",
+		"test:e2e:openmetrics": "playwright test e2e/openmetrics.spec.ts",
+		"test:e2e:integration": "playwright test e2e/prometheus-integration.spec.ts",
+		"test:e2e:standalone": "playwright test e2e/standalone-metrics.spec.ts",
+		"test:e2e:all": "pnpm test:e2e:openmetrics && pnpm test:e2e:integration && pnpm test:e2e:standalone",
+		"test:e2e:ci": "pnpm test:e2e:all",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:headed": "playwright test --headed",
 		"test:e2e:debug": "playwright test --debug",
 		"test:e2e:report": "playwright show-report",
-		"test:e2e:build": "pnpm build:all && pnpm test:e2e"
+		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
 		"@astrojs/node": "^9.2.1",
