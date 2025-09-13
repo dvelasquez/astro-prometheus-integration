@@ -1,9 +1,10 @@
 packages:
   - packages/*
-  - playground
+  - playgrounds/*
   - demo
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
+  - protobufjs
   - sharp

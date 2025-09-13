@@ -1,120 +1,247 @@
-name: CI
+name: 🚀 CI Pipeline
 
 on:
   push:
     branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
-# Add permissions for potential future use of github-script
-permissions:
-  issues: write
-  pull-requests: write
-  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
-    name: Lint
+    name: 🔍 Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      - name: 🔍 Run linting
         run: pnpm lint
 
   build-and-test:
-    name: Build and Unit Tests
+    name: 🏗️ Build & Test
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Integration Package
-        run: pnpm --filter astro-prometheus-node-integration build
+      - name: 🏗️ Build packages
+        run: pnpm build:all
 
-      - name: Run Unit Tests
-        run: pnpm --filter astro-prometheus-node-integration test -- --run
+      - name: 🧪 Run unit tests
+        run: |
+          pnpm --filter astro-prometheus-node-integration test -- --run
+          pnpm --filter astro-opentelemetry-integration test -- --run
 
-  e2e-tests:
-    name: E2E Tests
+  e2e-prometheus:
+    name: 🧪 E2E Tests - Prometheus
     runs-on: ubuntu-latest
     needs: build-and-test
-    timeout-minutes: 15
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        run: corepack enable && pnpm -v
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
 
-      - name: Setup Node
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22.19.0
-          cache: pnpm
+          node-version: '22'
+          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Integration Package
-        run: |
-          cd packages/astro-prometheus-node-integration
-          pnpm build
+      - name: 🏗️ Build packages
+        run: pnpm build:all
 
-      - name: Build Playground
-        run: |
-          cd playground
-          pnpm build
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
 
-      - name: Install Playwright Chromium
-        run: |
-          cd playground
-          npx playwright install chromium --with-deps
+      - name: 🧪 Run Prometheus E2E tests
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/prometheus
 
-      - name: Run E2E Tests
-        run: |
-          cd playground
-          npm run test:e2e -- --reporter=line
-        env:
-          CI: true
-
-      - name: Upload Test Results
-        if: always()
+      - name: 📊 Upload Prometheus test results
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-report
-          path: playground/test-results/
+          name: prometheus-e2e-results
+          path: playgrounds/prometheus/test-results/
           retention-days: 30
 
-      - name: Upload Playwright Report
-        if: always()
+      - name: 📊 Upload Prometheus Playwright report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-html-report
-          path: playground/playwright-report/
+          name: prometheus-playwright-report
+          path: playgrounds/prometheus/playwright-report/
           retention-days: 30
+
+  e2e-otel:
+    name: 🧪 E2E Tests - OpenTelemetry
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm build:all
+
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
+
+      - name: 🧪 Run OpenTelemetry E2E tests
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/otel
+
+      - name: 📊 Upload OpenTelemetry test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: otel-e2e-results
+          path: playgrounds/otel/test-results/
+          retention-days: 30
+
+      - name: 📊 Upload OpenTelemetry Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: otel-playwright-report
+          path: playgrounds/otel/playwright-report/
+          retention-days: 30
+
+  ci-summary:
+    name: 📊 CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, build-and-test, e2e-prometheus, e2e-otel]
+    if: always()
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: 📊 Generate CI Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue?.number || context.payload.pull_request?.number
+            });
+            
+            // Find existing CI summary comment
+            const existingComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('## 🚀 CI Pipeline Summary')
+            );
+            
+            const lintStatus = '${{ needs.lint.result }}';
+            const buildStatus = '${{ needs.build-and-test.result }}';
+            const prometheusStatus = '${{ needs.e2e-prometheus.result }}';
+            const otelStatus = '${{ needs.e2e-otel.result }}';
+            
+            const getStatusEmoji = (status) => {
+              switch(status) {
+                case 'success': return '✅';
+                case 'failure': return '❌';
+                case 'cancelled': return '⏹️';
+                case 'skipped': return '⏭️';
+                default: return '⏳';
+              }
+            };
+            
+            const summary = `## 🚀 CI Pipeline Summary
+            
+            | Job | Status | Details |
+            |-----|--------|---------|
+            | 🔍 Lint | ${getStatusEmoji(lintStatus)} | Code quality checks |
+            | 🏗️ Build & Test | ${getStatusEmoji(buildStatus)} | TypeScript compilation & unit tests |
+            | 🧪 E2E - Prometheus | ${getStatusEmoji(prometheusStatus)} | Prometheus integration tests |
+            | 🧪 E2E - OpenTelemetry | ${getStatusEmoji(otelStatus)} | OpenTelemetry integration tests |
+            
+            **Overall Status:** ${lintStatus === 'success' && buildStatus === 'success' && prometheusStatus === 'success' && otelStatus === 'success' ? '✅ All checks passed!' : '❌ Some checks failed'}
+            
+            <details>
+            <summary>📋 Test Coverage</summary>
+            
+            - **Prometheus Integration**: OpenMetrics, Integration, Standalone metrics
+            - **OpenTelemetry Integration**: Prometheus preset, HTTP mock-server, gRPC mock-server
+            - **Total Tests**: ~51 tests across all playgrounds
+            
+            </details>
+            
+            ---
+            *Generated by CI Pipeline - ${new Date().toISOString()}*`;
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: summary
+              });
+            } else if (context.payload.pull_request) {
+              // Create new comment for PR
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: summary
+              });
+            }
