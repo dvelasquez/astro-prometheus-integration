@@ -8,6 +8,10 @@ concurrency:
   group: pr-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  pull-requests: write
+  issues: write
+  
 jobs:
   quick-validation:
     name: ⚡ Quick Validation

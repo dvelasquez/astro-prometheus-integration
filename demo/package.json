@@ -10,9 +10,9 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/node": "^9.2.1",
-		"astro": "^5.7.5",
-		"astro-prometheus-node-integration": "workspace:*",
-		"astro-opentelemetry-integration": "workspace:*"
+		"@astrojs/node": "9.4.3",
+		"astro": "5.13.7",
+		"astro-opentelemetry-integration": "workspace:*",
+		"astro-prometheus-node-integration": "workspace:*"
 	}
 }

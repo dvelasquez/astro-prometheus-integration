@@ -23,18 +23,18 @@
 		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
-		"@astrojs/node": "^9.2.1",
-		"@tailwindcss/vite": "^4.1.4",
-		"astro": "^5.7.4",
-		"astro-integration-kit": "^0.19.0",
+		"@astrojs/node": "9.4.3",
+		"@tailwindcss/vite": "4.1.13",
+		"astro": "5.13.7",
+		"astro-integration-kit": "0.19.0",
 		"astro-prometheus-node-integration": "workspace:*",
-		"tailwindcss": "^4.1.4"
+		"tailwindcss": "4.1.13"
 	},
 	"devDependencies": {
-		"@astrojs/check": "^0.9.4",
-		"@playwright/test": "^1.55.0",
-		"@types/node": "^22.14.1",
+		"@astrojs/check": "0.9.4",
+		"@playwright/test": "1.55.0",
+		"@types/node": "24.3.3",
 		"nodemon": "3.1.10",
-		"typescript": "^5.8.3"
+		"typescript": "5.9.2"
 	}
 }
