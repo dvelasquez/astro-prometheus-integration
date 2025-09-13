@@ -66,7 +66,7 @@ export default defineConfig({
 	],
 
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [tailwindcss() as any],
 	},
 
 	adapter: node({
