@@ -9,8 +9,8 @@ This project is a prometheus middleware integration for astro.
 
 This project is divided in 3 sections:
 
-- `/package/`: Here is the code for the astro integration.
-- `/playground`: Here is an AstroJS application that imports the integration
+- `/packages/`: Here is the code for the astro integrations.
+- `/playgrounds/`: Here are the astro playgrounds for the different integrations
 - `/`: root of the project, using changesets to release changes.
 
 This Project also uses biome for linting, pnpm as a package manager and changesets.

@@ -1,0 +1,159 @@
+name: 🔄 PR Validation
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: write
+  issues: write
+  
+jobs:
+  quick-validation:
+    name: ⚡ Quick Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 Run linting
+        run: pnpm lint
+
+      - name: 🏗️ Build packages
+        run: pnpm build:all
+
+      - name: 🧪 Run unit tests
+        run: |
+          pnpm --filter astro-prometheus-node-integration test -- --run
+          pnpm --filter astro-opentelemetry-integration test -- --run
+
+  e2e-prometheus-pr:
+    name: 🧪 Prometheus E2E (PR)
+    runs-on: ubuntu-latest
+    needs: quick-validation
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm build:all
+
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
+
+      - name: 🧪 Run Prometheus E2E tests
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/prometheus
+
+  e2e-otel-pr:
+    name: 🧪 OpenTelemetry E2E (PR)
+    runs-on: ubuntu-latest
+    needs: quick-validation
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+          run_install: false
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm build:all
+
+      - name: 🎭 Install Playwright browsers
+        run: pnpx playwright install --with-deps
+
+      - name: 🧪 Run OpenTelemetry E2E tests
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/otel
+
+  pr-comment:
+    name: 💬 PR Comment
+    runs-on: ubuntu-latest
+    needs: [e2e-prometheus-pr, e2e-otel-pr]
+    if: always()
+    steps:
+      - name: 💬 Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prometheusStatus = '${{ needs.e2e-prometheus-pr.result }}';
+            const otelStatus = '${{ needs.e2e-otel-pr.result }}';
+            
+            let comment = '## 🧪 E2E Test Results\n\n';
+            
+            // Prometheus results
+            if (prometheusStatus === 'success') {
+              comment += '✅ **Prometheus Integration**: All tests passed\n';
+            } else {
+              comment += '❌ **Prometheus Integration**: Tests failed\n';
+            }
+            
+            // OpenTelemetry results
+            if (otelStatus === 'success') {
+              comment += '✅ **OpenTelemetry Integration**: All tests passed\n';
+            } else {
+              comment += '❌ **OpenTelemetry Integration**: Tests failed\n';
+            }
+            
+            comment += '\n### 📊 Test Coverage\n';
+            comment += '- **Prometheus**: OpenMetrics format, integration functionality, standalone metrics\n';
+            comment += '- **OpenTelemetry**: Prometheus preset, HTTP mock-server, gRPC mock-server\n';
+            
+            if (prometheusStatus === 'success' && otelStatus === 'success') {
+              comment += '\n🎉 **All E2E tests passed!** Ready for review.';
+            } else {
+              comment += '\n⚠️ **Some tests failed.** Please check the Actions tab for details.';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

@@ -1,0 +1,40 @@
+{
+	"name": "prometheus-playground",
+	"type": "module",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",
+		"start": "astro dev",
+		"build": "astro check && astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"build:all": "pnpm --filter prometheus-playground... build",
+		"test:e2e": "playwright test",
+		"test:e2e:openmetrics": "playwright test e2e/openmetrics.spec.ts",
+		"test:e2e:integration": "playwright test e2e/prometheus-integration.spec.ts",
+		"test:e2e:standalone": "playwright test e2e/standalone-metrics.spec.ts",
+		"test:e2e:all": "pnpm test:e2e:openmetrics && pnpm test:e2e:integration && pnpm test:e2e:standalone",
+		"test:e2e:ci": "pnpm test:e2e:all",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:debug": "playwright test --debug",
+		"test:e2e:report": "playwright show-report",
+		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
+	},
+	"dependencies": {
+		"@astrojs/node": "9.4.3",
+		"@tailwindcss/vite": "4.1.13",
+		"astro": "5.13.7",
+		"astro-integration-kit": "0.19.0",
+		"astro-prometheus-node-integration": "workspace:*",
+		"tailwindcss": "4.1.13"
+	},
+	"devDependencies": {
+		"@astrojs/check": "0.9.4",
+		"@playwright/test": "1.55.0",
+		"@types/node": "24.3.3",
+		"nodemon": "3.1.10",
+		"typescript": "5.9.2"
+	}
+}

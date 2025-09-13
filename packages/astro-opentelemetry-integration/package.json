@@ -1,0 +1,85 @@
+{
+	"name": "astro-opentelemetry-integration",
+	"version": "0.0.0",
+	"description": "An Open Telemetry integration for Astro.",
+	"author": {
+		"email": "danilo.velasquez@gmail.com",
+		"name": "Danilo Velasquez",
+		"url": "https://github.com/dvelasquez"
+	},
+	"license": "MIT",
+	"keywords": [
+		"astro-integration",
+		"astro-component",
+		"withastro",
+		"astro",
+		"analytics",
+		"monitoring",
+		"otel",
+		"opentelemetry",
+		"observability",
+		"node"
+	],
+	"homepage": "https://github.com/dvelasquez/astro-prometheus-integration/tree/main/packages/astro-opentelemetry-integration#readme",
+	"publishConfig": {
+		"access": "public"
+	},
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./sdk": {
+			"types": "./dist/sdk.d.ts",
+			"default": "./dist/sdk.js"
+		}
+	},
+	"files": [
+		"dist/**/*",
+		"!dist/**/*.test.js",
+		"!dist/**/*.test.d.ts",
+		"!dist/**/*.test.js.map"
+	],
+	"scripts": {
+		"dev": "tsup --watch",
+		"build": "tsup",
+		"test": "vitest"
+	},
+	"type": "module",
+	"peerDependencies": {
+		"@astrojs/node": "^9.0.0",
+		"astro": "^5.0.0"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "1.9.0",
+		"@opentelemetry/auto-instrumentations-node": "0.64.1",
+		"@opentelemetry/exporter-metrics-otlp-grpc": "0.205.0",
+		"@opentelemetry/exporter-metrics-otlp-http": "0.205.0",
+		"@opentelemetry/exporter-metrics-otlp-proto": "0.205.0",
+		"@opentelemetry/exporter-prometheus": "0.205.0",
+		"@opentelemetry/exporter-trace-otlp-grpc": "0.205.0",
+		"@opentelemetry/exporter-trace-otlp-http": "0.205.0",
+		"@opentelemetry/exporter-trace-otlp-proto": "0.205.0",
+		"@opentelemetry/host-metrics": "0.36.0",
+		"@opentelemetry/instrumentation-http": "0.205.0",
+		"@opentelemetry/resources": "2.1.0",
+		"@opentelemetry/sdk-metrics": "2.1.0",
+		"@opentelemetry/sdk-node": "0.205.0",
+		"@opentelemetry/sdk-trace-node": "2.1.0",
+		"@opentelemetry/semantic-conventions": "1.37.0",
+		"astro-integration-kit": "0.19.0"
+	},
+	"devDependencies": {
+		"tsup": "8.5.0",
+		"vitest": "3.2.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration.git",
+		"directory": "packages/astro-opentelemetry-integration"
+	},
+	"bugs": {
+		"url": "https://github.com/dvelasquez/astro-prometheus-integration/issues"
+	}
+}
