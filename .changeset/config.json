@@ -12,5 +12,5 @@
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
-	"ignore": ["playground"]
+	"ignore": ["otel-playground", "prometheus-playground", "demo"]
 }
