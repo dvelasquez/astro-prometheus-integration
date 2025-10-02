@@ -35,6 +35,6 @@
 		"@playwright/test": "1.55.1",
 		"@types/node": "24.5.2",
 		"nodemon": "3.1.10",
-		"typescript": "5.9.2"
+		"typescript": "5.9.3"
 	}
 }
