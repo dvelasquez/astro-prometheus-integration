@@ -33,7 +33,7 @@
 	"devDependencies": {
 		"@astrojs/check": "0.9.4",
 		"@playwright/test": "1.56.0",
-		"@types/node": "24.6.2",
+		"@types/node": "24.7.0",
 		"nodemon": "3.1.10",
 		"typescript": "5.9.3"
 	}
