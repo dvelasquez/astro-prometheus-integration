@@ -29,9 +29,9 @@
 		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
-		"@astrojs/node": "9.4.4",
+		"@astrojs/node": "9.4.6",
 		"@tailwindcss/vite": "4.1.14",
-		"astro": "5.14.1",
+		"astro": "5.14.4",
 		"astro-integration-kit": "0.19.0",
 		"astro-opentelemetry-integration": "workspace:*",
 		"tailwindcss": "4.1.14"
