@@ -101,7 +101,7 @@ jobs:
         working-directory: playgrounds/prometheus
 
       - name: 📊 Upload Prometheus test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: prometheus-e2e-results
@@ -109,7 +109,7 @@ jobs:
           retention-days: 30
 
       - name: 📊 Upload Prometheus Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: prometheus-playwright-report
@@ -150,7 +150,7 @@ jobs:
         working-directory: playgrounds/otel
 
       - name: 📊 Upload OpenTelemetry test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: otel-e2e-results
@@ -158,7 +158,7 @@ jobs:
           retention-days: 30
 
       - name: 📊 Upload OpenTelemetry Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: otel-playwright-report
