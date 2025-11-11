@@ -21,7 +21,7 @@ jobs:
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 10.20.0
+          version: 10.21.0
           run_install: false
 
       - name: 📦 Setup Node.js
@@ -47,7 +47,7 @@ jobs:
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 10.20.0
+          version: 10.21.0
           run_install: false
 
       - name: 📦 Setup Node.js
@@ -78,7 +78,7 @@ jobs:
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 10.20.0
+          version: 10.21.0
           run_install: false
 
       - name: 📦 Setup Node.js
@@ -127,7 +127,7 @@ jobs:
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 10.20.0
+          version: 10.21.0
           run_install: false
 
       - name: 📦 Setup Node.js
