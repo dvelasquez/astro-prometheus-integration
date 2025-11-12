@@ -3,6 +3,10 @@
 import { z } from "astro/zod";
 import { defineIntegration } from "astro-integration-kit";
 import { metricsConfigSchema } from "./metrics/config.js";
+import {
+	type OutboundRequestsOptions,
+	outboundRequestsSchema,
+} from "./outbound/schema.js";
 
 export const integrationSchema = z
 	.object({
@@ -45,6 +49,9 @@ export const integrationSchema = z
 			})
 			.default({ useOptimizedTTLBMeasurement: false })
 			.describe("Experimental features that may change in future releases."),
+		outboundRequests: outboundRequestsSchema
+			.optional()
+			.describe("Track outbound HTTP requests made by the server."),
 	})
 	.default({});
 
@@ -69,6 +76,30 @@ export const integration = defineIntegration({
 					logger.info("setting up integration");
 					// Get the global register instance
 
+					const outboundRequests =
+						options.outboundRequests?.enabled === true
+							? ({
+									enabled: true,
+									includeErrors: options.outboundRequests.includeErrors ?? true,
+									labels: options.outboundRequests.labels ?? {},
+									shouldObserve: options.outboundRequests.shouldObserve,
+								} satisfies OutboundRequestsOptions)
+							: undefined;
+
+					if (outboundRequests) {
+						globalThis.__ASTRO_PROMETHEUS_OUTBOUND_CONFIG = outboundRequests;
+					}
+
+					const sanitizedOptions = {
+						...options,
+						outboundRequests: outboundRequests
+							? {
+									enabled: outboundRequests.enabled,
+									includeErrors: outboundRequests.includeErrors,
+								}
+							: undefined,
+					};
+
 					if (!options.standaloneMetrics?.enabled) {
 						injectRoute({
 							pattern: options.metricsUrl,
@@ -79,7 +110,7 @@ export const integration = defineIntegration({
 					updateConfig({
 						vite: {
 							define: {
-								__PROMETHEUS_OPTIONS__: options,
+								__PROMETHEUS_OPTIONS__: sanitizedOptions,
 							},
 						},
 					});
@@ -90,6 +121,15 @@ export const integration = defineIntegration({
 							import.meta.url,
 						),
 					});
+					if (outboundRequests) {
+						addMiddleware({
+							order: "pre",
+							entrypoint: new URL(
+								"./middleware/outbound-metrics.js",
+								import.meta.url,
+							),
+						});
+					}
 					logger.info("integration setup complete");
 				},
 			},
