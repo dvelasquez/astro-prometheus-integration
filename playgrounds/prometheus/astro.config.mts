@@ -31,6 +31,10 @@ export default defineConfig({
 			experimental: {
 				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
 			},
+			outboundRequests: {
+				enabled: true,
+				includeErrors: true,
+			},
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(
