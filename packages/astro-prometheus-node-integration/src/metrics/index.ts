@@ -5,6 +5,9 @@ import type { MetricsConfigWithUndefined } from "./config.js";
 export const HTTP_REQUESTS_TOTAL = "http_requests_total";
 export const HTTP_REQUEST_DURATION = "http_request_duration_seconds";
 export const HTTP_SERVER_DURATION_SECONDS = "http_server_duration_seconds";
+export const HTTP_RESPONSES_TOTAL = "http_responses_total";
+export const HTTP_RESPONSE_DURATION_SECONDS = "http_response_duration_seconds";
+export const HTTP_RESPONSE_ERROR_TOTAL = "http_response_error_total";
 
 // Registry-first approach: Store metrics per registry to avoid conflicts
 const registryMetrics = new Map<
@@ -13,6 +16,15 @@ const registryMetrics = new Map<
 		httpRequestsTotal: client.Counter;
 		httpRequestDuration: client.Histogram;
 		httpServerDurationSeconds: client.Histogram;
+	}
+>();
+
+const outboundRegistryMetrics = new Map<
+	client.Registry,
+	{
+		httpResponsesTotal: client.Counter;
+		httpResponseDuration: client.Histogram;
+		httpResponseErrorTotal: client.Counter;
 	}
 >();
 
@@ -58,6 +70,50 @@ export const createMetricsForRegistry = ({
 
 	// Store metrics for this registry
 	registryMetrics.set(register, metrics);
+
+	return metrics;
+};
+
+export const createOutboundMetricsForRegistry = ({
+	register,
+	prefix = "",
+}: {
+	register: client.Registry;
+	prefix?: string;
+}) => {
+	if (outboundRegistryMetrics.has(register)) {
+		return outboundRegistryMetrics.get(register)!;
+	}
+
+	const httpResponsesTotal = new client.Counter({
+		name: `${prefix}${HTTP_RESPONSES_TOTAL}`,
+		help: "Total number of outbound HTTP responses",
+		labelNames: ["method", "host", "status", "endpoint", "app"],
+		registers: [register],
+	});
+
+	const httpResponseDuration = new client.Histogram({
+		name: `${prefix}${HTTP_RESPONSE_DURATION_SECONDS}`,
+		help: "Duration in seconds of outbound HTTP responses to other services.",
+		labelNames: ["method", "host", "status", "endpoint", "app"],
+		buckets: [0.1, 0.25, 0.5, 1, 2.5, 5, 10, 25, 50, 100],
+		registers: [register],
+	});
+
+	const httpResponseErrorTotal = new client.Counter({
+		name: `${prefix}${HTTP_RESPONSE_ERROR_TOTAL}`,
+		help: "Total number of outbound HTTP response errors",
+		labelNames: ["method", "host", "status", "endpoint", "error_reason", "app"],
+		registers: [register],
+	});
+
+	const metrics = {
+		httpResponsesTotal,
+		httpResponseDuration,
+		httpResponseErrorTotal,
+	};
+
+	outboundRegistryMetrics.set(register, metrics);
 
 	return metrics;
 };
@@ -115,4 +171,5 @@ export const clearRegistry = (register: client.Registry) => {
 // Function to clear metrics for a specific registry (useful for testing)
 export const clearRegistryMetrics = (register: client.Registry) => {
 	registryMetrics.delete(register);
+	outboundRegistryMetrics.delete(register);
 };
