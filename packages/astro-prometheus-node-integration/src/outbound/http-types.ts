@@ -1,5 +1,10 @@
 import type { PerformanceEntry } from "node:perf_hooks";
 
+/**
+ * The detail object for the HTTP performance entry.
+ * We are keeping this interface because it will be used in the future
+ * to possibly replace the middleware implementation of inbound requests.
+ */
 export interface HttpRequestDetail {
 	req: {
 		method: string;
