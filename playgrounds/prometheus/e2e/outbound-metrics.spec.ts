@@ -15,8 +15,7 @@ const parseMetricSamples = (metricsText: string, metricName: string) => {
 		.map((line) => line.trim())
 		.filter(
 			(line) =>
-				line.startsWith(`${metricName} `) ||
-				line.startsWith(`${metricName}{`),
+				line.startsWith(`${metricName} `) || line.startsWith(`${metricName}{`),
 		);
 
 	const samples: MetricSample[] = [];
@@ -355,4 +354,3 @@ test.describe("Outbound HTTP metrics", () => {
 		expect(after).toBe(before);
 	});
 });
-
