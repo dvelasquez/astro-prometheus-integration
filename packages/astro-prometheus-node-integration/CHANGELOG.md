@@ -1,5 +1,15 @@
 # astro-prometheus-node-integration
 
+## 1.2.0
+
+### Minor Changes
+
+- [`8156df8`](https://github.com/dvelasquez/astro-prometheus-integration/commit/8156df8222a1fcb0440c4f80db03f55aefd87744) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Add optional outbound HTTP metrics instrumentation. Enable it with `outboundRequests.enabled = true` in your Astro config to capture client-side `fetch` calls via Node’s performance observer. When enabled, the integration exports:
+  • `http_responses_total` (counter)
+  • `http_response_duration_seconds` (histogram)
+  • `http_response_error_total` (counter with `error_reason`)
+  All metrics share the `/outboundRequests` label map so you can customize `endpoint`/`app` labels or filter entries with `shouldObserve`.
+
 ## 1.1.0
 
 ### Minor Changes
