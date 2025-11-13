@@ -3,7 +3,6 @@ import client from "prom-client";
 import { createOutboundMetricsForRegistry } from "../metrics/index.js";
 import type { OutboundRequestsOptions } from "./schema.js";
 import type {
-	HttpPerformanceEntry,
 	ObservedEntry,
 	OutboundMetricContext,
 	ResourceEntry,
@@ -73,17 +72,6 @@ const pruneProcessedEntries = (now: number) => {
 	}
 };
 
-const isResourceEntry = (entry: ObservedEntry): entry is ResourceEntry =>
-	entry.entryType === "resource";
-
-const isHttpEntry = (entry: ObservedEntry): entry is HttpPerformanceEntry =>
-	entry.entryType === "http" &&
-	entry.name === "HttpRequest" &&
-	"detail" in entry;
-
-const shouldProcessEntry = (entry: ObservedEntry) =>
-	isResourceEntry(entry) || isHttpEntry(entry);
-
 const extractMethodFromResource = (entry: ResourceEntry) => {
 	const extra = entry as unknown as {
 		method?: string;
@@ -122,59 +110,8 @@ const normalizeResourceEntry = (entry: ResourceEntry): NormalizedEntry => {
 	};
 };
 
-const normalizeHttpEntry = (
-	entry: HttpPerformanceEntry,
-): NormalizedEntry | undefined => {
-	const detail = entry.detail;
-	if (!detail?.req) {
-		return undefined;
-	}
-
-	const method = detail.req.method ?? "GET";
-	const rawUrl = detail.req.url;
-
-	const hostHeader = detail.req.headers?.host;
-	const url = resolveUrl(rawUrl, hostHeader);
-
-	const host = url?.host ?? hostHeader ?? (url ? url.hostname : "unknown");
-
-	const statusCode = detail.res?.statusCode ?? 0;
-	const status = statusCode > 0 ? String(statusCode) : "0";
-	const durationSeconds = entry.duration / 1000;
-
-	const isError = statusCode === 0 || statusCode >= 400;
-	const errorReason =
-		statusCode === 0
-			? (detail.res?.statusMessage ?? "network_error")
-			: isError
-				? (detail.res?.statusMessage ?? `HTTP_${status}`)
-				: undefined;
-
-	const cacheKey = `${method}:${rawUrl ?? host}:${entry.startTime}:${status}`;
-
-	return {
-		cacheKey,
-		...(url ? { url } : {}),
-		method,
-		host,
-		statusCode,
-		status,
-		defaultEndpoint: defaultEndpoint(url),
-		durationSeconds,
-		isError,
-		...(errorReason ? { errorReason } : {}),
-		entry,
-	};
-};
-
 const normalizeEntry = (entry: ObservedEntry): NormalizedEntry | undefined => {
-	if (isResourceEntry(entry)) {
-		return normalizeResourceEntry(entry);
-	}
-	if (isHttpEntry(entry)) {
-		return normalizeHttpEntry(entry);
-	}
-	return undefined;
+	return normalizeResourceEntry(entry);
 };
 
 const invokeShouldObserve = (
@@ -226,7 +163,7 @@ export const initializeOutboundObserver = ({
 		((ctx: OutboundMetricContext) => ctx.defaultEndpoint);
 	const appFn = config.labels?.app ?? (() => defaultAppLabel());
 
-	const includeErrors = config.includeErrors ?? true;
+	const includeErrors = () => config.includeErrors ?? true;
 	const shouldObserve = config.shouldObserve;
 
 	observer = new PerformanceObserver((entries) => {
@@ -234,10 +171,6 @@ export const initializeOutboundObserver = ({
 		pruneProcessedEntries(now);
 
 		for (const entry of entries.getEntries() as ObservedEntry[]) {
-			if (!shouldProcessEntry(entry)) {
-				continue;
-			}
-
 			if (!invokeShouldObserve(shouldObserve, entry)) {
 				continue;
 			}
@@ -271,7 +204,7 @@ export const initializeOutboundObserver = ({
 					...labels,
 					error_reason: normalized.errorReason ?? "unknown",
 				});
-				if (!includeErrors) {
+				if (!includeErrors()) {
 					processedEntries.set(normalized.cacheKey, now);
 					continue;
 				}
@@ -283,7 +216,7 @@ export const initializeOutboundObserver = ({
 		}
 	});
 
-	observer.observe({ entryTypes: ["resource", "http"], buffered: true });
+	observer.observe({ entryTypes: ["resource"], buffered: true });
 };
 
 export const resetOutboundObserver = () => {

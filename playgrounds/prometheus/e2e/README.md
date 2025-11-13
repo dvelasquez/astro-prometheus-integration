@@ -25,7 +25,14 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 - ✅ Format validation
 - ✅ Configuration switching
 
-### 4. **Test Utilities** (`utils/metrics-helper.ts`)
+### 4. **Outbound HTTP Metrics Tests** (`outbound-metrics.spec.ts`)
+- ✅ Successful outbound request instrumentation
+- ✅ Error response tracking with `error_reason`
+- ✅ Histogram recordings for external calls
+- ✅ Custom label mapping (`endpoint`, `app`)
+- ✅ Filtering logic via `shouldObserve`
+
+### 5. **Test Utilities** (`utils/metrics-helper.ts`)
 - 🔧 Helper class for common testing patterns
 - 🔧 Metric value extraction and validation
 - 🔧 Custom prefix and label verification
@@ -150,6 +157,7 @@ npm run test:e2e:build
 - Duration measurement
 - Error response handling
 - Performance optimization
+- Outbound HTTP instrumentation
 
 ### **Configuration Testing**
 - Custom metrics URL
