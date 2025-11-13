@@ -30,4 +30,3 @@ export const GET: APIRoute = async ({ params, url }) => {
 		},
 	);
 };
-
