@@ -1,27 +1,4 @@
-import type {
-	PerformanceEntry,
-	PerformanceMeasure,
-	PerformanceResourceTiming,
-} from "node:perf_hooks";
-
-export interface HttpRequestDetail {
-	req: {
-		method: string;
-		url: string;
-		headers: Record<string, string>;
-	};
-	res: {
-		statusCode: number;
-		statusMessage: string;
-		headers: Record<string, string>;
-	};
-}
-
-export type HttpPerformanceEntry = PerformanceEntry & {
-	entryType: "http";
-	name: "HttpRequest";
-	detail: HttpRequestDetail;
-};
+import type { PerformanceResourceTiming } from "node:perf_hooks";
 
 export type ResourceEntry = PerformanceResourceTiming & {
 	initiatorType: string;
@@ -30,16 +7,7 @@ export type ResourceEntry = PerformanceResourceTiming & {
 	responseStart: number;
 };
 
-export type MeasureEntry = PerformanceMeasure & {
-	entryType: "measure";
-	detail: null;
-};
-
-export type ObservedEntry =
-	| HttpPerformanceEntry
-	| ResourceEntry
-	| MeasureEntry
-	| PerformanceEntry;
+export type ObservedEntry = ResourceEntry;
 
 export interface ResourceEntrySnapshot {
 	name: string;
@@ -67,7 +35,7 @@ export interface ResourceEntrySnapshot {
 }
 
 export interface OutboundMetricContext {
-	entry: ObservedEntry;
+	entry: ResourceEntry;
 	url?: URL;
 	defaultEndpoint: string;
 	method: string;
@@ -77,4 +45,4 @@ export interface OutboundMetricContext {
 
 export type EndpointLabelFn = (context: OutboundMetricContext) => string;
 export type AppLabelFn = (context: OutboundMetricContext) => string;
-export type ShouldObserveFn = (entry: ObservedEntry) => boolean;
+export type ShouldObserveFn = (entry: ResourceEntry) => boolean;
