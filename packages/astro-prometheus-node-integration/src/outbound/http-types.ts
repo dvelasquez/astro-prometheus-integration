@@ -18,4 +18,3 @@ export type HttpPerformanceEntry = PerformanceEntry & {
 	name: "HttpRequest";
 	detail: HttpRequestDetail;
 };
-

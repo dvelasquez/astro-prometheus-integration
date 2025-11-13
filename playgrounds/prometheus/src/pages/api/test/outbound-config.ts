@@ -41,9 +41,11 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 	}
 
-	const config = (globalThis as typeof globalThis & {
-		__ASTRO_PROMETHEUS_OUTBOUND_CONFIG?: MutableOutboundConfig;
-	}).__ASTRO_PROMETHEUS_OUTBOUND_CONFIG;
+	const config = (
+		globalThis as typeof globalThis & {
+			__ASTRO_PROMETHEUS_OUTBOUND_CONFIG?: MutableOutboundConfig;
+		}
+	).__ASTRO_PROMETHEUS_OUTBOUND_CONFIG;
 	if (config) {
 		config.includeErrors = payload.includeErrors;
 
@@ -68,4 +70,3 @@ export const POST: APIRoute = async ({ request }) => {
 		},
 	);
 };
-
