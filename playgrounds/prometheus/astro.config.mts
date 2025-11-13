@@ -34,6 +34,29 @@ export default defineConfig({
 			outboundRequests: {
 				enabled: true,
 				includeErrors: true,
+				labels: {
+					endpoint: (context) =>
+						context.defaultEndpoint.replace(/\/\d+/g, "/:id"),
+					app: () => "prom-playground",
+				},
+				shouldObserve: (entry) => {
+					const resourceTarget =
+						typeof (entry as { name?: unknown }).name === "string"
+							? (entry as { name: string }).name
+							: "";
+					const httpTarget = (() => {
+						const detail = (entry as { detail?: unknown }).detail as
+							| {
+									req?: {
+										url?: string;
+									};
+							  }
+							| undefined;
+						return detail?.req?.url ?? "";
+					})();
+					const target = httpTarget || resourceTarget;
+					return !target.includes("skip-metrics");
+				},
 			},
 		}),
 		hmrIntegration({
@@ -44,7 +67,10 @@ export default defineConfig({
 	],
 
 	vite: {
-		plugins: [tailwindcss() as any],
+		plugins: [
+			// biome-ignore lint/suspicious/noExplicitAny: Tailwind plugin typings are not compatible with Astro config typing.
+			tailwindcss() as any,
+		],
 	},
 
 	adapter: node({
