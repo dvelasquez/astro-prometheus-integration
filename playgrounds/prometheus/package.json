@@ -34,7 +34,7 @@
 		"@astrojs/check": "0.9.5",
 		"@playwright/test": "1.56.1",
 		"@types/node": "24.10.0",
-		"nodemon": "3.1.10",
+		"nodemon": "3.1.11",
 		"typescript": "5.9.3"
 	}
 }
