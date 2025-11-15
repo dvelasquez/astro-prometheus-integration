@@ -71,7 +71,7 @@
 		"astro-integration-kit": "0.19.1"
 	},
 	"devDependencies": {
-		"tsup": "8.5.0",
+		"tsup": "8.5.1",
 		"vitest": "3.2.4"
 	},
 	"repository": {
