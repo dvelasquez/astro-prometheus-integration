@@ -21,7 +21,6 @@ export function shouldCreateMetrics(exporter: MetricsPresets): boolean {
 		case "grpc":
 		case "proto":
 			return true;
-		case "none":
 		default:
 			return false;
 	}

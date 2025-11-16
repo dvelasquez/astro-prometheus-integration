@@ -359,7 +359,6 @@ describe("createPrometheusMiddleware integration", () => {
 
 	it("shows the exact performance problem in current implementation", async () => {
 		const requestCount = 10;
-		const startTime = performance.now();
 
 		// Process multiple requests
 		for (let i = 0; i < requestCount; i++) {
@@ -370,8 +369,6 @@ describe("createPrometheusMiddleware integration", () => {
 			await middleware(context as any, next);
 		}
 
-		const endTime = performance.now();
-		const totalTime = endTime - startTime;
 
 		// ✅ Verify that expensive operations are NOT called during request processing
 		expect(getMetricsAsJSONSpy).toHaveBeenCalledTimes(0);
@@ -427,7 +424,6 @@ describe("createPrometheusMiddleware integration", () => {
 
 	it("verifies that the new cached implementation works correctly", async () => {
 		const requestCount = 20;
-		const startTime = performance.now();
 
 		// Process multiple requests
 		for (let i = 0; i < requestCount; i++) {
@@ -438,8 +434,6 @@ describe("createPrometheusMiddleware integration", () => {
 			await middleware(context as any, next);
 		}
 
-		const endTime = performance.now();
-		const totalTime = endTime - startTime;
 
 		// ✅ Verify that expensive operations are NOT called during request processing
 		// This is the key optimization - no expensive operations per request

@@ -32,7 +32,7 @@ describe("middleware/index", () => {
 			},
 			trace: {
 				getTracer: vi.fn(() => ({
-					startActiveSpan: vi.fn((name, callback) => {
+					startActiveSpan: vi.fn((_name, callback) => {
 						const mockSpan = {
 							setAttributes: vi.fn(),
 							setAttribute: vi.fn(),
@@ -103,7 +103,7 @@ describe("middleware/index", () => {
 			},
 			trace: {
 				getTracer: vi.fn(() => ({
-					startActiveSpan: vi.fn((name, callback) => {
+					startActiveSpan: vi.fn((_name, callback) => {
 						const mockSpan = {
 							setAttributes: vi.fn(),
 							setAttribute: vi.fn(),
@@ -174,7 +174,7 @@ describe("middleware/index", () => {
 			},
 			trace: {
 				getTracer: vi.fn(() => ({
-					startActiveSpan: vi.fn((name, callback) => {
+					startActiveSpan: vi.fn((_name, callback) => {
 						const mockSpan = {
 							setAttributes: vi.fn(),
 							setAttribute: vi.fn(),
