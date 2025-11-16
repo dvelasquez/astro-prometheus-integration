@@ -23,7 +23,20 @@
 		}
 	},
 	"files": {
-		"includes": ["**", "!**/dist", "!**/.astro"]
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/.astro",
+			"!**/playwright-report",
+			"!**/test-results",
+			"!**/.next",
+			"!**/.vercel",
+			"!**/.turbo",
+			"!**/coverage",
+			"!**/*.min.js",
+			"!**/*.min.css"
+		]
 	},
 	"overrides": [
 		{
@@ -40,6 +53,17 @@
 					},
 					"complexity": {
 						"useArrowFunction": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.astro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
 					}
 				}
 			}

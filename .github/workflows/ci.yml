@@ -62,6 +62,9 @@ jobs:
       - name: 🏗️ Build packages
         run: pnpm build:all
 
+      - name: 🔍 Run linting
+        run: pnpm lint
+
       - name: 🧪 Run unit tests
         run: |
           pnpm --filter astro-prometheus-node-integration test -- --run

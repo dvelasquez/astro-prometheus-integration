@@ -369,7 +369,6 @@ describe("createPrometheusMiddleware integration", () => {
 			await middleware(context as any, next);
 		}
 
-
 		// ✅ Verify that expensive operations are NOT called during request processing
 		expect(getMetricsAsJSONSpy).toHaveBeenCalledTimes(0);
 		expect(getSingleMetricSpy).toHaveBeenCalledTimes(0);
@@ -433,7 +432,6 @@ describe("createPrometheusMiddleware integration", () => {
 				.mockResolvedValue(new Response(null, { status: 200 }));
 			await middleware(context as any, next);
 		}
-
 
 		// ✅ Verify that expensive operations are NOT called during request processing
 		// This is the key optimization - no expensive operations per request
