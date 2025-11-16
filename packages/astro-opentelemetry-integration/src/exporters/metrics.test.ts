@@ -3,45 +3,60 @@ import { getMetricsExporter, initializeHostMetrics } from "./metrics.js";
 
 // Mock OpenTelemetry exporters
 vi.mock("@opentelemetry/exporter-metrics-otlp-grpc", () => ({
-	OTLPMetricExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	// Vitest 4 requires constructor mocks to use function/class implementations
+	OTLPMetricExporter: vi.fn(function MockGrpcMetricExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/exporter-metrics-otlp-http", () => ({
-	OTLPMetricExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	OTLPMetricExporter: vi.fn(function MockHttpMetricExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/exporter-metrics-otlp-proto", () => ({
-	OTLPMetricExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	OTLPMetricExporter: vi.fn(function MockProtoMetricExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/exporter-prometheus", () => ({
-	PrometheusExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	PrometheusExporter: vi.fn(function MockPrometheusExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/host-metrics", () => ({
-	HostMetrics: vi.fn().mockImplementation(() => ({
-		start: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	HostMetrics: vi.fn(function MockHostMetrics(this: unknown) {
+		return {
+			start: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/sdk-metrics", () => ({
-	PeriodicExportingMetricReader: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	PeriodicExportingMetricReader: vi.fn(
+		function MockPeriodicExportingMetricReader(this: unknown) {
+			return {
+				export: vi.fn(),
+				shutdown: vi.fn(),
+			};
+		},
+	),
 }));
 
 describe("exporters/metrics", () => {

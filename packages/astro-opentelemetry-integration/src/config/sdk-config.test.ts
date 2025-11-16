@@ -6,7 +6,10 @@ vi.doMock("@opentelemetry/auto-instrumentations-node", () => ({
 }));
 
 vi.doMock("@opentelemetry/instrumentation-http", () => ({
-	HttpInstrumentation: vi.fn(),
+	// Use function-based implementation for constructor compatibility in Vitest 4
+	HttpInstrumentation: vi.fn(function MockHttpInstrumentation(this: unknown) {
+		return {};
+	}),
 }));
 
 vi.doMock("@opentelemetry/resources", () => ({
@@ -65,7 +68,10 @@ describe("config/sdk-config", () => {
 				"@opentelemetry/instrumentation-http"
 			);
 			const mockInstrumentation = {};
-			HttpInstrumentation.mockReturnValue(mockInstrumentation);
+			// Ensure implementation used with `new` is a regular function (Vitest 4 requirement)
+			HttpInstrumentation.mockImplementation(function (_config) {
+				return mockInstrumentation;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const result = createHttpInstrumentation();
@@ -84,7 +90,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -108,7 +116,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -129,7 +139,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -153,7 +165,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -174,7 +188,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -191,7 +207,9 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation((config) => config);
+			HttpInstrumentation.mockImplementation(function (config) {
+				return config;
+			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
 			const config = createHttpInstrumentation();
@@ -264,7 +282,9 @@ describe("config/sdk-config", () => {
 			resourceFromAttributes.mockReturnValue(mockResource);
 
 			const mockHttpInstrumentation = { name: "http-instrumentation" };
-			HttpInstrumentation.mockReturnValue(mockHttpInstrumentation);
+			HttpInstrumentation.mockImplementation(function () {
+				return mockHttpInstrumentation;
+			});
 		});
 
 		it("should build basic SDK configuration", async () => {

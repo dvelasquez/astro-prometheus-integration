@@ -3,31 +3,39 @@ import { getTraceExporter, traceConsoleExporter } from "./traces.js";
 
 // Mock OpenTelemetry exporters
 vi.mock("@opentelemetry/exporter-trace-otlp-grpc", () => ({
-	OTLPTraceExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	OTLPTraceExporter: vi.fn(function MockGrpcTraceExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/exporter-trace-otlp-http", () => ({
-	OTLPTraceExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	OTLPTraceExporter: vi.fn(function MockHttpTraceExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/exporter-trace-otlp-proto", () => ({
-	OTLPTraceExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	OTLPTraceExporter: vi.fn(function MockProtoTraceExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock("@opentelemetry/sdk-trace-node", () => ({
-	ConsoleSpanExporter: vi.fn().mockImplementation(() => ({
-		export: vi.fn(),
-		shutdown: vi.fn(),
-	})),
+	ConsoleSpanExporter: vi.fn(function MockConsoleSpanExporter(this: unknown) {
+		return {
+			export: vi.fn(),
+			shutdown: vi.fn(),
+		};
+	}),
 }));
 
 describe("exporters/traces", () => {
