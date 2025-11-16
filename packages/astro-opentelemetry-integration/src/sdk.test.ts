@@ -7,9 +7,20 @@ vi.doMock("@opentelemetry/api", () => ({
 	},
 }));
 
-vi.doMock("@opentelemetry/sdk-node", () => ({
-	NodeSDK: vi.fn(),
-}));
+vi.doMock("@opentelemetry/sdk-node", () => {
+	const start = vi.fn().mockResolvedValue(undefined);
+	const shutdown = vi.fn().mockResolvedValue(undefined);
+
+	// Mock NodeSDK as a constructible class-like function for Vitest 4
+	const NodeSDK = vi.fn(function MockNodeSDK(this: unknown) {
+		return {
+			start,
+			shutdown,
+		};
+	});
+
+	return { NodeSDK };
+});
 
 vi.doMock("./config/sdk-config.js", () => ({
 	buildSDKConfig: vi.fn(),
