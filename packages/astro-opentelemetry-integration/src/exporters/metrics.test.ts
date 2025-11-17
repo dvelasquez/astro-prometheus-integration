@@ -245,8 +245,14 @@ describe("exporters/metrics", () => {
 		it("should handle multiple meter providers", async () => {
 			const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-			const meterProvider1 = { addMetricReader: vi.fn(), shutdown: vi.fn() };
-			const meterProvider2 = { addMetricReader: vi.fn(), shutdown: vi.fn() };
+			const meterProvider1 = {
+				addMetricReader: vi.fn(),
+				shutdown: vi.fn(),
+			} as any;
+			const meterProvider2 = {
+				addMetricReader: vi.fn(),
+				shutdown: vi.fn(),
+			} as any;
 
 			// The function should not throw errors when called with different providers
 			expect(() => initializeHostMetrics(meterProvider1)).not.toThrow();

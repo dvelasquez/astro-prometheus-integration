@@ -30,7 +30,7 @@ export function startStandaloneMetricsServer({
 					"Content-Type": register.contentType || "text/plain",
 				});
 				res.end(metrics);
-			} catch (err) {
+			} catch (_err) {
 				res.writeHead(500);
 				res.end("Error generating metrics");
 			}

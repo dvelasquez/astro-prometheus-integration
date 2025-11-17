@@ -84,7 +84,7 @@ export function measureTTLBWithAsyncTiming(
 						break;
 					}
 				}
-			} catch (error: unknown) {
+			} catch (_error: unknown) {
 				// Silent fail for timing - don't break the response
 				// Optionally log at debug level if needed
 			}

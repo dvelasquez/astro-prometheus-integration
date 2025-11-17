@@ -113,7 +113,13 @@ describe("integration", () => {
 		});
 
 		describe("astro:config:setup hook", () => {
-			let setupHook: Function;
+			let setupHook: (params: {
+				addMiddleware: unknown;
+				logger: unknown;
+				updateConfig: unknown;
+				config: unknown;
+				command: string;
+			}) => void;
 
 			beforeEach(async () => {
 				const { integration } = await import("./integration.js");
@@ -266,7 +272,10 @@ describe("integration", () => {
 			});
 
 			describe("Vite plugin generateBundle", () => {
-				let generateBundle: Function;
+				let generateBundle: (
+					options: unknown,
+					bundle: Record<string, unknown>,
+				) => void;
 
 				beforeEach(() => {
 					setupHook({

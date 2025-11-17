@@ -69,7 +69,7 @@ describe("config/sdk-config", () => {
 			);
 			const mockInstrumentation = {};
 			// Ensure implementation used with `new` is a regular function (Vitest 4 requirement)
-			HttpInstrumentation.mockImplementation(function (_config) {
+			(HttpInstrumentation as any).mockImplementation(function (_config: any) {
 				return mockInstrumentation;
 			});
 
@@ -90,12 +90,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 			const mockSpan = {
 				setAttributes: vi.fn(),
 			};
@@ -116,12 +116,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 			const mockSpan = {
 				setAttributes: vi.fn(),
 			};
@@ -139,12 +139,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 			const mockSpan = {
 				setAttributes: vi.fn(),
 			};
@@ -165,12 +165,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 			const mockSpan = {
 				setAttributes: vi.fn(),
 			};
@@ -188,12 +188,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 
 			expect(config.ignoreIncomingRequestHook({ url: "/health" })).toBe(true);
 			expect(config.ignoreIncomingRequestHook({ url: "/ping" })).toBe(true);
@@ -207,12 +207,12 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
-			HttpInstrumentation.mockImplementation(function (config) {
+			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
 
 			const { createHttpInstrumentation } = await import("./sdk-config.js");
-			const config = createHttpInstrumentation();
+			const config = createHttpInstrumentation() as any;
 
 			expect(config.ignoreOutgoingRequestHook({ url: "/v1/traces" })).toBe(
 				true,
@@ -282,7 +282,7 @@ describe("config/sdk-config", () => {
 			resourceFromAttributes.mockReturnValue(mockResource);
 
 			const mockHttpInstrumentation = { name: "http-instrumentation" };
-			HttpInstrumentation.mockImplementation(function () {
+			(HttpInstrumentation as any).mockImplementation(function () {
 				return mockHttpInstrumentation;
 			});
 		});
@@ -346,7 +346,9 @@ describe("config/sdk-config", () => {
 				"@opentelemetry/auto-instrumentations-node"
 			);
 			const mockAutoInstrumentations = [{ name: "auto-instrumentation" }];
-			getNodeAutoInstrumentations.mockReturnValue(mockAutoInstrumentations);
+			(getNodeAutoInstrumentations as any).mockReturnValue(
+				mockAutoInstrumentations,
+			);
 
 			const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
@@ -403,7 +405,7 @@ describe("config/sdk-config", () => {
 			const { getNodeAutoInstrumentations } = await import(
 				"@opentelemetry/auto-instrumentations-node"
 			);
-			getNodeAutoInstrumentations.mockClear();
+			(getNodeAutoInstrumentations as any).mockClear();
 
 			const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 

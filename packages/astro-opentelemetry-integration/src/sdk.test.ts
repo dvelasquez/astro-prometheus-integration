@@ -65,7 +65,7 @@ describe("sdk", () => {
 
 		// Mock process methods
 		process.on = vi.fn();
-		process.exit = vi.fn();
+		process.exit = vi.fn() as any;
 
 		// Reset global state
 		globalThis.__OTEL_PRESETS__ = {

@@ -103,9 +103,10 @@ describe("error-handling", () => {
 			// Get the unhandledRejection handler
 			const unhandledRejectionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "unhandledRejection",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "unhandledRejection")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			expect(unhandledRejectionHandler).toBeDefined();
 
@@ -136,9 +137,10 @@ describe("error-handling", () => {
 			// Get the unhandledRejection handler
 			const unhandledRejectionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "unhandledRejection",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "unhandledRejection")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			// Test with export error
 			const exportError = new Error("export connection failed");
@@ -167,9 +169,10 @@ describe("error-handling", () => {
 			// Get the unhandledRejection handler
 			const unhandledRejectionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "unhandledRejection",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "unhandledRejection")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			// Test with non-OTLP/export error
 			const otherError = new Error("Database connection failed");
@@ -192,9 +195,10 @@ describe("error-handling", () => {
 			// Get the uncaughtException handler
 			const uncaughtExceptionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "uncaughtException",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "uncaughtException")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			expect(uncaughtExceptionHandler).toBeDefined();
 
@@ -225,9 +229,10 @@ describe("error-handling", () => {
 			// Get the uncaughtException handler
 			const uncaughtExceptionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "uncaughtException",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "uncaughtException")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			// Test with export error
 			const exportError = new Error("export timeout");
@@ -256,9 +261,10 @@ describe("error-handling", () => {
 			// Get the uncaughtException handler
 			const uncaughtExceptionHandler = vi
 				.mocked(process.on)
-				.mock.calls.find(
-					([event]) => event === "uncaughtException",
-				)?.[1] as Function;
+				.mock.calls.find(([event]) => event === "uncaughtException")?.[1] as (
+				reason: unknown,
+				promise: Promise<unknown>,
+			) => void;
 
 			// Test with non-OTLP/export error
 			const otherError = new Error("File system error");
