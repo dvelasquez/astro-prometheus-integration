@@ -478,7 +478,7 @@ pnpm playground:dev
 
 ## License
 
-[MIT Licensed](https://github.com/dvelasquez/astro-prometheus-integration/blob/main/LICENSE). Made with ❤️ by [Danilo Velasquez](https://github.com/dvelasquez).
+[MIT Licensed](https://github.com/dvelasquez/astro-prometheus-integration/blob/main/LICENSE). Made with ❤️ by [Danilo Velasquez](https://d13z.dev/).
 
 ## Acknowledgements
 

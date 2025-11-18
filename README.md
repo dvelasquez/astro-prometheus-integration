@@ -23,7 +23,7 @@ To see how to get started, check out the [astro-prometheus-node-integration READ
 
 ## License
 
-MIT Licensed. Made with ❤️ by Danilo Velasquez ([danilo.velasquez@gmail.com](mailto:danilo.velasquez@gmail.com)).
+MIT Licensed. Made with ❤️ by [Danilo Velasquez](https://d13z.dev/) ([danilo.velasquez@gmail.com](mailto:danilo.velasquez@gmail.com)).
 
 ---
 
