@@ -1,6 +1,6 @@
 {
 	"name": "astro-opentelemetry-integration",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "An Open Telemetry integration for Astro.",
 	"author": {
 		"email": "danilo.velasquez@gmail.com",

@@ -1,5 +1,11 @@
 # astro-opentelemetry-integration
 
+## 0.1.1
+
+### Patch Changes
+
+- [`99d8c76`](https://github.com/dvelasquez/astro-prometheus-integration/commit/99d8c76ff3341d890bb891b232ef1b0860d72a6d) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Updated link to author site: https://d13z.dev
+
 ## 0.1.0
 
 ### Minor Changes
