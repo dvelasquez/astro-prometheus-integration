@@ -1,6 +1,7 @@
 // Prometheus metrics middleware for Astro
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
+import { getPrometheusOptions } from "../config/accessors.js";
 import { createMetricsForRegistry, initRegistry } from "../metrics/index.js";
 import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.js";
 import {
@@ -22,7 +23,7 @@ const metricsCache = new Map<
 // Initialize metrics cache (called once per registry)
 const initializeMetricsCache = async (register: client.Registry) => {
 	if (!metricsCache.has(register)) {
-		const options = __PROMETHEUS_OPTIONS__;
+		const options = getPrometheusOptions();
 
 		// Initialize the registry with default metrics and content type
 		initRegistry({
@@ -56,7 +57,7 @@ export const createPrometheusMiddleware = async (
 	optionsOverride?: any,
 ) => {
 	const cachedMetrics = await initializeMetricsCache(register);
-	const options = optionsOverride ?? __PROMETHEUS_OPTIONS__;
+	const options = optionsOverride ?? getPrometheusOptions();
 
 	return defineMiddleware(async (context, next) => {
 		const {
@@ -145,7 +146,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// ✅ Use cached metrics directly (no lookup overhead)
 	const { httpRequestsTotal, httpRequestDuration, httpServerDurationSeconds } =
 		metricsCache.get(client.register)!;
-	const options = __PROMETHEUS_OPTIONS__;
+	const options = getPrometheusOptions();
 
 	// Start timer
 	const start = process.hrtime();

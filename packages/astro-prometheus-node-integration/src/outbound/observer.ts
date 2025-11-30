@@ -1,5 +1,9 @@
 import { PerformanceObserver } from "node:perf_hooks";
 import client from "prom-client";
+import {
+	getOutboundConfig,
+	getPrometheusOptions,
+} from "../config/accessors.js";
 import { createOutboundMetricsForRegistry } from "../metrics/index.js";
 import type { OutboundRequestsOptions } from "./schema.js";
 import type {
@@ -139,7 +143,7 @@ interface InitializeOptions {
 }
 
 export const initializeOutboundObserver = ({
-	config = globalThis.__ASTRO_PROMETHEUS_OUTBOUND_CONFIG,
+	config = getOutboundConfig(),
 	register = client.register,
 }: InitializeOptions = {}) => {
 	if (!config?.enabled) {
@@ -150,8 +154,8 @@ export const initializeOutboundObserver = ({
 		return;
 	}
 
-	const prefix =
-		__PROMETHEUS_OPTIONS__?.collectDefaultMetricsConfig?.prefix ?? "";
+	const options = getPrometheusOptions();
+	const prefix = options?.collectDefaultMetricsConfig?.prefix ?? "";
 
 	const metrics = createOutboundMetricsForRegistry({
 		register,
