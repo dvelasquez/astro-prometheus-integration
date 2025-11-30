@@ -50,7 +50,7 @@ describe("initializeOutboundObserver", () => {
 
 	afterEach(() => {
 		resetOutboundObserver();
-		clearRegistryMetrics(registry);
+		clearRegistryMetrics({ register: registry });
 		registry.clear();
 		registry.resetMetrics();
 		observerCallbacks.length = 0;
