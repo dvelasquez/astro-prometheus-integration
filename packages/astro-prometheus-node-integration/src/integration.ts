@@ -55,6 +55,133 @@ export const integrationSchema = z
 	})
 	.default({});
 
+type IntegrationOptions = z.infer<typeof integrationSchema>;
+
+interface PrepareOutboundConfigParams {
+	options: IntegrationOptions;
+}
+
+const prepareOutboundConfig = ({
+	options,
+}: PrepareOutboundConfigParams): OutboundRequestsOptions | undefined => {
+	if (options.outboundRequests?.enabled !== true) {
+		return undefined;
+	}
+
+	const outboundRequests: OutboundRequestsOptions = {
+		enabled: true,
+		includeErrors: options.outboundRequests.includeErrors ?? true,
+		labels: options.outboundRequests.labels ?? {},
+		shouldObserve: options.outboundRequests.shouldObserve,
+	};
+
+	return outboundRequests;
+};
+
+interface ApplyOutboundGlobalConfigParams {
+	outboundRequests: OutboundRequestsOptions | undefined;
+}
+
+const applyOutboundGlobalConfig = ({
+	outboundRequests,
+}: ApplyOutboundGlobalConfigParams) => {
+	if (!outboundRequests) {
+		return;
+	}
+
+	globalThis.__ASTRO_PROMETHEUS_OUTBOUND_CONFIG = outboundRequests;
+};
+
+interface BuildSanitizedOptionsParams {
+	options: IntegrationOptions;
+	outboundRequests: OutboundRequestsOptions | undefined;
+}
+
+const buildSanitizedOptions = ({
+	options,
+	outboundRequests,
+}: BuildSanitizedOptionsParams): IntegrationOptions => {
+	if (!outboundRequests) {
+		return options;
+	}
+
+	return {
+		...options,
+		outboundRequests: {
+			...outboundRequests,
+		},
+	};
+};
+
+interface SetupMetricsRouteParams {
+	options: IntegrationOptions;
+	injectRoute: (input: {
+		pattern: string;
+		entrypoint: URL;
+		prerender: boolean;
+	}) => void;
+}
+
+const setupMetricsRoute = ({
+	options,
+	injectRoute,
+}: SetupMetricsRouteParams) => {
+	if (options.standaloneMetrics?.enabled) {
+		return;
+	}
+
+	injectRoute({
+		pattern: options.metricsUrl,
+		entrypoint: new URL("./routes/metrics.js", import.meta.url),
+		prerender: false,
+	});
+};
+
+interface UpdateViteConfigParams {
+	sanitizedOptions: IntegrationOptions;
+	updateConfig: (input: { vite: { define: Record<string, unknown> } }) => void;
+}
+
+const updateViteConfig = ({
+	sanitizedOptions,
+	updateConfig,
+}: UpdateViteConfigParams) => {
+	updateConfig({
+		vite: {
+			define: {
+				__PROMETHEUS_OPTIONS__: sanitizedOptions,
+			},
+		},
+	});
+};
+
+interface RegisterMiddlewareParams {
+	addMiddleware: (input: { order: "pre"; entrypoint: URL }) => void;
+	outboundRequests: OutboundRequestsOptions | undefined;
+}
+
+const registerMiddleware = ({
+	addMiddleware,
+	outboundRequests,
+}: RegisterMiddlewareParams) => {
+	addMiddleware({
+		order: "pre",
+		entrypoint: new URL(
+			"./middleware/prometheus-middleware.js",
+			import.meta.url,
+		),
+	});
+
+	if (!outboundRequests) {
+		return;
+	}
+
+	addMiddleware({
+		order: "pre",
+		entrypoint: new URL("./middleware/outbound-metrics.js", import.meta.url),
+	});
+};
+
 export const integration = defineIntegration({
 	name: "astro-prometheus-node-integration",
 	optionsSchema: integrationSchema,
@@ -74,62 +201,19 @@ export const integration = defineIntegration({
 					updateConfig,
 				}) => {
 					logger.info("setting up integration");
-					// Get the global register instance
 
-					const outboundRequests =
-						options.outboundRequests?.enabled === true
-							? ({
-									enabled: true,
-									includeErrors: options.outboundRequests.includeErrors ?? true,
-									labels: options.outboundRequests.labels ?? {},
-									shouldObserve: options.outboundRequests.shouldObserve,
-								} satisfies OutboundRequestsOptions)
-							: undefined;
+					const outboundRequests = prepareOutboundConfig({ options });
+					applyOutboundGlobalConfig({ outboundRequests });
 
-					if (outboundRequests) {
-						globalThis.__ASTRO_PROMETHEUS_OUTBOUND_CONFIG = outboundRequests;
-					}
-
-					const sanitizedOptions = {
-						...options,
-						outboundRequests: outboundRequests
-							? {
-									enabled: outboundRequests.enabled,
-									includeErrors: outboundRequests.includeErrors,
-								}
-							: undefined,
-					};
-
-					if (!options.standaloneMetrics?.enabled) {
-						injectRoute({
-							pattern: options.metricsUrl,
-							entrypoint: new URL("./routes/metrics.js", import.meta.url),
-							prerender: false,
-						});
-					}
-					updateConfig({
-						vite: {
-							define: {
-								__PROMETHEUS_OPTIONS__: sanitizedOptions,
-							},
-						},
+					const sanitizedOptions = buildSanitizedOptions({
+						options,
+						outboundRequests,
 					});
-					addMiddleware({
-						order: "pre",
-						entrypoint: new URL(
-							"./middleware/prometheus-middleware.js",
-							import.meta.url,
-						),
-					});
-					if (outboundRequests) {
-						addMiddleware({
-							order: "pre",
-							entrypoint: new URL(
-								"./middleware/outbound-metrics.js",
-								import.meta.url,
-							),
-						});
-					}
+
+					setupMetricsRoute({ options, injectRoute });
+					updateViteConfig({ sanitizedOptions, updateConfig });
+					registerMiddleware({ addMiddleware, outboundRequests });
+
 					logger.info("integration setup complete");
 				},
 			},
