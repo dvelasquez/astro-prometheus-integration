@@ -31,6 +31,19 @@ const PROCESSED_ENTRY_TTL_MS = 60_000;
 
 let observer: PerformanceObserver | undefined;
 
+interface OutboundMetrics {
+	httpResponsesTotal: client.Counter;
+	httpResponseDuration: client.Histogram;
+	httpResponseErrorTotal: client.Counter;
+}
+
+interface ObserverCallbacks {
+	endpointFn: (ctx: OutboundMetricContext) => string;
+	appFn: (ctx: OutboundMetricContext) => string;
+	includeErrors: () => boolean;
+	shouldObserve?: (entry: ObservedEntry) => boolean;
+}
+
 const defaultEndpoint = (url?: URL) => {
 	if (!url) {
 		return "unknown";
@@ -137,6 +150,88 @@ const buildContext = (normalized: NormalizedEntry): OutboundMetricContext => ({
 	status: normalized.status,
 });
 
+interface BuildObserverCallbacksParams {
+	config: OutboundRequestsOptions;
+}
+
+const buildObserverCallbacks = ({
+	config,
+}: BuildObserverCallbacksParams): ObserverCallbacks => {
+	const endpointFn =
+		config.labels?.endpoint ??
+		((ctx: OutboundMetricContext) => ctx.defaultEndpoint);
+	const appFn = config.labels?.app ?? (() => defaultAppLabel());
+
+	const includeErrors = () => config.includeErrors ?? true;
+	const shouldObserve = config.shouldObserve ?? (() => true);
+
+	return {
+		endpointFn,
+		appFn,
+		includeErrors,
+		shouldObserve,
+	};
+};
+
+interface ProcessObservedEntryParams {
+	entry: ObservedEntry;
+	now: number;
+	metrics: OutboundMetrics;
+	callbacks: ObserverCallbacks;
+}
+
+const processObservedEntry = ({
+	entry,
+	now,
+	metrics,
+	callbacks,
+}: ProcessObservedEntryParams) => {
+	const { endpointFn, appFn, includeErrors, shouldObserve } = callbacks;
+
+	if (!invokeShouldObserve(shouldObserve, entry)) {
+		return;
+	}
+
+	const normalized = normalizeEntry(entry);
+	if (!normalized) {
+		return;
+	}
+
+	if (processedEntries.has(normalized.cacheKey)) {
+		return;
+	}
+
+	const context = buildContext(normalized);
+	const endpoint =
+		safeInvoke(() => endpointFn(context)) ?? normalized.defaultEndpoint;
+	const app = safeInvoke(() => appFn(context)) ?? defaultAppLabel();
+
+	const labels = {
+		method: normalized.method,
+		host: normalized.host,
+		status: normalized.status,
+		endpoint,
+		app,
+	};
+
+	metrics.httpResponsesTotal.inc(labels);
+
+	if (normalized.isError) {
+		metrics.httpResponseErrorTotal.inc({
+			...labels,
+			error_reason: normalized.errorReason ?? "unknown",
+		});
+		if (!includeErrors()) {
+			processedEntries.set(normalized.cacheKey, now);
+			return;
+		}
+	}
+
+	metrics.httpResponseDuration.observe(labels, normalized.durationSeconds);
+
+	processedEntries.set(normalized.cacheKey, now);
+};
+
 interface InitializeOptions {
 	config?: OutboundRequestsOptions;
 	register?: client.Registry;
@@ -161,62 +256,19 @@ export const initializeOutboundObserver = ({
 		register,
 		prefix,
 	});
-
-	const endpointFn =
-		config.labels?.endpoint ??
-		((ctx: OutboundMetricContext) => ctx.defaultEndpoint);
-	const appFn = config.labels?.app ?? (() => defaultAppLabel());
-
-	const includeErrors = () => config.includeErrors ?? true;
-	const shouldObserve = config.shouldObserve;
+	const callbacks = buildObserverCallbacks({ config });
 
 	observer = new PerformanceObserver((entries) => {
 		const now = Date.now();
 		pruneProcessedEntries(now);
 
 		for (const entry of entries.getEntries() as ObservedEntry[]) {
-			if (!invokeShouldObserve(shouldObserve, entry)) {
-				continue;
-			}
-
-			const normalized = normalizeEntry(entry);
-			if (!normalized) {
-				continue;
-			}
-
-			if (processedEntries.has(normalized.cacheKey)) {
-				continue;
-			}
-
-			const context = buildContext(normalized);
-			const endpoint =
-				safeInvoke(() => endpointFn(context)) ?? normalized.defaultEndpoint;
-			const app = safeInvoke(() => appFn(context)) ?? defaultAppLabel();
-
-			const labels = {
-				method: normalized.method,
-				host: normalized.host,
-				status: normalized.status,
-				endpoint,
-				app,
-			};
-
-			metrics.httpResponsesTotal.inc(labels);
-
-			if (normalized.isError) {
-				metrics.httpResponseErrorTotal.inc({
-					...labels,
-					error_reason: normalized.errorReason ?? "unknown",
-				});
-				if (!includeErrors()) {
-					processedEntries.set(normalized.cacheKey, now);
-					continue;
-				}
-			}
-
-			metrics.httpResponseDuration.observe(labels, normalized.durationSeconds);
-
-			processedEntries.set(normalized.cacheKey, now);
+			processObservedEntry({
+				entry,
+				now,
+				metrics,
+				callbacks,
+			});
 		}
 	});
 
