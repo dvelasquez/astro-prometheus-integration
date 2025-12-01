@@ -1,4 +1,5 @@
 // Prometheus metrics middleware for Astro
+import type { APIContext } from "astro";
 import { defineMiddleware } from "astro/middleware";
 import client from "prom-client";
 import { getPrometheusOptions } from "../config/accessors.js";
@@ -6,15 +7,37 @@ import { createMetricsForRegistry, initRegistry } from "../metrics/index.js";
 import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.js";
 import { measureTimeToLastByte } from "./timing-utils.js";
 
+interface MiddlewareMetrics {
+	httpRequestsTotal: client.Counter;
+	httpRequestDuration: client.Histogram;
+	httpServerDurationSeconds: client.Histogram;
+}
+
+type MiddlewareMode = "factory" | "main";
+
+interface HandleRequestParams {
+	context: APIContext;
+	next: () => Promise<Response>;
+	metrics: MiddlewareMetrics;
+	mode: MiddlewareMode;
+}
+
+interface HandleSuccessParams extends HandleRequestParams {
+	response: Response;
+	start: [number, number];
+	options: ReturnType<typeof getPrometheusOptions>;
+}
+
+interface HandleErrorParams {
+	context: APIContext;
+	error: unknown;
+	start: [number, number];
+	metrics: MiddlewareMetrics;
+	mode: MiddlewareMode;
+}
+
 // Cache metrics per registry to avoid conflicts between different test registries
-const metricsCache = new Map<
-	client.Registry,
-	{
-		httpRequestsTotal: client.Counter;
-		httpRequestDuration: client.Histogram;
-		httpServerDurationSeconds: client.Histogram;
-	}
->();
+const metricsCache = new Map<client.Registry, MiddlewareMetrics>();
 
 // Initialize metrics cache (called once per registry)
 const initializeMetricsCache = async (register: client.Registry) => {
@@ -28,7 +51,6 @@ const initializeMetricsCache = async (register: client.Registry) => {
 			registerContentType: options?.registerContentType || "PROMETHEUS",
 		});
 
-		// Create fresh metrics for this specific registry
 		const cachedMetrics = createMetricsForRegistry({
 			register,
 			prefix: options?.collectDefaultMetricsConfig?.prefix || "",
@@ -47,139 +69,79 @@ const initializeMetricsCache = async (register: client.Registry) => {
 	return metricsCache.get(register)!;
 };
 
-// Factory function for creating middleware (for testing purposes)
-export const createPrometheusMiddleware = async (
-	register: client.Registry,
-	optionsOverride?: any,
-) => {
-	const cachedMetrics = await initializeMetricsCache(register);
-	const options = optionsOverride ?? getPrometheusOptions();
-
-	return defineMiddleware(async (context, next) => {
-		const {
-			httpRequestsTotal,
-			httpRequestDuration,
-			httpServerDurationSeconds,
-		} = cachedMetrics;
-
-		// Start timer
-		const start = process.hrtime();
-		let response: Response;
-		try {
-			response = await next();
-		} catch (err) {
-			// Record error metrics
-			const errorLabels = {
-				method: context.request.method,
-				path:
-					context.routePattern ??
-					(new URL(context.request.url).pathname || "/"),
-				status: "500",
-			};
-			if (httpRequestsTotal instanceof client.Counter) {
-				httpRequestsTotal.inc(errorLabels);
-			}
-			throw err;
-		}
-
-		// Calculate duration
-		const [seconds, nanoseconds] = process.hrtime(start);
-		const duration = seconds + nanoseconds / 1e9;
-		const path =
-			context.routePattern ?? (new URL(context.request.url).pathname || "/");
-
-		// Record metrics
-		const labels = {
-			method: context.request.method,
-			path: path,
-			status: response.status.toString(),
-		};
-
-		if (httpRequestDuration instanceof client.Histogram) {
-			httpRequestDuration.observe(labels, duration);
-		}
-
-		if (httpRequestsTotal instanceof client.Counter) {
-			httpRequestsTotal.inc(labels);
-		}
-
-		// Handle streaming responses for http_server_duration_seconds
-		if (
-			response.body instanceof ReadableStream &&
-			httpServerDurationSeconds instanceof client.Histogram
-		) {
-			const useOptimized =
-				options?.experimental?.useOptimizedTTLBMeasurement ?? false;
-			response = measureTimeToLastByte({
-				response,
-				start,
-				labels,
-				histogram: httpServerDurationSeconds,
-				useOptimized,
-			});
-		} else {
-			// For non-streaming responses, record server duration immediately
-			if (httpServerDurationSeconds instanceof client.Histogram) {
-				httpServerDurationSeconds.observe(labels, duration);
-			}
-		}
-
-		return response;
-	});
+const getRequestPath = (context: APIContext) => {
+	return context.routePattern ?? (new URL(context.request.url).pathname || "/");
 };
 
-// Main middleware export for Astro (synchronous)
-export const onRequest = defineMiddleware(async (context, next) => {
-	// Initialize metrics cache if not already done
-	if (!metricsCache.has(client.register)) {
-		await initializeMetricsCache(client.register);
-	}
+const buildLabels = ({
+	context,
+	path,
+	status,
+}: {
+	context: APIContext;
+	path: string;
+	status: string;
+}) => {
+	return {
+		method: context.request.method,
+		path,
+		status,
+	};
+};
 
-	// ✅ Use cached metrics directly (no lookup overhead)
+const handleErrorMetrics = ({
+	context,
+	start,
+	metrics,
+	mode,
+}: HandleErrorParams) => {
 	const { httpRequestsTotal, httpRequestDuration, httpServerDurationSeconds } =
-		metricsCache.get(client.register)!;
-	const options = getPrometheusOptions();
+		metrics;
 
-	// Start timer
-	const start = process.hrtime();
-	let response: Response;
-	try {
-		response = await next();
-	} catch (err) {
-		// Calculate duration
-		const [seconds, nanoseconds] = process.hrtime(start);
-		const duration = seconds + nanoseconds / 1e9;
-		const path =
-			context.routePattern ?? (new URL(context.request.url).pathname || "/");
-		const labels = {
-			method: context.request.method,
-			path: path,
-			status: "500",
-		};
-		if (httpRequestDuration instanceof client.Histogram) {
-			httpRequestDuration.observe(labels, duration);
-		}
+	const [seconds, nanoseconds] = process.hrtime(start);
+	const duration = seconds + nanoseconds / 1e9;
+	const path = getRequestPath(context);
+	const labels = buildLabels({ context, path, status: "500" });
+
+	if (mode === "factory") {
 		if (httpRequestsTotal instanceof client.Counter) {
 			httpRequestsTotal.inc(labels);
 		}
-		if (httpServerDurationSeconds instanceof client.Histogram) {
-			httpServerDurationSeconds.observe(labels, duration);
-		}
-		throw err;
+		return;
 	}
 
-	// Calculate duration
+	if (httpRequestDuration instanceof client.Histogram) {
+		httpRequestDuration.observe(labels, duration);
+	}
+	if (httpRequestsTotal instanceof client.Counter) {
+		httpRequestsTotal.inc(labels);
+	}
+	if (httpServerDurationSeconds instanceof client.Histogram) {
+		httpServerDurationSeconds.observe(labels, duration);
+	}
+};
+
+const handleSuccessMetrics = ({
+	context,
+	next,
+	response,
+	start,
+	metrics,
+	mode,
+	options,
+}: HandleSuccessParams) => {
+	const { httpRequestsTotal, httpRequestDuration, httpServerDurationSeconds } =
+		metrics;
+
 	const [seconds, nanoseconds] = process.hrtime(start);
 	const duration = seconds + nanoseconds / 1e9;
-	const path =
-		context.routePattern ?? (new URL(context.request.url).pathname || "/");
+	const path = getRequestPath(context);
 
-	// Record metrics
-	const labels = {
-		method: context.request.method,
-		path: path,
+	const labels = buildLabels({
+		context,
+		path,
 		status: response.status.toString(),
-	};
+	});
 
 	if (httpRequestDuration instanceof client.Histogram) {
 		httpRequestDuration.observe(labels, duration);
@@ -188,14 +150,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		httpRequestsTotal.inc(labels);
 	}
 
-	// Measure time to last byte (TTLB) and record in httpServerDurationSeconds
+	// Server duration / TTLB handling
 	if (
 		httpServerDurationSeconds instanceof client.Histogram &&
 		response.body instanceof ReadableStream
 	) {
 		const useOptimized =
 			options?.experimental?.useOptimizedTTLBMeasurement ?? false;
-		response = measureTimeToLastByte({
+
+		return measureTimeToLastByte({
 			response,
 			start,
 			labels,
@@ -204,12 +167,77 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		});
 	}
 
-	// If no body, record TTLB immediately
-	if (httpServerDurationSeconds instanceof client.Histogram && !response.body) {
-		const [s, ns] = process.hrtime(start);
-		const ttlbDuration = s + ns / 1e9;
-		httpServerDurationSeconds.observe(labels, ttlbDuration);
+	// Mode-specific non-streaming behavior for http_server_duration_seconds
+	if (httpServerDurationSeconds instanceof client.Histogram) {
+		if (mode === "factory") {
+			// In factory mode we always record server duration for non-streaming responses
+			httpServerDurationSeconds.observe(labels, duration);
+		} else if (!response.body) {
+			// In main mode we only record TTLB when there is no body (matches existing behavior)
+			const [s, ns] = process.hrtime(start);
+			const ttlbDuration = s + ns / 1e9;
+			httpServerDurationSeconds.observe(labels, ttlbDuration);
+		}
 	}
 
 	return response;
+};
+
+const handleRequest = async ({
+	context,
+	next,
+	metrics,
+	mode,
+}: HandleRequestParams): Promise<Response> => {
+	const start = process.hrtime();
+
+	try {
+		const response = await next();
+		const options = getPrometheusOptions();
+
+		return handleSuccessMetrics({
+			context,
+			next,
+			response,
+			start,
+			metrics,
+			mode,
+			options,
+		});
+	} catch (error) {
+		handleErrorMetrics({ context, error, start, metrics, mode });
+		throw error;
+	}
+};
+
+// Factory function for creating middleware (for testing purposes)
+export const createPrometheusMiddleware = async (
+	register: client.Registry,
+	optionsOverride?: any,
+) => {
+	const cachedMetrics = await initializeMetricsCache(register);
+
+	// optionsOverride is currently unused but kept for backward compatibility
+	void optionsOverride;
+
+	return defineMiddleware(async (context, next) => {
+		return handleRequest({
+			context,
+			next,
+			metrics: cachedMetrics,
+			mode: "factory",
+		});
+	});
+};
+
+// Main middleware export for Astro (synchronous)
+export const onRequest = defineMiddleware(async (context, next) => {
+	const metrics = await initializeMetricsCache(client.register);
+
+	return handleRequest({
+		context,
+		next,
+		metrics,
+		mode: "main",
+	});
 });
