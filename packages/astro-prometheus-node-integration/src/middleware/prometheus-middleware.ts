@@ -123,7 +123,6 @@ const handleErrorMetrics = ({
 
 const handleSuccessMetrics = ({
 	context,
-	next,
 	response,
 	start,
 	metrics,
