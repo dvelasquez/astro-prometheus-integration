@@ -4,11 +4,7 @@ import client from "prom-client";
 import { getPrometheusOptions } from "../config/accessors.js";
 import { createMetricsForRegistry, initRegistry } from "../metrics/index.js";
 import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.js";
-import {
-	measureTTLBWithAsyncTiming,
-	measureTTLBWithStreamWrapping,
-	type TimingOptions,
-} from "./timing-utils.js";
+import { measureTimeToLastByte } from "./timing-utils.js";
 
 // Cache metrics per registry to avoid conflicts between different test registries
 const metricsCache = new Map<
@@ -108,23 +104,19 @@ export const createPrometheusMiddleware = async (
 		}
 
 		// Handle streaming responses for http_server_duration_seconds
-		if (response.body instanceof ReadableStream) {
-			const timingOptions: TimingOptions = {
+		if (
+			response.body instanceof ReadableStream &&
+			httpServerDurationSeconds instanceof client.Histogram
+		) {
+			const useOptimized =
+				options?.experimental?.useOptimizedTTLBMeasurement ?? false;
+			response = measureTimeToLastByte({
+				response,
 				start,
 				labels,
 				histogram: httpServerDurationSeconds,
-			};
-
-			const useOptimized = options?.experimental?.useOptimizedTTLBMeasurement;
-
-			if (
-				useOptimized &&
-				httpServerDurationSeconds instanceof client.Histogram
-			) {
-				response = measureTTLBWithAsyncTiming(response, timingOptions);
-			} else if (httpServerDurationSeconds instanceof client.Histogram) {
-				response = measureTTLBWithStreamWrapping(response, timingOptions);
-			}
+				useOptimized,
+			});
 		} else {
 			// For non-streaming responses, record server duration immediately
 			if (httpServerDurationSeconds instanceof client.Histogram) {
@@ -201,19 +193,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		httpServerDurationSeconds instanceof client.Histogram &&
 		response.body instanceof ReadableStream
 	) {
-		const timingOptions: TimingOptions = {
+		const useOptimized =
+			options?.experimental?.useOptimizedTTLBMeasurement ?? false;
+		response = measureTimeToLastByte({
+			response,
 			start,
 			labels,
 			histogram: httpServerDurationSeconds,
-		};
-
-		const useOptimized = options?.experimental?.useOptimizedTTLBMeasurement;
-
-		if (useOptimized) {
-			response = measureTTLBWithAsyncTiming(response, timingOptions);
-		} else {
-			response = measureTTLBWithStreamWrapping(response, timingOptions);
-		}
+			useOptimized,
+		});
 	}
 
 	// If no body, record TTLB immediately
