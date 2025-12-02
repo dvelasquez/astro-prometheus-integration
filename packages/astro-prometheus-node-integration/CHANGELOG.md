@@ -1,5 +1,28 @@
 # astro-prometheus-node-integration
 
+## 1.3.0
+
+### Minor Changes
+
+- [#179](https://github.com/dvelasquez/astro-prometheus-integration/pull/179) [`a3e2896`](https://github.com/dvelasquez/astro-prometheus-integration/commit/a3e28963a54fe20e97a880144bc9566c8be92f21) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Add configurable histogram buckets for inbound and outbound metrics
+
+  Users can now customize histogram bucket boundaries for better performance and query optimization. The new `histogramBuckets` configuration option allows separate bucket configuration for inbound (`http_request_duration_seconds`, `http_server_duration_seconds`) and outbound (`http_response_duration_seconds`) metrics.
+
+  When not configured, the integration uses prom-client's default buckets `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` seconds.
+
+  **Example:**
+
+  ```js
+  prometheusNodeIntegration({
+    histogramBuckets: {
+      inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+      outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50],
+    },
+  });
+  ```
+
+  This change removes the hardcoded buckets from outbound metrics and makes all histogram buckets configurable, allowing users to optimize for their application's typical latency ranges.
+
 ## 1.2.1
 
 ### Patch Changes
@@ -25,7 +48,6 @@
   This release introduces an experimental feature that allows users to choose between two different methods for measuring Time To Last Byte (TTLB) in streaming responses:
 
   ## ✨ New Features
-
   - **Experimental flag**: `experimental.useOptimizedTTLBMeasurement` in integration config
   - **Two TTLB measurement methods**:
     - **Legacy (default)**: Stream wrapping for maximum accuracy but higher CPU usage
@@ -49,18 +71,15 @@
   | **Optimized** | Millisecond | Minimal   | Minimal | High-concurrency apps     |
 
   ## 🎯 Use Cases
-
   - **Set to `true`**: High-concurrency applications, microservices, resource-constrained environments
   - **Set to `false`**: When maximum timing accuracy is critical
 
   ## ⚠️ Important Notes
-
   - **Experimental feature**: May change in future releases
   - **Backward compatible**: Defaults to legacy method
   - **Production ready**: Both methods thoroughly tested
 
   ## 🔍 Technical Improvements
-
   - Extracted TTLB measurement logic to `timing-utils.ts`
   - Added robust path fallback logic for undefined routePattern
   - Fixed operator precedence issues with `??` and `||`
@@ -79,21 +98,18 @@
   This is a **major breaking change** that optimizes the creation of metrics to avoid performance problems. The current implementation was calling expensive operations on every HTTP request, causing significant performance bottlenecks.
 
   ### ⚠️ Breaking Changes
-
   - **Replaced `findMetrics()` function** with `initializeMetricsCache()` function
   - **Changed middleware initialization pattern** - metrics are now cached per registry
   - **Updated `createPrometheusMiddleware` function** signature and behavior
   - **Modified `onRequest` middleware** to use cached metrics instead of computing on each request
 
   ## 🔧 Performance Improvements
-
   - **94.8% faster request processing** in high-traffic scenarios
   - **Constant performance** regardless of request volume
   - **Reduced resource usage** and lower response times
   - **Eliminated per-request metric computation** overhead
 
   ## 🧪 New Features
-
   - **Comprehensive E2E testing suite** with Playwright
   - **Automated CI/CD pipeline** with linting, building, and testing
   - **Cross-browser testing** support
@@ -115,7 +131,6 @@
   ```
 
   ## 🎉 Benefits
-
   1. **Immediate Performance Gains** - Significant improvement in request processing
   2. **Scalability** - Performance remains constant under high load
   3. **Reliability** - Comprehensive E2E testing ensures functionality
@@ -140,7 +155,6 @@
 ### Patch Changes
 
 - [#22](https://github.com/dvelasquez/astro-prometheus-integration/pull/22) [`a088f4d`](https://github.com/dvelasquez/astro-prometheus-integration/commit/a088f4dba80bdd34f0055f027840f7b8cbae0e56) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Fix Prometheus metrics not recording 500 server errors
-
   - The middleware now properly records metrics for requests that result in unhandled exceptions (HTTP 500 errors).
   - Added a try/catch around the request handler to ensure that error responses increment the appropriate counters and histograms.
   - Improved the streaming response handler to also record 500 errors if a streaming failure occurs.
@@ -177,7 +191,6 @@
 ### Minor Changes
 
 - [`55fc2aa`](https://github.com/dvelasquez/astro-prometheus-integration/commit/55fc2aabe871363258040f1c469e37df8a2f1897) - Added standalone metrics server option that allows running the Prometheus metrics endpoint on a separate server instance. This feature enables better separation of concerns and more flexible deployment options.
-
   - Added standalone metrics server configuration option
   - Added integration tests for standalone metrics functionality
   - Added default metrics test coverage
@@ -188,7 +201,6 @@
 ### Patch Changes
 
 - [`d54c8d9`](https://github.com/dvelasquez/astro-prometheus-integration/commit/d54c8d9309bf4a8a33569be2e34672465a75f081) - This release includes several improvements to the codebase:
-
   - Refactored middleware to accept a provided register for better testability
   - Added unit tests for the middleware and metrics initialization
   - Updated Biome configuration for better developer experience
@@ -200,7 +212,6 @@
 ### Minor Changes
 
 - [`aa29376`](https://github.com/dvelasquez/astro-prometheus-integration/commit/aa29376ec1448b9a526664c784e4142480be6ea1) - feat: Add Prometheus metrics integration
-
   - Added prom-client as a dependency for metrics collection
   - Implemented middleware for tracking HTTP request metrics
   - Added /metrics endpoint for Prometheus scraping
