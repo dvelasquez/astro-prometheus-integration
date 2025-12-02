@@ -32,7 +32,7 @@ describe("createPrometheusMiddleware integration", () => {
 		registry.resetMetrics();
 
 		// Clear any cached metrics for this registry
-		clearRegistryMetrics(registry);
+		clearRegistryMetrics({ register: registry });
 
 		// Don't call initRegistry here - the middleware will handle it
 		// This prevents metric name conflicts between tests

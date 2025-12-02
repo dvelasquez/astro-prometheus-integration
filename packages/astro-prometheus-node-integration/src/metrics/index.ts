@@ -28,19 +28,16 @@ const outboundRegistryMetrics = new Map<
 	}
 >();
 
-export const createMetricsForRegistry = ({
-	register,
-	prefix = "",
-}: {
+interface CreateMetricsForRegistryParams {
 	register: client.Registry;
 	prefix?: string;
-}) => {
-	// Check if metrics already exist for this registry
-	if (registryMetrics.has(register)) {
-		return registryMetrics.get(register)!;
-	}
+}
 
-	// Create fresh metrics for this specific registry
+// Private helper: Create inbound HTTP metrics
+const createInboundMetrics = ({
+	register,
+	prefix,
+}: CreateMetricsForRegistryParams) => {
 	const httpRequestsTotal = new client.Counter({
 		name: `${prefix}${HTTP_REQUESTS_TOTAL}`,
 		help: "Total number of HTTP requests",
@@ -62,11 +59,24 @@ export const createMetricsForRegistry = ({
 		registers: [register],
 	});
 
-	const metrics = {
+	return {
 		httpRequestsTotal,
 		httpRequestDuration,
 		httpServerDurationSeconds,
 	};
+};
+
+export const createMetricsForRegistry = ({
+	register,
+	prefix = "",
+}: CreateMetricsForRegistryParams) => {
+	// Guard clause: return cached metrics if they exist
+	if (registryMetrics.has(register)) {
+		return registryMetrics.get(register)!;
+	}
+
+	// Create fresh metrics for this specific registry
+	const metrics = createInboundMetrics({ register, prefix });
 
 	// Store metrics for this registry
 	registryMetrics.set(register, metrics);
@@ -74,17 +84,16 @@ export const createMetricsForRegistry = ({
 	return metrics;
 };
 
-export const createOutboundMetricsForRegistry = ({
-	register,
-	prefix = "",
-}: {
+interface CreateOutboundMetricsForRegistryParams {
 	register: client.Registry;
 	prefix?: string;
-}) => {
-	if (outboundRegistryMetrics.has(register)) {
-		return outboundRegistryMetrics.get(register)!;
-	}
+}
 
+// Private helper: Create outbound HTTP metrics
+const createOutboundMetrics = ({
+	register,
+	prefix,
+}: CreateOutboundMetricsForRegistryParams) => {
 	const httpResponsesTotal = new client.Counter({
 		name: `${prefix}${HTTP_RESPONSES_TOTAL}`,
 		help: "Total number of outbound HTTP responses",
@@ -107,24 +116,42 @@ export const createOutboundMetricsForRegistry = ({
 		registers: [register],
 	});
 
-	const metrics = {
+	return {
 		httpResponsesTotal,
 		httpResponseDuration,
 		httpResponseErrorTotal,
 	};
+};
+
+export const createOutboundMetricsForRegistry = ({
+	register,
+	prefix = "",
+}: CreateOutboundMetricsForRegistryParams) => {
+	// Guard clause: return cached metrics if they exist
+	if (outboundRegistryMetrics.has(register)) {
+		return outboundRegistryMetrics.get(register)!;
+	}
+
+	// Create fresh metrics for this specific registry
+	const metrics = createOutboundMetrics({ register, prefix });
 
 	outboundRegistryMetrics.set(register, metrics);
 
 	return metrics;
 };
 
-export const initRegistry = ({
+interface InitRegistryParams {
+	register: client.Registry;
+	collectDefaultMetricsConfig?: MetricsConfigWithUndefined | null | undefined;
+	registerContentType: string;
+}
+
+// Private helper: Configure content type for registry
+const configureRegistryContentType = ({
 	register,
-	collectDefaultMetricsConfig,
 	registerContentType,
 }: {
 	register: client.Registry;
-	collectDefaultMetricsConfig?: MetricsConfigWithUndefined | null | undefined;
 	registerContentType: string;
 }) => {
 	if (registerContentType === "OPENMETRICS") {
@@ -134,42 +161,72 @@ export const initRegistry = ({
 			client.Registry.OPENMETRICS_CONTENT_TYPE as any,
 		);
 	}
+};
 
-	// Only collect default metrics if not explicitly disabled
-	if (collectDefaultMetricsConfig !== null) {
-		const collectDefaultMetrics = client.collectDefaultMetrics;
-
-		const baseConfig = collectDefaultMetricsConfig
-			? { ...collectDefaultMetricsConfig }
-			: {};
-		const config = {
-			register,
-			...baseConfig,
-		} as client.DefaultMetricsCollectorConfiguration<client.RegistryContentType>;
-
-		collectDefaultMetrics(config);
+// Private helper: Collect default metrics if enabled
+const collectDefaultMetricsIfEnabled = ({
+	register,
+	collectDefaultMetricsConfig,
+}: {
+	register: client.Registry;
+	collectDefaultMetricsConfig?: MetricsConfigWithUndefined | null | undefined;
+}) => {
+	// Guard clause: skip if explicitly disabled
+	if (collectDefaultMetricsConfig === null) {
+		return;
 	}
 
+	const baseConfig = collectDefaultMetricsConfig
+		? { ...collectDefaultMetricsConfig }
+		: {};
+	const config = {
+		register,
+		...baseConfig,
+	} as client.DefaultMetricsCollectorConfiguration<client.RegistryContentType>;
+
+	client.collectDefaultMetrics(config);
+};
+
+// Private helper: Set default labels if provided
+const setDefaultLabelsIfProvided = ({
+	register,
+	collectDefaultMetricsConfig,
+}: {
+	register: client.Registry;
+	collectDefaultMetricsConfig?: MetricsConfigWithUndefined | null | undefined;
+}) => {
 	if (collectDefaultMetricsConfig?.labels) {
 		register.setDefaultLabels(collectDefaultMetricsConfig.labels);
 	}
+};
+
+export const initRegistry = ({
+	register,
+	collectDefaultMetricsConfig,
+	registerContentType,
+}: InitRegistryParams) => {
+	configureRegistryContentType({ register, registerContentType });
+	collectDefaultMetricsIfEnabled({ register, collectDefaultMetricsConfig });
+	setDefaultLabelsIfProvided({ register, collectDefaultMetricsConfig });
 
 	// Create and register metrics for this specific registry
-	createMetricsForRegistry({
-		register,
-		prefix: collectDefaultMetricsConfig?.prefix ?? "",
-	});
+	const prefix = collectDefaultMetricsConfig?.prefix ?? "";
+	createMetricsForRegistry({ register, prefix });
 
 	return register;
 };
 
-export const clearRegistry = (register: client.Registry) => {
+interface ClearRegistryParams {
+	register: client.Registry;
+}
+
+export const clearRegistry = ({ register }: ClearRegistryParams) => {
 	register.clear();
 	register.resetMetrics();
 };
 
 // Function to clear metrics for a specific registry (useful for testing)
-export const clearRegistryMetrics = (register: client.Registry) => {
+export const clearRegistryMetrics = ({ register }: ClearRegistryParams) => {
 	registryMetrics.delete(register);
 	outboundRegistryMetrics.delete(register);
 };
