@@ -16,9 +16,11 @@ interface GetPrometheusOptionsParams {
 
 const readBaseOptions = (): IntegrationOptions | undefined => {
 	// 1) Prefer runtime overrides on globalThis (used in tests and dev tooling)
-	const globalValue = (globalThis as typeof globalThis & {
-		__PROMETHEUS_OPTIONS__?: IntegrationOptions;
-	}).__PROMETHEUS_OPTIONS__;
+	const globalValue = (
+		globalThis as typeof globalThis & {
+			__PROMETHEUS_OPTIONS__?: IntegrationOptions;
+		}
+	).__PROMETHEUS_OPTIONS__;
 
 	if (globalValue) {
 		return globalValue;
@@ -27,7 +29,8 @@ const readBaseOptions = (): IntegrationOptions | undefined => {
 	// 2) Fallback to build-time injected constant from Vite define
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const constantValue: IntegrationOptions | undefined = __PROMETHEUS_OPTIONS__;
+		const constantValue: IntegrationOptions | undefined =
+			__PROMETHEUS_OPTIONS__;
 		if (constantValue) {
 			return constantValue;
 		}

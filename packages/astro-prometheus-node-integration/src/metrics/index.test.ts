@@ -84,9 +84,7 @@ describe("initRegistry", () => {
 		const metrics = parsePrometheusTextFormat(metricsText) as any[];
 
 		expect(
-			metrics.some(
-				(m: any) => m.name === `${prefix}${HTTP_RESPONSES_TOTAL}`,
-			),
+			metrics.some((m: any) => m.name === `${prefix}${HTTP_RESPONSES_TOTAL}`),
 		).toBe(true);
 	});
 
