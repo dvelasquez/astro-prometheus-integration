@@ -4,8 +4,10 @@ import { Counter, Registry } from "prom-client";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
 	createMetricsForRegistry,
+	createOutboundMetricsForRegistry,
 	HTTP_REQUEST_DURATION,
 	HTTP_REQUESTS_TOTAL,
+	HTTP_RESPONSES_TOTAL,
 	HTTP_SERVER_DURATION_SECONDS,
 	initRegistry,
 } from "./index.js";
@@ -67,6 +69,23 @@ describe("initRegistry", () => {
 		expect(
 			metrics.some((m: any) =>
 				m.name.startsWith(`${prefix}http_request_duration_seconds`),
+			),
+		).toBe(true);
+	});
+
+	it("applies prefix to outbound metrics", async () => {
+		const prefix = "custom_";
+		createOutboundMetricsForRegistry({
+			register: registry,
+			prefix,
+		});
+
+		const metricsText = await registry.metrics();
+		const metrics = parsePrometheusTextFormat(metricsText) as any[];
+
+		expect(
+			metrics.some(
+				(m: any) => m.name === `${prefix}${HTTP_RESPONSES_TOTAL}`,
 			),
 		).toBe(true);
 	});
