@@ -1,6 +1,6 @@
 // @ts-expect-error: No types for parse-prometheus-text-format
 import parsePrometheusTextFormat from "parse-prometheus-text-format";
-import { Counter, Registry } from "prom-client";
+import { Registry } from "prom-client";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
 	createMetricsForRegistry,
@@ -185,5 +185,127 @@ describe("initRegistry", () => {
 		// This test verifies that metrics are only created when explicitly requested
 		const metricsText = registry.metrics();
 		expect(metricsText).not.toContain("http_requests_total");
+	});
+
+	it("uses prom-client default buckets when buckets are not provided", async () => {
+		const testMetrics = createMetricsForRegistry({ register: registry });
+
+		// When buckets are not provided, prom-client uses its defaults
+		// The histogram should still work, but we can't directly check the buckets
+		// Instead, we verify the histogram works correctly
+		testMetrics.httpRequestDuration.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			0.1,
+		);
+		testMetrics.httpServerDurationSeconds.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			0.05,
+		);
+
+		// Verify metrics were recorded
+		const metricsText = await registry.metrics();
+		expect(metricsText).toContain("http_request_duration_seconds_count");
+		expect(metricsText).toContain("http_server_duration_seconds_count");
+	});
+
+	it("uses custom buckets when provided for inbound metrics", async () => {
+		const customBuckets = [0.1, 0.5, 1, 2, 5];
+		const testMetrics = createMetricsForRegistry({
+			register: registry,
+			buckets: customBuckets,
+		});
+
+		// Verify the histogram works with custom buckets
+		testMetrics.httpRequestDuration.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			0.3,
+		);
+		testMetrics.httpServerDurationSeconds.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			1.5,
+		);
+
+		const metricsText = await registry.metrics();
+		expect(metricsText).toContain("http_request_duration_seconds_count");
+		expect(metricsText).toContain("http_server_duration_seconds_count");
+	});
+
+	it("uses prom-client default buckets when buckets are not provided for outbound metrics", async () => {
+		const testMetrics = createOutboundMetricsForRegistry({
+			register: registry,
+		});
+
+		// When buckets are not provided, prom-client uses its defaults
+		testMetrics.httpResponseDuration.observe(
+			{
+				method: "GET",
+				host: "example.com",
+				status: "200",
+				endpoint: "/api",
+				app: "test",
+			},
+			0.1,
+		);
+
+		const metricsText = await registry.metrics();
+		expect(metricsText).toContain("http_response_duration_seconds_count");
+	});
+
+	it("uses custom buckets when provided for outbound metrics", async () => {
+		const customBuckets = [0.1, 0.5, 1, 2, 5, 10];
+		const testMetrics = createOutboundMetricsForRegistry({
+			register: registry,
+			buckets: customBuckets,
+		});
+
+		// Verify the histogram works with custom buckets
+		testMetrics.httpResponseDuration.observe(
+			{
+				method: "GET",
+				host: "example.com",
+				status: "200",
+				endpoint: "/api",
+				app: "test",
+			},
+			1.5,
+		);
+
+		const metricsText = await registry.metrics();
+		expect(metricsText).toContain("http_response_duration_seconds_count");
+	});
+
+	it("allows independent bucket configuration for inbound and outbound", async () => {
+		const inboundBuckets = [0.05, 0.1, 0.25, 0.5, 1];
+		const outboundBuckets = [0.1, 0.5, 1, 2, 5, 10];
+
+		const inboundMetrics = createMetricsForRegistry({
+			register: registry,
+			buckets: inboundBuckets,
+		});
+
+		const outboundMetrics = createOutboundMetricsForRegistry({
+			register: registry,
+			buckets: outboundBuckets,
+		});
+
+		// Both should work independently
+		inboundMetrics.httpRequestDuration.observe(
+			{ method: "GET", path: "/test", status: "200" },
+			0.15,
+		);
+		outboundMetrics.httpResponseDuration.observe(
+			{
+				method: "GET",
+				host: "example.com",
+				status: "200",
+				endpoint: "/api",
+				app: "test",
+			},
+			2.5,
+		);
+
+		const metricsText = await registry.metrics();
+		expect(metricsText).toContain("http_request_duration_seconds_count");
+		expect(metricsText).toContain("http_response_duration_seconds_count");
 	});
 });

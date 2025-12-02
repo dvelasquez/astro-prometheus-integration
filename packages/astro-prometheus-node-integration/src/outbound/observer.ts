@@ -251,10 +251,12 @@ export const initializeOutboundObserver = ({
 
 	const options = getPrometheusOptions();
 	const prefix = options?.collectDefaultMetricsConfig?.prefix ?? "";
+	const outboundBuckets = options?.histogramBuckets?.outbound;
 
 	const metrics = createOutboundMetricsForRegistry({
 		register,
 		prefix,
+		...(outboundBuckets ? { buckets: outboundBuckets } : {}),
 	});
 	const callbacks = buildObserverCallbacks({ config });
 

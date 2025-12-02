@@ -31,12 +31,14 @@ const outboundRegistryMetrics = new Map<
 interface CreateMetricsForRegistryParams {
 	register: client.Registry;
 	prefix?: string;
+	buckets?: number[];
 }
 
 // Private helper: Create inbound HTTP metrics
 const createInboundMetrics = ({
 	register,
 	prefix,
+	buckets,
 }: CreateMetricsForRegistryParams) => {
 	const httpRequestsTotal = new client.Counter({
 		name: `${prefix}${HTTP_REQUESTS_TOTAL}`,
@@ -50,6 +52,7 @@ const createInboundMetrics = ({
 		help: "Duration in seconds of initial server-side request processing, including middleware and Astro frontmatter, measured until the response is ready to send/stream.",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
+		...(buckets ? { buckets } : {}),
 	});
 
 	const httpServerDurationSeconds = new client.Histogram({
@@ -57,6 +60,7 @@ const createInboundMetrics = ({
 		help: "Full server-side HTTP request duration in seconds, including processing, Astro rendering, and response streaming.",
 		labelNames: ["method", "path", "status"],
 		registers: [register],
+		...(buckets ? { buckets } : {}),
 	});
 
 	return {
@@ -69,6 +73,7 @@ const createInboundMetrics = ({
 export const createMetricsForRegistry = ({
 	register,
 	prefix = "",
+	buckets,
 }: CreateMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
 	if (registryMetrics.has(register)) {
@@ -76,7 +81,11 @@ export const createMetricsForRegistry = ({
 	}
 
 	// Create fresh metrics for this specific registry
-	const metrics = createInboundMetrics({ register, prefix });
+	const metrics = createInboundMetrics({
+		register,
+		prefix,
+		...(buckets ? { buckets } : {}),
+	});
 
 	// Store metrics for this registry
 	registryMetrics.set(register, metrics);
@@ -87,12 +96,14 @@ export const createMetricsForRegistry = ({
 interface CreateOutboundMetricsForRegistryParams {
 	register: client.Registry;
 	prefix?: string;
+	buckets?: number[];
 }
 
 // Private helper: Create outbound HTTP metrics
 const createOutboundMetrics = ({
 	register,
 	prefix,
+	buckets,
 }: CreateOutboundMetricsForRegistryParams) => {
 	const httpResponsesTotal = new client.Counter({
 		name: `${prefix}${HTTP_RESPONSES_TOTAL}`,
@@ -105,8 +116,8 @@ const createOutboundMetrics = ({
 		name: `${prefix}${HTTP_RESPONSE_DURATION_SECONDS}`,
 		help: "Duration in seconds of outbound HTTP responses to other services.",
 		labelNames: ["method", "host", "status", "endpoint", "app"],
-		buckets: [0.1, 0.25, 0.5, 1, 2.5, 5, 10, 25, 50, 100],
 		registers: [register],
+		...(buckets ? { buckets } : {}),
 	});
 
 	const httpResponseErrorTotal = new client.Counter({
@@ -126,6 +137,7 @@ const createOutboundMetrics = ({
 export const createOutboundMetricsForRegistry = ({
 	register,
 	prefix = "",
+	buckets,
 }: CreateOutboundMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
 	if (outboundRegistryMetrics.has(register)) {
@@ -133,7 +145,11 @@ export const createOutboundMetricsForRegistry = ({
 	}
 
 	// Create fresh metrics for this specific registry
-	const metrics = createOutboundMetrics({ register, prefix });
+	const metrics = createOutboundMetrics({
+		register,
+		prefix,
+		...(buckets ? { buckets } : {}),
+	});
 
 	outboundRegistryMetrics.set(register, metrics);
 
@@ -144,6 +160,7 @@ interface InitRegistryParams {
 	register: client.Registry;
 	collectDefaultMetricsConfig?: MetricsConfigWithUndefined | null | undefined;
 	registerContentType: string;
+	inboundBuckets?: number[];
 }
 
 // Private helper: Configure content type for registry
@@ -204,6 +221,7 @@ export const initRegistry = ({
 	register,
 	collectDefaultMetricsConfig,
 	registerContentType,
+	inboundBuckets,
 }: InitRegistryParams) => {
 	configureRegistryContentType({ register, registerContentType });
 	collectDefaultMetricsIfEnabled({ register, collectDefaultMetricsConfig });
@@ -211,7 +229,11 @@ export const initRegistry = ({
 
 	// Create and register metrics for this specific registry
 	const prefix = collectDefaultMetricsConfig?.prefix ?? "";
-	createMetricsForRegistry({ register, prefix });
+	createMetricsForRegistry({
+		register,
+		prefix,
+		...(inboundBuckets ? { buckets: inboundBuckets } : {}),
+	});
 
 	return register;
 };

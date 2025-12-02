@@ -52,6 +52,15 @@ export const integrationSchema = z
 		outboundRequests: outboundRequestsSchema
 			.optional()
 			.describe("Track outbound HTTP requests made by the server."),
+		histogramBuckets: z
+			.object({
+				inbound: z.array(z.number()).optional(),
+				outbound: z.array(z.number()).optional(),
+			})
+			.optional()
+			.describe(
+				"Custom histogram buckets for inbound and outbound metrics. If not provided, prom-client defaults will be used.",
+			),
 	})
 	.default({});
 
