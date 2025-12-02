@@ -72,7 +72,7 @@
 	},
 	"devDependencies": {
 		"tsup": "8.5.1",
-		"vitest": "4.0.14"
+		"vitest": "4.0.15"
 	},
 	"repository": {
 		"type": "git",
