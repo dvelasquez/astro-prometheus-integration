@@ -31,6 +31,10 @@ export default defineConfig({
 			experimental: {
 				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
 			},
+			histogramBuckets: {
+				inbound: [0.05, 0.1, 0.25],
+				outbound: [0.1, 0.5, 1],
+			},
 			outboundRequests: {
 				enabled: true,
 				includeErrors: true,

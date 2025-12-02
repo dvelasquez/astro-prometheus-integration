@@ -43,17 +43,20 @@ const metricsCache = new Map<client.Registry, MiddlewareMetrics>();
 const initializeMetricsCache = async (register: client.Registry) => {
 	if (!metricsCache.has(register)) {
 		const options = getPrometheusOptions();
+		const inboundBuckets = options?.histogramBuckets?.inbound;
 
 		// Initialize the registry with default metrics and content type
 		initRegistry({
 			register,
 			collectDefaultMetricsConfig: options?.collectDefaultMetricsConfig || null,
 			registerContentType: options?.registerContentType || "PROMETHEUS",
+			...(inboundBuckets ? { inboundBuckets } : {}),
 		});
 
 		const cachedMetrics = createMetricsForRegistry({
 			register,
 			prefix: options?.collectDefaultMetricsConfig?.prefix || "",
+			...(inboundBuckets ? { buckets: inboundBuckets } : {}),
 		});
 
 		metricsCache.set(register, cachedMetrics);

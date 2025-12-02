@@ -109,6 +109,10 @@ export default defineConfig({
           version: "1.0.0",
         },
       },
+      histogramBuckets: {
+        inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],  // Custom inbound buckets
+        outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50],       // Custom outbound buckets
+      },
     }),
   ],
   adapter: node({
@@ -129,6 +133,7 @@ export default defineConfig({
 | `collectDefaultMetricsConfig` | object  | `{}`           | Configuration for [prom-client collectDefaultMetrics](https://github.com/siimon/prom-client#collectdefaultmetricsconfig). Supports `prefix`, `labels`, etc. |
 | `standaloneMetrics`         | object    | `{ enabled: false, port: 7080 }` | Expose metrics on a standalone HTTP server. If enabled, disables the default Astro route and starts a Node.js server on the specified port. |
 | `outboundRequests`          | object    | _disabled_     | Track outbound HTTP/fetch calls made by the Node process. Enable to collect latency, totals, and error counts for external requests. |
+| `histogramBuckets`          | object    | _not set_      | Custom histogram buckets for inbound and outbound metrics. If not provided, prom-client defaults `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` are used. |
 
 ### `collectDefaultMetricsConfig` fields
 
@@ -136,6 +141,29 @@ export default defineConfig({
 - `labels` (object): Key-value pairs to add as default labels to all metrics.
 - `gcDurationBuckets` (number[]): Buckets for GC duration histogram.
 - `eventLoopMonitoringPrecision` (number): Precision for event loop monitoring.
+
+### `histogramBuckets` fields
+
+- `inbound` (number[]): Custom bucket boundaries for inbound HTTP metrics (`http_request_duration_seconds` and `http_server_duration_seconds`). Values are in seconds.
+- `outbound` (number[]): Custom bucket boundaries for outbound HTTP metrics (`http_response_duration_seconds`). Values are in seconds.
+
+**Default Behavior:** When `histogramBuckets` is not provided, the integration uses prom-client's default buckets: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` seconds.
+
+**Why Customize Buckets?** The default buckets start at 5ms (`0.005` seconds), which may be too granular for server-side HTTP metrics. Customizing buckets allows you to:
+- Optimize for your application's typical latency ranges
+- Reduce memory overhead by using fewer, more relevant buckets
+- Improve query performance in Prometheus by having fewer bucket series
+
+**Example Configuration:**
+
+```js
+prometheusNodeIntegration({
+  histogramBuckets: {
+    inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],  // Custom inbound buckets
+    outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50],      // Custom outbound buckets
+  },
+})
+```
 
 ### `outboundRequests` fields
 
@@ -226,11 +254,13 @@ The integration provides the following Prometheus metrics:
   - **Type:** Histogram
   - **Labels:** `method`, `path`, `status`
   - **Description:** Measures the time taken to process a request on the server, including middleware and Astro frontmatter, until the response is ready to send or stream.
+  - **Buckets:** Uses `histogramBuckets.inbound` if configured, otherwise prom-client defaults.
 
 - **`http_server_duration_seconds`**
   - **Type:** Histogram
   - **Labels:** `method`, `path`, `status`
   - **Description:** Measures the total time from request start to the last byte sent to the client (TTLB).
+  - **Buckets:** Uses `histogramBuckets.inbound` if configured, otherwise prom-client defaults.
 
 All metrics can be prefixed and labeled globally using the `collectDefaultMetricsConfig` option.
 
@@ -266,7 +296,7 @@ When `outboundRequests.enabled` is `true`, the integration registers three addit
 | Metric Name                     | Type      | Labels (`method`, `host`, `status`, `endpoint`, `app`) | Description |
 |---------------------------------|-----------|--------------------------------------------------------|-------------|
 | `http_responses_total`          | Counter   | Yes                                                    | Total number of outbound HTTP responses observed. |
-| `http_response_duration_seconds`| Histogram | Yes                                                    | Duration (seconds) from request start until the response completes. |
+| `http_response_duration_seconds`| Histogram | Yes                                                    | Duration (seconds) from request start until the response completes. Buckets use `histogramBuckets.outbound` if configured, otherwise prom-client defaults. |
 | `http_response_error_total`     | Counter   | Yes + `error_reason`                                   | Total number of outbound responses that failed (status ≥ 400 or network error). |
 
 All three metrics share a cached registry entry, respect global prefixes, and automatically deduplicate performance entries emitted by Node.js/Undici.
