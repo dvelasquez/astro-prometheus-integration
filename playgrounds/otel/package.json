@@ -31,7 +31,7 @@
 	"dependencies": {
 		"@astrojs/node": "9.5.1",
 		"@tailwindcss/vite": "4.1.18",
-		"astro": "5.16.8",
+		"astro": "5.16.9",
 		"astro-integration-kit": "0.19.1",
 		"astro-opentelemetry-integration": "workspace:*",
 		"tailwindcss": "4.1.18"
