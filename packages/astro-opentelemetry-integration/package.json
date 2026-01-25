@@ -53,7 +53,7 @@
 	},
 	"dependencies": {
 		"@opentelemetry/api": "1.9.0",
-		"@opentelemetry/auto-instrumentations-node": "0.68.0",
+		"@opentelemetry/auto-instrumentations-node": "0.69.0",
 		"@opentelemetry/exporter-metrics-otlp-grpc": "0.211.0",
 		"@opentelemetry/exporter-metrics-otlp-http": "0.211.0",
 		"@opentelemetry/exporter-metrics-otlp-proto": "0.211.0",
@@ -61,7 +61,7 @@
 		"@opentelemetry/exporter-trace-otlp-grpc": "0.211.0",
 		"@opentelemetry/exporter-trace-otlp-http": "0.211.0",
 		"@opentelemetry/exporter-trace-otlp-proto": "0.211.0",
-		"@opentelemetry/host-metrics": "0.38.1",
+		"@opentelemetry/host-metrics": "0.38.2",
 		"@opentelemetry/instrumentation-http": "0.211.0",
 		"@opentelemetry/resources": "2.5.0",
 		"@opentelemetry/sdk-metrics": "2.5.0",
