@@ -31,10 +31,10 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: 9.5.2
-        version: 9.5.2(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.2(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
       astro:
-        specifier: 5.16.15
-        version: 5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
+        specifier: 5.17.1
+        version: 5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../packages/astro-opentelemetry-integration
@@ -138,16 +138,16 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: 9.5.2
-        version: 9.5.2(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.2(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
       '@tailwindcss/vite':
         specifier: 4.1.18
         version: 4.1.18(vite@7.1.5(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
       astro:
-        specifier: 5.16.15
-        version: 5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
+        specifier: 5.17.1
+        version: 5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 0.19.1
-        version: 0.19.1(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../../packages/astro-opentelemetry-integration
@@ -175,16 +175,16 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: 9.5.2
-        version: 9.5.2(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.2(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
       '@tailwindcss/vite':
         specifier: 4.1.18
         version: 4.1.18(vite@7.1.5(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
       astro:
-        specifier: 5.16.15
-        version: 5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
+        specifier: 5.17.1
+        version: 5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 0.19.1
-        version: 0.19.1(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))
       astro-prometheus-node-integration:
         specifier: workspace:*
         version: link:../../packages/astro-prometheus-node-integration
@@ -1882,13 +1882,13 @@ packages:
     peerDependencies:
       astro: ^4.14.0 || ^5.0.0
 
-  astro@5.16.15:
-    resolution: {integrity: sha512-+X1Z0NTi2pa5a0Te6h77Dgc44fYj63j1yx6+39Nvg05lExajxSq7b1Uj/gtY45zoum8fD0+h0nak+DnHighs3A==}
+  astro@5.16.3:
+    resolution: {integrity: sha512-KzDk41F9Dspf5fM/Ls4XZhV4/csjJcWBrlenbnp5V3NGwU1zEaJz/HIyrdKdf5yw+FgwCeD2+Yos1Xkx9gnI0A==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
-  astro@5.16.3:
-    resolution: {integrity: sha512-KzDk41F9Dspf5fM/Ls4XZhV4/csjJcWBrlenbnp5V3NGwU1zEaJz/HIyrdKdf5yw+FgwCeD2+Yos1Xkx9gnI0A==}
+  astro@5.17.1:
+    resolution: {integrity: sha512-oD3tlxTaVWGq/Wfbqk6gxzVRz98xa/rYlpe+gU2jXJMSD01k6sEDL01ZlT8mVSYB/rMgnvIOfiQQ3BbLdN237A==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -4240,10 +4240,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.5.2(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/node@9.5.2(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
-      astro: 5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
       send: 1.2.1
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -5986,117 +5986,15 @@ snapshots:
 
   array-union@2.1.0: {}
 
-  astro-integration-kit@0.19.1(astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)):
-    dependencies:
-      astro: 5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
-      pathe: 1.1.2
-
   astro-integration-kit@0.19.1(astro@5.16.3(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
       astro: 5.16.3(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
       pathe: 1.1.2
 
-  astro@5.16.15(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1):
+  astro-integration-kit@0.19.1(astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
-      '@astrojs/compiler': 2.13.0
-      '@astrojs/internal-helpers': 0.7.5
-      '@astrojs/markdown-remark': 6.3.10
-      '@astrojs/telemetry': 3.3.0
-      '@capsizecss/unpack': 4.0.0
-      '@oslojs/encoding': 1.1.0
-      '@rollup/pluginutils': 5.3.0(rollup@4.50.1)
-      acorn: 8.15.0
-      aria-query: 5.3.2
-      axobject-query: 4.1.0
-      boxen: 8.0.1
-      ci-info: 4.3.1
-      clsx: 2.1.1
-      common-ancestor-path: 1.0.1
-      cookie: 1.1.1
-      cssesc: 3.0.0
-      debug: 4.4.3(supports-color@5.5.0)
-      deterministic-object-hash: 2.0.2
-      devalue: 5.6.2
-      diff: 8.0.3
-      dlv: 1.1.3
-      dset: 3.1.4
-      es-module-lexer: 1.7.0
-      esbuild: 0.25.9
-      estree-walker: 3.0.3
-      flattie: 1.1.1
-      fontace: 0.4.0
-      github-slugger: 2.0.0
-      html-escaper: 3.0.3
-      http-cache-semantics: 4.2.0
-      import-meta-resolve: 4.2.0
-      js-yaml: 4.1.1
-      magic-string: 0.30.21
-      magicast: 0.5.1
-      mrmime: 2.0.1
-      neotraverse: 0.6.18
-      p-limit: 6.2.0
-      p-queue: 8.1.1
-      package-manager-detector: 1.6.0
-      piccolore: 0.1.3
-      picomatch: 4.0.3
-      prompts: 2.4.2
-      rehype: 13.0.2
-      semver: 7.7.3
-      shiki: 3.21.0
-      smol-toml: 1.6.0
-      svgo: 4.0.0
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tsconfck: 3.1.6(typescript@5.9.3)
-      ultrahtml: 1.6.0
-      unifont: 0.7.3
-      unist-util-visit: 5.0.0
-      unstorage: 1.17.4
-      vfile: 6.0.3
-      vite: 6.4.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
-      vitefu: 1.1.1(vite@6.4.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      xxhash-wasm: 1.1.0
-      yargs-parser: 21.1.1
-      yocto-spinner: 0.2.3
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.1(zod@3.25.76)
-      zod-to-ts: 1.2.0(typescript@5.9.3)(zod@3.25.76)
-    optionalDependencies:
-      sharp: 0.34.3
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@types/node'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - aws4fetch
-      - db0
-      - idb-keyval
-      - ioredis
-      - jiti
-      - less
-      - lightningcss
-      - rollup
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - typescript
-      - uploadthing
-      - yaml
+      astro: 5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1)
+      pathe: 1.1.2
 
   astro@5.16.3(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
@@ -6162,6 +6060,108 @@ snapshots:
       yocto-spinner: 0.2.3
       zod: 3.25.76
       zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-ts: 1.2.0(typescript@5.9.3)(zod@3.25.76)
+    optionalDependencies:
+      sharp: 0.34.3
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@types/node'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - db0
+      - idb-keyval
+      - ioredis
+      - jiti
+      - less
+      - lightningcss
+      - rollup
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - typescript
+      - uploadthing
+      - yaml
+
+  astro@5.17.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.1):
+    dependencies:
+      '@astrojs/compiler': 2.13.0
+      '@astrojs/internal-helpers': 0.7.5
+      '@astrojs/markdown-remark': 6.3.10
+      '@astrojs/telemetry': 3.3.0
+      '@capsizecss/unpack': 4.0.0
+      '@oslojs/encoding': 1.1.0
+      '@rollup/pluginutils': 5.3.0(rollup@4.50.1)
+      acorn: 8.15.0
+      aria-query: 5.3.2
+      axobject-query: 4.1.0
+      boxen: 8.0.1
+      ci-info: 4.3.1
+      clsx: 2.1.1
+      common-ancestor-path: 1.0.1
+      cookie: 1.1.1
+      cssesc: 3.0.0
+      debug: 4.4.3(supports-color@5.5.0)
+      deterministic-object-hash: 2.0.2
+      devalue: 5.6.2
+      diff: 8.0.3
+      dlv: 1.1.3
+      dset: 3.1.4
+      es-module-lexer: 1.7.0
+      esbuild: 0.25.9
+      estree-walker: 3.0.3
+      flattie: 1.1.1
+      fontace: 0.4.0
+      github-slugger: 2.0.0
+      html-escaper: 3.0.3
+      http-cache-semantics: 4.2.0
+      import-meta-resolve: 4.2.0
+      js-yaml: 4.1.1
+      magic-string: 0.30.21
+      magicast: 0.5.1
+      mrmime: 2.0.1
+      neotraverse: 0.6.18
+      p-limit: 6.2.0
+      p-queue: 8.1.1
+      package-manager-detector: 1.6.0
+      piccolore: 0.1.3
+      picomatch: 4.0.3
+      prompts: 2.4.2
+      rehype: 13.0.2
+      semver: 7.7.3
+      shiki: 3.21.0
+      smol-toml: 1.6.0
+      svgo: 4.0.0
+      tinyexec: 1.0.2
+      tinyglobby: 0.2.15
+      tsconfck: 3.1.6(typescript@5.9.3)
+      ultrahtml: 1.6.0
+      unifont: 0.7.3
+      unist-util-visit: 5.0.0
+      unstorage: 1.17.4
+      vfile: 6.0.3
+      vite: 6.4.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
+      vitefu: 1.1.1(vite@6.4.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
+      xxhash-wasm: 1.1.0
+      yargs-parser: 21.1.1
+      yocto-spinner: 0.2.3
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
       zod-to-ts: 1.2.0(typescript@5.9.3)(zod@3.25.76)
     optionalDependencies:
       sharp: 0.34.3
@@ -6735,7 +6735,7 @@ snapshots:
       iron-webcrypto: 1.2.1
       node-mock-http: 1.0.3
       radix3: 1.1.2
-      ufo: 1.6.1
+      ufo: 1.6.3
       uncrypto: 0.1.3
 
   h3@1.15.5:
@@ -7434,7 +7434,7 @@ snapshots:
       acorn: 8.15.0
       pathe: 2.0.3
       pkg-types: 1.3.1
-      ufo: 1.6.1
+      ufo: 1.6.3
 
   module-details-from-path@1.0.4: {}
 
@@ -7499,7 +7499,7 @@ snapshots:
     dependencies:
       destr: 2.0.5
       node-fetch-native: 1.6.7
-      ufo: 1.6.1
+      ufo: 1.6.3
 
   ohash@2.0.11: {}
 
