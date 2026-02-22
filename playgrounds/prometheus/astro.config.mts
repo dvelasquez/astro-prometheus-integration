@@ -11,6 +11,9 @@ const { default: prometheusNodeIntegration } = await import(
 
 // https://astro.build/config
 export default defineConfig({
+	security: {
+		checkOrigin: false,
+	},
 	integrations: [
 		prometheusNodeIntegration({
 			enabled: true, // explicitly enable it

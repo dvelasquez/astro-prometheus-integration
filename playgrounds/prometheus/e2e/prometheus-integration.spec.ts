@@ -209,7 +209,9 @@ test.describe("Astro Prometheus Integration", () => {
 
 			// Second visit
 			await page.goto(`${baseURL}/`);
-			await page.waitForTimeout(100);
+			await page.reload();
+			await page.reload();
+			await page.waitForTimeout(200);
 
 			// Check updated metrics
 			await page.goto(`${baseURL}${metricsURL}`);

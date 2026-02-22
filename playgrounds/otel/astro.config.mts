@@ -49,6 +49,9 @@ switch (process.env.ASTRO_OTEL_PRESET) {
 
 // https://astro.build/config
 export default defineConfig({
+	security: {
+		checkOrigin: false,
+	},
 	integrations: [
 		openTelemetryIntegration({
 			enabled: true, // explicitly enable it
