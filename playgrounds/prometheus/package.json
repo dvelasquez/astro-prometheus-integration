@@ -23,15 +23,15 @@
 		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
-		"@astrojs/node": "9.5.4",
+		"@astrojs/node": "9.5.5",
 		"@tailwindcss/vite": "4.2.1",
-		"astro": "5.18.0",
+		"astro": "5.18.1",
 		"astro-integration-kit": "0.19.1",
 		"astro-prometheus-node-integration": "workspace:*",
 		"tailwindcss": "4.2.1"
 	},
 	"devDependencies": {
-		"@astrojs/check": "0.9.6",
+		"@astrojs/check": "0.9.7",
 		"@playwright/test": "1.58.2",
 		"@types/node": "24.12.0",
 		"nodemon": "3.1.14",
