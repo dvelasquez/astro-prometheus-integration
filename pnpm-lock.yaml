@@ -30,11 +30,11 @@ importers:
   demo:
     dependencies:
       '@astrojs/node':
-        specifier: 9.5.4
-        version: 9.5.4(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 9.5.5
+        version: 9.5.5(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro:
-        specifier: 5.18.0
-        version: 5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 5.18.1
+        version: 5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../packages/astro-opentelemetry-integration
@@ -137,17 +137,17 @@ importers:
   playgrounds/otel:
     dependencies:
       '@astrojs/node':
-        specifier: 9.5.4
-        version: 9.5.4(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 9.5.5
+        version: 9.5.5(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       '@tailwindcss/vite':
         specifier: 4.2.1
         version: 4.2.1(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
       astro:
-        specifier: 5.18.0
-        version: 5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 5.18.1
+        version: 5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 0.19.1
-        version: 0.19.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.19.1(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../../packages/astro-opentelemetry-integration
@@ -156,8 +156,8 @@ importers:
         version: 4.2.1
     devDependencies:
       '@astrojs/check':
-        specifier: 0.9.6
-        version: 0.9.6(prettier@3.7.3)(typescript@5.9.3)
+        specifier: 0.9.7
+        version: 0.9.7(prettier@3.7.3)(typescript@5.9.3)
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -174,17 +174,17 @@ importers:
   playgrounds/prometheus:
     dependencies:
       '@astrojs/node':
-        specifier: 9.5.4
-        version: 9.5.4(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 9.5.5
+        version: 9.5.5(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       '@tailwindcss/vite':
         specifier: 4.2.1
         version: 4.2.1(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
       astro:
-        specifier: 5.18.0
-        version: 5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 5.18.1
+        version: 5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 0.19.1
-        version: 0.19.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.19.1(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro-prometheus-node-integration:
         specifier: workspace:*
         version: link:../../packages/astro-prometheus-node-integration
@@ -193,8 +193,8 @@ importers:
         version: 4.2.1
     devDependencies:
       '@astrojs/check':
-        specifier: 0.9.6
-        version: 0.9.6(prettier@3.7.3)(typescript@5.9.3)
+        specifier: 0.9.7
+        version: 0.9.7(prettier@3.7.3)(typescript@5.9.3)
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -210,8 +210,8 @@ importers:
 
 packages:
 
-  '@astrojs/check@0.9.6':
-    resolution: {integrity: sha512-jlaEu5SxvSgmfGIFfNgcn5/f+29H61NJzEMfAZ82Xopr4XBchXB1GVlcJsE+elUlsYSbXlptZLX+JMG3b/wZEA==}
+  '@astrojs/check@0.9.7':
+    resolution: {integrity: sha512-dA7U5/OFg8/xaMUb2vUOOJuuJXnMpHy6F0BM8ZhL7WT5OkTBwJ0GoW38n4fC4CXt+lT9mLWL0y8Pa74tFByBpQ==}
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -221,6 +221,9 @@ packages:
 
   '@astrojs/internal-helpers@0.7.5':
     resolution: {integrity: sha512-vreGnYSSKhAjFJCWAwe/CNhONvoc5lokxtRoZims+0wa3KbHBdPHSSthJsKxPd8d/aic6lWKpRTYGY/hsgK6EA==}
+
+  '@astrojs/internal-helpers@0.7.6':
+    resolution: {integrity: sha512-GOle7smBWKfMSP8osUIGOlB5kaHdQLV3foCsf+5Q9Wsuu+C6Fs3Ez/ttXmhjZ1HkSgsogcM1RXSjjOVieHq16Q==}
 
   '@astrojs/language-server@2.16.1':
     resolution: {integrity: sha512-OzTpyEPeCPLpp0oyeI/fSCBYemlVos0GewCTYglAW+TAJAMR3nRl5nYlf9ESMFy97SlptZCsRdKlQXDvFHJRNQ==}
@@ -234,8 +237,8 @@ packages:
       prettier-plugin-astro:
         optional: true
 
-  '@astrojs/markdown-remark@6.3.10':
-    resolution: {integrity: sha512-kk4HeYR6AcnzC4QV8iSlOfh+N8TZ3MEStxPyenyCtemqn8IpEATBFMTJcfrNW32dgpt6MY3oCkMM/Tv3/I4G3A==}
+  '@astrojs/markdown-remark@6.3.11':
+    resolution: {integrity: sha512-hcaxX/5aC6lQgHeGh1i+aauvSwIT6cfyFjKWvExYSxUhZZBBdvCliOtu06gbQyhbe0pGJNoNmqNlQZ5zYUuIyQ==}
 
   '@astrojs/markdown-remark@6.3.9':
     resolution: {integrity: sha512-hX2cLC/KW74Io1zIbn92kI482j9J7LleBLGCVU9EP3BeH5MVrnFawOnqD0t/q6D1Z+ZNeQG2gNKMslCcO36wng==}
@@ -245,8 +248,8 @@ packages:
     peerDependencies:
       astro: ^5.14.3
 
-  '@astrojs/node@9.5.4':
-    resolution: {integrity: sha512-AbPSZsMGu8hXPR2XxV79RaKy8h6wijhtoqZGeUf4OXg2w1mxXlx4VnIc1D+QvtsgauSz7P5PLhmvf6w/J41GJg==}
+  '@astrojs/node@9.5.5':
+    resolution: {integrity: sha512-rtU2BGU5u3SfGURpANfMxVzCIoR86MkaN05ncza9rbtuMKJ/XnRJt/BbyVknDbOJ71hoci0SIsJwKcJR8vvi/A==}
     peerDependencies:
       astro: ^5.17.3
 
@@ -2049,8 +2052,8 @@ packages:
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
-  astro@5.18.0:
-    resolution: {integrity: sha512-CHiohwJIS4L0G6/IzE1Fx3dgWqXBCXus/od0eGUfxrZJD2um2pE7ehclMmgL/fXqbU7NfE1Ze2pq34h2QaA6iQ==}
+  astro@5.18.1:
+    resolution: {integrity: sha512-m4VWilWZ+Xt6NPoYzC4CgGZim/zQUO7WFL0RHCH0AiEavF1153iC3+me2atDvXpf/yX4PyGUeD8wZLq1cirT3g==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -4315,7 +4318,7 @@ packages:
 
 snapshots:
 
-  '@astrojs/check@0.9.6(prettier@3.7.3)(typescript@5.9.3)':
+  '@astrojs/check@0.9.7(prettier@3.7.3)(typescript@5.9.3)':
     dependencies:
       '@astrojs/language-server': 2.16.1(prettier@3.7.3)(typescript@5.9.3)
       chokidar: 4.0.3
@@ -4329,6 +4332,8 @@ snapshots:
   '@astrojs/compiler@2.13.0': {}
 
   '@astrojs/internal-helpers@0.7.5': {}
+
+  '@astrojs/internal-helpers@0.7.6': {}
 
   '@astrojs/language-server@2.16.1(prettier@3.7.3)(typescript@5.9.3)':
     dependencies:
@@ -4355,9 +4360,9 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@astrojs/markdown-remark@6.3.10':
+  '@astrojs/markdown-remark@6.3.11':
     dependencies:
-      '@astrojs/internal-helpers': 0.7.5
+      '@astrojs/internal-helpers': 0.7.6
       '@astrojs/prism': 3.3.0
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -4416,10 +4421,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.5.4(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
+  '@astrojs/node@9.5.5(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
-      '@astrojs/internal-helpers': 0.7.5
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+      '@astrojs/internal-helpers': 0.7.6
+      astro: 5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       send: 1.2.1
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -6249,9 +6254,9 @@ snapshots:
       astro: 5.16.3(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 1.1.2
 
-  astro-integration-kit@0.19.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)):
+  astro-integration-kit@0.19.1(astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 1.1.2
 
   astro@5.16.3(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
@@ -6356,11 +6361,11 @@ snapshots:
       - uploadthing
       - yaml
 
-  astro@5.18.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
+  astro@5.18.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
     dependencies:
       '@astrojs/compiler': 2.13.0
-      '@astrojs/internal-helpers': 0.7.5
-      '@astrojs/markdown-remark': 6.3.10
+      '@astrojs/internal-helpers': 0.7.6
+      '@astrojs/markdown-remark': 6.3.11
       '@astrojs/telemetry': 3.3.0
       '@capsizecss/unpack': 4.0.0
       '@oslojs/encoding': 1.1.0
