@@ -26,7 +26,7 @@
 		"@astrojs/node": "9.5.5",
 		"@tailwindcss/vite": "4.2.1",
 		"astro": "5.18.1",
-		"astro-integration-kit": "0.19.1",
+		"astro-integration-kit": "0.20.0",
 		"astro-prometheus-node-integration": "workspace:*",
 		"tailwindcss": "4.2.1"
 	},

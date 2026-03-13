@@ -68,7 +68,7 @@
 		"@opentelemetry/sdk-node": "0.213.0",
 		"@opentelemetry/sdk-trace-node": "2.6.0",
 		"@opentelemetry/semantic-conventions": "1.40.0",
-		"astro-integration-kit": "0.19.1"
+		"astro-integration-kit": "0.20.0"
 	},
 	"devDependencies": {
 		"tsup": "8.5.1",
