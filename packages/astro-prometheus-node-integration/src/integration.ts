@@ -62,7 +62,13 @@ export const integrationSchema = z
 				"Custom histogram buckets for inbound and outbound metrics. If not provided, prom-client defaults will be used.",
 			),
 	})
-	.default({});
+	.default({
+		enabled: true,
+		metricsUrl: "/metrics",
+		registerContentType: "PROMETHEUS",
+		standaloneMetrics: { enabled: false, port: 7080 },
+		experimental: { useOptimizedTTLBMeasurement: false },
+	});
 
 type IntegrationOptions = z.infer<typeof integrationSchema>;
 

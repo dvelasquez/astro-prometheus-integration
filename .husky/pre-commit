@@ -1,7 +1,7 @@
 STAGED_FILES=$(git diff --cached --name-only)
 
 if [ -n "$STAGED_FILES" ]; then
-  pnpm exec biome check --write $STAGED_FILES
+  pnpm exec biome check --write --files-ignore-unknown=true --no-errors-on-unmatched $STAGED_FILES
 else
   echo "No staged files. Skipping biome check."
 fi

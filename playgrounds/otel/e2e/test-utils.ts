@@ -1,5 +1,5 @@
-import { exec } from "child_process";
-import { promisify } from "util";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
 
@@ -67,7 +67,7 @@ export class OTelTestUtils {
 				if (response.status < 500) {
 					return;
 				}
-			} catch (error) {
+			} catch (_error) {
 				// Service not ready yet, continue waiting
 			}
 
@@ -88,7 +88,7 @@ export class OTelTestUtils {
 				method: "GET",
 			});
 			return response.status < 500;
-		} catch (error) {
+		} catch (_error) {
 			return false;
 		}
 	}
@@ -100,7 +100,7 @@ export class OTelTestUtils {
 		try {
 			const response = await fetch("http://localhost:16686", { method: "GET" });
 			return response.status < 500;
-		} catch (error) {
+		} catch (_error) {
 			return false;
 		}
 	}
@@ -152,7 +152,6 @@ export class OTelTestUtils {
  * Mock OTLP server for unit testing
  */
 export class MockOTLPServer {
-	private server: any;
 	private receivedMetrics: any[] = [];
 	private receivedTraces: any[] = [];
 

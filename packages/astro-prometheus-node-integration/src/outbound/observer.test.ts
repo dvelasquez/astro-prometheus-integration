@@ -15,8 +15,6 @@ const observerCallbacks: Array<
 
 vi.mock("node:perf_hooks", () => {
 	class MockPerformanceObserver {
-		private callback: (entries: PerformanceObserverEntryList) => void;
-
 		constructor(callback: (entries: PerformanceObserverEntryList) => void) {
 			this.callback = callback;
 			observerCallbacks.push(callback);

@@ -66,16 +66,14 @@ describe("integrationSchema", () => {
 				const result = integrationSchema.parse({
 					presets: { metricExporter: undefined },
 				});
-				// When explicitly set to undefined, Zod doesn't apply defaults
-				expect(result.presets?.metricExporter).toBeUndefined();
+				expect(result.presets?.metricExporter).toBe("none");
 			});
 
 			it("should default to 'none' when metricExporter is omitted from presets", () => {
 				const result = integrationSchema.parse({
 					presets: { traceExporter: "console" }, // Only set traceExporter
 				});
-				// Since metricExporter is optional, it won't get the default when omitted
-				expect(result.presets?.metricExporter).toBeUndefined();
+				expect(result.presets?.metricExporter).toBe("none");
 			});
 		});
 
@@ -95,16 +93,14 @@ describe("integrationSchema", () => {
 				const result = integrationSchema.parse({
 					presets: { traceExporter: undefined },
 				});
-				// When explicitly set to undefined, Zod doesn't apply defaults
-				expect(result.presets?.traceExporter).toBeUndefined();
+				expect(result.presets?.traceExporter).toBe("console");
 			});
 
 			it("should default to 'console' when traceExporter is omitted from presets", () => {
 				const result = integrationSchema.parse({
 					presets: { metricExporter: "prometheus" }, // Only set metricExporter
 				});
-				// Since traceExporter is optional, it won't get the default when omitted
-				expect(result.presets?.traceExporter).toBeUndefined();
+				expect(result.presets?.traceExporter).toBe("console");
 			});
 		});
 
@@ -142,15 +138,11 @@ describe("integrationSchema", () => {
 					},
 				});
 
-				// Most fields are optional and won't get defaults when omitted
-				expect(result.presets?.prometheusConfig?.host).toBeUndefined();
-				expect(result.presets?.prometheusConfig?.port).toBeUndefined();
-				expect(result.presets?.prometheusConfig?.endpoint).toBeUndefined();
-				expect(result.presets?.prometheusConfig?.prefix).toBeUndefined();
-				expect(
-					result.presets?.prometheusConfig?.appendTimestamp,
-				).toBeUndefined();
-				// withResourceConstantLabels has a default value that gets applied
+				expect(result.presets?.prometheusConfig?.host).toBe("0.0.0.0");
+				expect(result.presets?.prometheusConfig?.port).toBe(9464);
+				expect(result.presets?.prometheusConfig?.endpoint).toBe("/metrics");
+				expect(result.presets?.prometheusConfig?.prefix).toBe("metrics");
+				expect(result.presets?.prometheusConfig?.appendTimestamp).toBe(true);
 				expect(
 					result.presets?.prometheusConfig?.withResourceConstantLabels,
 				).toBe("/service/");

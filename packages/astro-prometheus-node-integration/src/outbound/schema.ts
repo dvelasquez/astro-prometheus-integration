@@ -10,20 +10,20 @@ import type {
 const observedEntrySchema: z.ZodType<ObservedEntry> = z.any();
 const metricContextSchema: z.ZodType<OutboundMetricContext> = z.any();
 
-const endpointFnSchema: z.ZodType<EndpointLabelFn> = z
-	.function()
-	.args(metricContextSchema)
-	.returns(z.string());
+const endpointFnSchema: z.ZodType<EndpointLabelFn> = z.function({
+	input: z.tuple([metricContextSchema]),
+	output: z.string(),
+});
 
-const appFnSchema: z.ZodType<AppLabelFn> = z
-	.function()
-	.args(metricContextSchema)
-	.returns(z.string());
+const appFnSchema: z.ZodType<AppLabelFn> = z.function({
+	input: z.tuple([metricContextSchema]),
+	output: z.string(),
+});
 
-const shouldObserveFnSchema: z.ZodType<ShouldObserveFn> = z
-	.function()
-	.args(observedEntrySchema)
-	.returns(z.boolean());
+const shouldObserveFnSchema: z.ZodType<ShouldObserveFn> = z.function({
+	input: z.tuple([observedEntrySchema]),
+	output: z.boolean(),
+});
 
 const labelsSchema = z
 	.object({

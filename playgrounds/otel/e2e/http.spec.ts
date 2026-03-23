@@ -51,7 +51,7 @@ test.describe("Astro OpenTelemetry HTTP Integration", () => {
 					const data = await response.text();
 					expect(data).toBeDefined();
 				}
-			} catch (error) {
+			} catch (_error) {
 				// If collector is not accessible, skip this test
 				test.skip("Collector not accessible - skipping HTTP metrics test");
 			}
@@ -90,7 +90,7 @@ test.describe("Astro OpenTelemetry HTTP Integration", () => {
 
 				// The collector should be running and accessible
 				expect(response.status).toBeLessThan(500);
-			} catch (error) {
+			} catch (_error) {
 				// If collector is not accessible, skip this test
 				test.skip("Collector not accessible - skipping HTTP traces test");
 			}

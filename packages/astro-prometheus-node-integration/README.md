@@ -17,6 +17,12 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 ---
 
+## Compatibility
+
+| Package version | Astro | `@astrojs/node` | Node.js |
+|---|---|---|---|
+| `>= 1.3.0` | `^5.0.0` \| `^6.0.0` | `^9.0.0` \| `^10.0.0` | `>= 22` |
+
 ## Requirements
 
 - This integration requires the `@astrojs/node` adapter. Prometheus metrics require a persistent Node.js server process to aggregate and expose metrics.

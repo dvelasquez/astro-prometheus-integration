@@ -190,7 +190,7 @@ test.describe("Astro Prometheus Integration", () => {
 				/myapp__http_requests_total\{[^}]*\} (\d+)/,
 			);
 			if (requestCountMatch) {
-				const requestCount = Number.parseInt(requestCountMatch[1]);
+				const requestCount = Number.parseInt(requestCountMatch[1], 10);
 				expect(requestCount).toBeGreaterThan(0);
 				expect(requestCount).toBeLessThan(100); // Reasonable upper bound
 			}
@@ -230,8 +230,8 @@ test.describe("Astro Prometheus Integration", () => {
 			console.log(initialMatch, updatedMatch);
 
 			if (initialMatch && updatedMatch) {
-				const initialCount = Number.parseInt(initialMatch[1]);
-				const updatedCount = Number.parseInt(updatedMatch[1]);
+				const initialCount = Number.parseInt(initialMatch[1], 10);
+				const updatedCount = Number.parseInt(updatedMatch[1], 10);
 				expect(updatedCount).toBeGreaterThan(initialCount);
 			}
 		});

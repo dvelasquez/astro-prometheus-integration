@@ -1,5 +1,9 @@
-import { createServer, type IncomingMessage, type ServerResponse } from "http";
-import { URL } from "url";
+import {
+	createServer,
+	type IncomingMessage,
+	type ServerResponse,
+} from "node:http";
+import { URL } from "node:url";
 
 /**
  * Mock OTLP server that captures HTTP requests and parses OTLP data
@@ -127,7 +131,7 @@ export class MockOTLPServer {
 				console.log(
 					`Received metrics (JSON): ${JSON.stringify(metricsData).substring(0, 100)}...`,
 				);
-			} catch (error) {
+			} catch (_error) {
 				// If not JSON, store as raw data
 				this.receivedMetrics.push({ raw: body, timestamp: Date.now() });
 				console.log(`Received metrics (raw): ${body.substring(0, 100)}...`);
@@ -158,7 +162,7 @@ export class MockOTLPServer {
 				console.log(
 					`Received traces (JSON): ${JSON.stringify(tracesData).substring(0, 100)}...`,
 				);
-			} catch (error) {
+			} catch (_error) {
 				// If not JSON, store as raw data
 				this.receivedTraces.push({ raw: body, timestamp: Date.now() });
 				console.log(`Received traces (raw): ${body.substring(0, 100)}...`);
