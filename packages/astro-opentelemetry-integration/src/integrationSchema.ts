@@ -19,7 +19,7 @@ export const integrationSchema = z
 					.default("unknown_version")
 					.describe("The version of the service."),
 			})
-			.default({}),
+			.default({ serviceName: "unknown_service", serviceVersion: "unknown_version" }),
 		presets: z
 			.object({
 				metricExporter: z
@@ -74,6 +74,6 @@ export const integrationSchema = z
 			})
 			.optional(),
 	})
-	.default({});
+	.default({ enabled: true, otel: { serviceName: "unknown_service", serviceVersion: "unknown_version" } });
 
 export type IntegrationSchema = z.infer<typeof integrationSchema>;

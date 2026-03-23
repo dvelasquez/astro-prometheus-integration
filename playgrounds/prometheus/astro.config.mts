@@ -3,6 +3,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
+import type {
+	ObservedEntry,
+	OutboundMetricContext,
+} from "astro-prometheus-node-integration";
 
 // Import the named export 'integration'
 const { default: prometheusNodeIntegration } = await import(
@@ -42,11 +46,11 @@ export default defineConfig({
 				enabled: true,
 				includeErrors: true,
 				labels: {
-					endpoint: (context) =>
+					endpoint: (context: OutboundMetricContext) =>
 						context.defaultEndpoint.replace(/\/\d+/g, "/:id"),
 					app: () => "prom-playground",
 				},
-				shouldObserve: (entry) => {
+				shouldObserve: (entry: ObservedEntry) => {
 					const resourceTarget =
 						typeof (entry as { name?: unknown }).name === "string"
 							? (entry as { name: string }).name
