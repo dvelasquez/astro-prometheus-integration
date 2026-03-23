@@ -1,12 +1,6 @@
 import { Registry } from "prom-client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	clearRegistryMetrics,
-	HTTP_REQUEST_DURATION,
-	HTTP_REQUESTS_TOTAL,
-	HTTP_SERVER_DURATION_SECONDS,
-	initRegistry,
-} from "../metrics/index.js";
+import { clearRegistryMetrics } from "../metrics/index.js";
 import { createPrometheusMiddleware } from "./prometheus-middleware.js";
 
 // Define a default structure for the global options before module import

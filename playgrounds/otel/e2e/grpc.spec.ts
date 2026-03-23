@@ -4,7 +4,7 @@ import { OTelTestUtils } from "./test-utils";
 // Test suite for Astro OpenTelemetry gRPC Integration
 test.describe("Astro OpenTelemetry gRPC Integration", () => {
 	const baseURL = "http://localhost:8000";
-	const collectorGrpcURL = "http://localhost:4317";
+	const _collectorGrpcURL = "http://localhost:4317";
 	const collectorHttpURL = "http://localhost:4318";
 
 	test.beforeAll(async () => {
@@ -40,7 +40,7 @@ test.describe("Astro OpenTelemetry gRPC Integration", () => {
 
 				// The collector should be running and accessible
 				expect(response.status).toBeLessThan(500);
-			} catch (error) {
+			} catch (_error) {
 				// If collector is not accessible, skip this test
 				test.skip("Collector not accessible - skipping gRPC metrics test");
 			}
@@ -76,7 +76,7 @@ test.describe("Astro OpenTelemetry gRPC Integration", () => {
 
 				// The collector should be running and accessible
 				expect(response.status).toBeLessThan(500);
-			} catch (error) {
+			} catch (_error) {
 				// If collector is not accessible, skip this test
 				test.skip("Collector not accessible - skipping gRPC traces test");
 			}
@@ -173,7 +173,7 @@ test.describe("Astro OpenTelemetry gRPC Integration", () => {
 				await page.waitForSelector("body", { timeout: 5000 });
 				const title = await page.title();
 				expect(title).toContain("Jaeger");
-			} catch (error) {
+			} catch (_error) {
 				// If Jaeger is not accessible, skip this test
 				test.skip(
 					"Jaeger UI not accessible - skipping Jaeger integration test",

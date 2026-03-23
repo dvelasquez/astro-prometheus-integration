@@ -21,7 +21,7 @@ test.describe("Standalone Metrics Server", () => {
 			const content = await page.content();
 			expect(content).toContain("# HELP");
 			expect(content).toContain("# TYPE");
-		} catch (error) {
+		} catch (_error) {
 			// Expected to fail since standalone is disabled
 			console.log("Standalone metrics server is disabled (expected behavior)");
 		}
@@ -38,7 +38,7 @@ test.describe("Standalone Metrics Server", () => {
 			const response = await page.goto(standaloneURL);
 			// If we get here, the server is running (unexpected)
 			expect(response?.status()).toBe(404);
-		} catch (error) {
+		} catch (_error) {
 			// Expected behavior - server should not be running
 			console.log(
 				"Standalone metrics server is not running (expected behavior)",
