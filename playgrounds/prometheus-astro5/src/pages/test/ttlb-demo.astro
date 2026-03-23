@@ -1,0 +1,76 @@
+---
+// This page demonstrates the TTLB measurement feature
+// It creates a streaming response to show how the timing works
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>TTLB Measurement Demo</title>
+	</head>
+	<body>
+		<main class="container mx-auto px-4 py-8">
+			<h1 class="text-3xl font-bold mb-6">TTLB Measurement Demo</h1>
+			
+			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+				<h2 class="text-xl font-semibold text-blue-800 mb-2">Experimental Feature Enabled</h2>
+				<p class="text-blue-700">
+					This playground has the <code class="bg-blue-100 px-2 py-1 rounded">useOptimizedTTLBMeasurement: true</code> 
+					experimental feature enabled. This means TTLB measurements use the optimized async timing method 
+					instead of stream wrapping.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div class="bg-white border border-gray-200 rounded-lg p-6">
+					<h3 class="text-lg font-semibold mb-3">Legacy Method (Default)</h3>
+					<ul class="text-sm text-gray-600 space-y-1">
+						<li>• Maximum accuracy (nanosecond level)</li>
+						<li>• Higher CPU usage</li>
+						<li>• More memory overhead</li>
+						<li>• Stream wrapping required</li>
+					</ul>
+				</div>
+
+				<div class="bg-green-50 border border-green-200 rounded-lg p-6">
+					<h3 class="text-lg font-semibold mb-3 text-green-800">Optimized Method (Experimental)</h3>
+					<ul class="text-sm text-green-700 space-y-1">
+						<li>• Millisecond accuracy (sufficient for most use cases)</li>
+						<li>• Minimal CPU overhead</li>
+						<li>• Minimal memory overhead</li>
+						<li>• No stream wrapping</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="mt-8">
+				<h3 class="text-lg font-semibold mb-3">How to Test</h3>
+				<ol class="list-decimal list-inside space-y-2 text-sm text-gray-600">
+					<li>Visit the <a href="/_/metrics" class="text-blue-600 hover:underline">metrics endpoint</a> to see current metrics</li>
+					<li>Refresh this page multiple times to generate streaming responses</li>
+					<li>Check the metrics again to see TTLB measurements</li>
+					<li>Look for <code class="bg-gray-100 px-1 rounded">http_server_duration_seconds</code> metric</li>
+				</ol>
+			</div>
+
+			<div class="mt-8 p-4 bg-gray-100 rounded-lg">
+				<h3 class="text-lg font-semibold mb-2">Configuration</h3>
+				<pre class="text-sm bg-white p-3 rounded border overflow-x-auto"><code is:raw>prometheusNodeIntegration({
+  experimental: {
+    useOptimizedTTLBMeasurement: true, // Enable optimized TTLB measurement
+  },
+})</code></pre>
+			</div>
+		</main>
+	</body>
+</html>
+
+<style>
+	body {
+		font-family: system-ui, -apple-system, sans-serif;
+	}
+</style>
+

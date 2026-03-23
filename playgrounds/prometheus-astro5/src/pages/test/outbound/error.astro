@@ -1,0 +1,13 @@
+---
+export const prerender = false;
+const response = await fetch(
+	"http://localhost:4321/api/mock/error?source=outbound-error",
+);
+const status = response.status;
+const body = await response.text();
+---
+
+<h1>Outbound Error Test</h1>
+<p data-status>{status}</p>
+<pre>{body}</pre>
+

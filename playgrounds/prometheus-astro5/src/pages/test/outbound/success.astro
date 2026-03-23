@@ -1,0 +1,11 @@
+---
+export const prerender = false;
+const response = await fetch(
+	"http://localhost:4321/api/mock/resource/123?source=outbound-success",
+);
+const payload = await response.json();
+---
+
+<h1>Outbound Success Test</h1>
+<pre>{JSON.stringify(payload, null, 2)}</pre>
+
