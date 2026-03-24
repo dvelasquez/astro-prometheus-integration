@@ -76,8 +76,9 @@ export const createMetricsForRegistry = ({
 	buckets,
 }: CreateMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
-	if (registryMetrics.has(register)) {
-		return registryMetrics.get(register)!;
+	const existing = registryMetrics.get(register);
+	if (existing) {
+		return existing;
 	}
 
 	// Create fresh metrics for this specific registry
@@ -140,8 +141,9 @@ export const createOutboundMetricsForRegistry = ({
 	buckets,
 }: CreateOutboundMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
-	if (outboundRegistryMetrics.has(register)) {
-		return outboundRegistryMetrics.get(register)!;
+	const existingOutbound = outboundRegistryMetrics.get(register);
+	if (existingOutbound) {
+		return existingOutbound;
 	}
 
 	// Create fresh metrics for this specific registry

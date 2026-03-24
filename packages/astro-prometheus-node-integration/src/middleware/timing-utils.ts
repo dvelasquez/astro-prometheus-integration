@@ -117,7 +117,8 @@ const measureTTLBWithAsyncTimingInternal = ({
 	// Use setImmediate to defer timing work and reduce CPU pressure
 	setImmediate(async () => {
 		try {
-			const reader = clonedResponse.body!.getReader();
+			const reader = clonedResponse.body?.getReader();
+			if (!reader) return;
 			while (true) {
 				const { done } = await reader.read();
 				if (done) {

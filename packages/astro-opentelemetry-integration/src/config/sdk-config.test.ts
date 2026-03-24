@@ -69,6 +69,7 @@ describe("config/sdk-config", () => {
 			);
 			const mockInstrumentation = {};
 			// Ensure implementation used with `new` is a regular function (Vitest 4 requirement)
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (_config: any) {
 				return mockInstrumentation;
 			});
@@ -90,6 +91,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -116,6 +118,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -139,6 +142,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -165,6 +169,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -188,6 +193,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -207,6 +213,7 @@ describe("config/sdk-config", () => {
 			const { HttpInstrumentation } = await import(
 				"@opentelemetry/instrumentation-http"
 			);
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function (config: any) {
 				return config;
 			});
@@ -282,6 +289,7 @@ describe("config/sdk-config", () => {
 			resourceFromAttributes.mockReturnValue(mockResource);
 
 			const mockHttpInstrumentation = { name: "http-instrumentation" };
+			// biome-ignore lint/complexity/useArrowFunction: regular function required for `new` mocking in Vitest 4
 			(HttpInstrumentation as any).mockImplementation(function () {
 				return mockHttpInstrumentation;
 			});

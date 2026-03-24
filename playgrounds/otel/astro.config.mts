@@ -69,6 +69,7 @@ export default defineConfig({
 	],
 
 	vite: {
+		// biome-ignore lint/suspicious/noExplicitAny: tailwindcss plugin type is incompatible with Vite's plugin array type
 		plugins: [tailwindcss() as any],
 	},
 

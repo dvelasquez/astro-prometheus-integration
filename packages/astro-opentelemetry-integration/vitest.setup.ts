@@ -13,7 +13,7 @@ declare global {
 			useOptimizedTTLBMeasurement?: boolean;
 		};
 	};
-	var __OTEL_SDK__: any;
+	var __OTEL_SDK__: unknown;
 	var __OTEL_SDK_INITIALIZED__: boolean;
 	var __OTEL_SDK_INITIALIZING__: boolean;
 	var __OTEL_SDK_PROMISE__: Promise<void>;

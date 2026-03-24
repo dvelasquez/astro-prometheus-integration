@@ -32,7 +32,7 @@ export type MetricsConfig = z.infer<typeof metricsConfigSchema>;
 export type MetricsConfigWithUndefined = {
 	prefix?: string | undefined;
 	labels?: Record<string, string> | undefined;
-	register?: any | undefined;
+	register?: unknown;
 	gcDurationBuckets?: number[] | undefined;
 	eventLoopMonitoringPrecision?: number | undefined;
 };

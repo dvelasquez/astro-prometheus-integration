@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 const response = await fetch("https://mockly.me/user/basic");
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const data = await response.json();
 ---
 
