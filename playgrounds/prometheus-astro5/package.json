@@ -1,7 +1,7 @@
 {
 	"name": "prometheus-playground-astro5",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"scripts": {
 		"dev": "nodemon -w ../packages/astro-prometheus-node-integration/dist -e js,mjs,cjs,json -w ./astro.config.mts --exec \"astro dev\"",

@@ -60,5 +60,3 @@ jobs:
         env:
           # Needs the repo permissions
           GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
-          # Needs access to publish to npm
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
