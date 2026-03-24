@@ -25,17 +25,10 @@
 	"files": {
 		"includes": [
 			"**",
-			"!**/node_modules",
 			"!**/dist",
 			"!**/.astro",
 			"!**/playwright-report",
-			"!**/test-results",
-			"!**/.next",
-			"!**/.vercel",
-			"!**/.turbo",
-			"!**/coverage",
-			"!**/*.min.js",
-			"!**/*.min.css"
+			"!**/test-results"
 		]
 	},
 	"overrides": [
@@ -44,26 +37,14 @@
 				"**/*.test.ts",
 				"**/*.test.js",
 				"**/*.spec.ts",
-				"**/*.spec.js"
+				"**/*.spec.js",
+				"**/e2e/mock-server.ts",
+				"**/e2e/test-utils.ts"
 			],
 			"linter": {
 				"rules": {
 					"suspicious": {
 						"noExplicitAny": "off"
-					},
-					"complexity": {
-						"useArrowFunction": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": ["**/*.astro"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedVariables": "off",
-						"noUnusedImports": "off"
 					}
 				}
 			}

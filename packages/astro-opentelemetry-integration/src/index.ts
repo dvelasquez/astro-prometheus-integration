@@ -5,6 +5,6 @@ import {
 } from "./integrationSchema.ts";
 
 // Public API for Astro Open Telemetry Node integration
-export { integration, integrationSchema, type IntegrationSchema };
+export { type IntegrationSchema, integration, integrationSchema };
 
 export default integration;

@@ -1,13 +1,18 @@
 ---
+// biome-ignore lint/correctness/noUnusedImports: used in template
 import Delay from "../../components/Delay.astro";
+// biome-ignore lint/correctness/noUnusedImports: used in template
 import Layout from "../../layouts/Layout.astro";
 export const prerender = false;
 
 // Handle both GET and POST requests
 const method = Astro.request.method;
 let delayMs: number;
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 let delaySource: string;
-let submittedData: any = null;
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+let submittedData: unknown = null;
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 let message = "";
 
 if (method === "POST") {

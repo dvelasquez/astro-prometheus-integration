@@ -69,7 +69,11 @@ const initializeMetricsCache = async (register: client.Registry) => {
 			});
 		}
 	}
-	return metricsCache.get(register)!;
+	const entry = metricsCache.get(register);
+	if (!entry) {
+		throw new Error("metricsCache not initialized");
+	}
+	return entry;
 };
 
 const getRequestPath = (context: APIContext) => {
@@ -215,7 +219,7 @@ const handleRequest = async ({
 // Factory function for creating middleware (for testing purposes)
 export const createPrometheusMiddleware = async (
 	register: client.Registry,
-	optionsOverride?: any,
+	optionsOverride?: ReturnType<typeof getPrometheusOptions>,
 ) => {
 	const cachedMetrics = await initializeMetricsCache(register);
 

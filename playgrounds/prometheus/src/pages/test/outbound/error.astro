@@ -3,7 +3,9 @@ export const prerender = false;
 const response = await fetch(
 	"http://localhost:4321/api/mock/error?source=outbound-error",
 );
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const status = response.status;
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const body = await response.text();
 ---
 

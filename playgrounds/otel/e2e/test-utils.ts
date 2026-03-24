@@ -6,6 +6,7 @@ const execAsync = promisify(exec);
 /**
  * Test utilities for OpenTelemetry e2e tests
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: intentional static utility class pattern
 export class OTelTestUtils {
 	private static collectorStarted = false;
 
@@ -67,7 +68,7 @@ export class OTelTestUtils {
 				if (response.status < 500) {
 					return;
 				}
-			} catch (_error) {
+			} catch {
 				// Service not ready yet, continue waiting
 			}
 
@@ -88,7 +89,7 @@ export class OTelTestUtils {
 				method: "GET",
 			});
 			return response.status < 500;
-		} catch (_error) {
+		} catch {
 			return false;
 		}
 	}
@@ -100,7 +101,7 @@ export class OTelTestUtils {
 		try {
 			const response = await fetch("http://localhost:16686", { method: "GET" });
 			return response.status < 500;
-		} catch (_error) {
+		} catch {
 			return false;
 		}
 	}

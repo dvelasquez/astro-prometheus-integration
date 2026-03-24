@@ -1,10 +1,12 @@
 ---
+// biome-ignore lint/correctness/noUnusedImports: used in template
 import Layout from "../../layouts/Layout.astro";
 export const prerender = false;
 
 // Get delay from URL parameter or generate a random one
 const urlParamDelay = Astro.url.searchParams.get("delay"); // Use Astro.url again
 let delayMs: number;
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 let delaySource: string;
 
 if (urlParamDelay !== null && !Number.isNaN(Number(urlParamDelay))) {
