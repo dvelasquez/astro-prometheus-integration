@@ -30,11 +30,11 @@ importers:
   demo:
     dependencies:
       '@astrojs/node':
-        specifier: 10.0.4
-        version: 10.0.4(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 10.0.5
+        version: 10.0.5(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro:
-        specifier: 6.1.6
-        version: 6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 6.1.7
+        version: 6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../packages/astro-opentelemetry-integration
@@ -137,17 +137,17 @@ importers:
   playgrounds/otel:
     dependencies:
       '@astrojs/node':
-        specifier: 10.0.4
-        version: 10.0.4(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 10.0.5
+        version: 10.0.5(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       '@tailwindcss/vite':
         specifier: 4.2.2
         version: 4.2.2(vite@7.3.1(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.2))
       astro:
-        specifier: 6.1.6
-        version: 6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 6.1.7
+        version: 6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 0.20.0
-        version: 0.20.0(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../../packages/astro-opentelemetry-integration
@@ -174,17 +174,17 @@ importers:
   playgrounds/prometheus:
     dependencies:
       '@astrojs/node':
-        specifier: 10.0.4
-        version: 10.0.4(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: 10.0.5
+        version: 10.0.5(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       '@tailwindcss/vite':
         specifier: 4.2.2
         version: 4.2.2(vite@7.3.1(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.2))
       astro:
-        specifier: 6.1.6
-        version: 6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 6.1.7
+        version: 6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 0.20.0
-        version: 0.20.0(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro-prometheus-node-integration:
         specifier: workspace:*
         version: link:../../packages/astro-prometheus-node-integration
@@ -291,8 +291,8 @@ packages:
     peerDependencies:
       astro: ^6.0.0
 
-  '@astrojs/node@10.0.4':
-    resolution: {integrity: sha512-7pVgiVSscQHRC2WqjlXcnbbcKMYp2GXrYpmuvdGg5zgA8J1lFm2vmwVhHZFuZK3Ik5PzoxiDROaEgoDGLbfhLw==}
+  '@astrojs/node@10.0.5':
+    resolution: {integrity: sha512-rgZiU9nD7zmM3fdmOVuobcNHAyXWx2HXXDLTuxjVCTQ+QmHmL5zkZZhNIL5NjlQtDRAU1i5fVaXp7nAKdET30w==}
     peerDependencies:
       astro: ^6.0.0
 
@@ -1946,8 +1946,8 @@ packages:
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
-  astro@6.1.6:
-    resolution: {integrity: sha512-pRsz+kYriwCV/AUcY/I9OVKtVHuYFs2DtCszAxprXded/kTE53nMwxfnK0Nf6FPfaX9vcUiLnigcSIhuFoKntA==}
+  astro@6.1.7:
+    resolution: {integrity: sha512-pvZysIUV2C2nRv8N7cXAkCLcfDQz/axAxF09SqiTz1B+xnvbhy6KzL2I6J15ZBXk8k0TfMD75dJ151QyQmAqZA==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -4236,10 +4236,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@10.0.4(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
+  '@astrojs/node@10.0.5(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@astrojs/internal-helpers': 0.8.0
-      astro: 6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       send: 1.2.1
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -6001,9 +6001,9 @@ snapshots:
       astro: 6.0.8(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 2.0.3
 
-  astro-integration-kit@0.20.0(astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)):
+  astro-integration-kit@0.20.0(astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      astro: 6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 2.0.3
 
   astro@5.18.1(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
@@ -6202,7 +6202,7 @@ snapshots:
       - uploadthing
       - yaml
 
-  astro@6.1.6(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
+  astro@6.1.7(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2):
     dependencies:
       '@astrojs/compiler': 3.0.1
       '@astrojs/internal-helpers': 0.8.0
