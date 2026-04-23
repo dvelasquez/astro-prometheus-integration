@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"parse-prometheus-text-format": "1.1.1",
 		"tsup": "8.5.1",
-		"vitest": "4.1.4"
+		"vitest": "4.1.5"
 	},
 	"repository": {
 		"type": "git",
