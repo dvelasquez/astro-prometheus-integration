@@ -25,13 +25,13 @@
 	"dependencies": {
 		"@astrojs/node": "10.0.6",
 		"@tailwindcss/vite": "4.2.4",
-		"astro": "6.1.9",
+		"astro": "6.1.10",
 		"astro-integration-kit": "0.20.0",
 		"astro-prometheus-node-integration": "workspace:*",
 		"tailwindcss": "4.2.4"
 	},
 	"devDependencies": {
-		"@astrojs/check": "0.9.8",
+		"@astrojs/check": "0.9.9",
 		"@playwright/test": "1.59.1",
 		"@types/node": "24.12.2",
 		"nodemon": "3.1.14",
