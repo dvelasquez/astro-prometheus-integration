@@ -116,7 +116,7 @@ jobs:
     if: always()
     steps:
       - name: 💬 Comment on PR
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const prometheusStatus = '${{ needs.e2e-prometheus-pr.result }}';
