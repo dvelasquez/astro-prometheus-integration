@@ -25,7 +25,7 @@
 	"dependencies": {
 		"@astrojs/node": "10.1.1",
 		"@tailwindcss/vite": "4.3.0",
-		"astro": "6.3.2",
+		"astro": "6.3.3",
 		"astro-integration-kit": "0.20.0",
 		"astro-prometheus-node-integration": "workspace:*",
 		"tailwindcss": "4.3.0"
