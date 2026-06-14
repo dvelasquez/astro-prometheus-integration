@@ -24,11 +24,11 @@
 	},
 	"dependencies": {
 		"@astrojs/node": "10.1.4",
-		"@tailwindcss/vite": "4.3.0",
+		"@tailwindcss/vite": "4.3.1",
 		"astro": "6.4.6",
 		"astro-integration-kit": "0.20.0",
 		"astro-prometheus-node-integration": "workspace:*",
-		"tailwindcss": "4.3.0"
+		"tailwindcss": "4.3.1"
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.9",
