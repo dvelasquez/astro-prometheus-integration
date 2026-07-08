@@ -94,7 +94,8 @@ jobs:
         run: pnpm build:all
 
       - name: 🎭 Install Playwright browsers
-        run: pnpx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
+        working-directory: playgrounds/prometheus
 
       - name: 🧪 Run Prometheus E2E tests
         run: pnpm test:e2e:ci
@@ -142,7 +143,8 @@ jobs:
         run: pnpm build:all
 
       - name: 🎭 Install Playwright browsers
-        run: pnpx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
+        working-directory: playgrounds/prometheus-astro5
 
       - name: 🧪 Run Prometheus E2E tests (Astro 5)
         run: pnpm test:e2e:ci
@@ -190,7 +192,8 @@ jobs:
         run: pnpm build:all
 
       - name: 🎭 Install Playwright browsers
-        run: pnpx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
+        working-directory: playgrounds/otel
 
       - name: 🧪 Run OpenTelemetry E2E tests
         run: pnpm test:e2e:ci
