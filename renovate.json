@@ -8,12 +8,11 @@
 			"automergeType": "branch"
 		},
 		{
-			"description": "Pinned prometheus playgrounds must keep their Astro major version",
+			"description": "Pinned prometheus compatibility playgrounds are frozen — bump manually on major Astro upgrades only",
 			"matchFileNames": [
 				"playgrounds/prometheus-astro5/package.json",
 				"playgrounds/prometheus-astro6/package.json"
 			],
-			"matchPackageNames": ["astro", "@astrojs/node", "@astrojs/check", "vite"],
 			"enabled": false
 		}
 	],

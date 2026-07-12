@@ -48,6 +48,6 @@ pnpm test:e2e:prometheus-astro6
 pnpm test:e2e:prometheus-astro5
 ```
 
-Pinned playground versions should **not** be bumped by Renovate. Consider adding `"ignoreDeps"` entries in `renovate.json` if drift becomes a problem.
+Pinned playground versions are frozen in Renovate via `matchFileNames` + `enabled: false` in [`renovate.json`](../renovate.json). Only bump them manually when following the major-upgrade workflow above.
 
 Each pinned playground also pins `vite` in `devDependencies` to the major version its Astro release expects. This prevents Vite 8 (from the Astro 7 main playground) from being hoisted into older stacks.
