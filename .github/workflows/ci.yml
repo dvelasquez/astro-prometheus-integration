@@ -166,6 +166,55 @@ jobs:
           path: playgrounds/prometheus-astro5/playwright-report/
           retention-days: 30
 
+  e2e-prometheus-astro7:
+    name: 🧪 E2E Tests - Prometheus (Astro 7)
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup PNPM
+        uses: pnpm/action-setup@v5
+        with:
+          run_install: false
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build packages
+        run: pnpm build:all
+
+      - name: 🎭 Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+        working-directory: playgrounds/prometheus-astro7
+
+      - name: 🧪 Run Prometheus E2E tests (Astro 7)
+        run: pnpm test:e2e:ci
+        working-directory: playgrounds/prometheus-astro7
+
+      - name: 📊 Upload Prometheus Astro 7 test results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: prometheus-astro7-e2e-results
+          path: playgrounds/prometheus-astro7/test-results/
+          retention-days: 30
+
+      - name: 📊 Upload Prometheus Astro 7 Playwright report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: prometheus-astro7-playwright-report
+          path: playgrounds/prometheus-astro7/playwright-report/
+          retention-days: 30
+
   e2e-otel:
     name: 🧪 E2E Tests - OpenTelemetry
     runs-on: ubuntu-latest
@@ -218,7 +267,7 @@ jobs:
   ci-summary:
     name: 📊 CI Summary
     runs-on: ubuntu-latest
-    needs: [lint, build-and-test, e2e-prometheus, e2e-prometheus-astro5, e2e-otel]
+    needs: [lint, build-and-test, e2e-prometheus, e2e-prometheus-astro5, e2e-prometheus-astro7, e2e-otel]
     # Only post CI summary comments on pull requests, but still respect all job results
     if: github.event_name == 'pull_request' && always()
     permissions:
@@ -245,6 +294,7 @@ jobs:
             const buildStatus = '${{ needs.build-and-test.result }}';
             const prometheusStatus = '${{ needs.e2e-prometheus.result }}';
             const prometheusAstro5Status = '${{ needs.e2e-prometheus-astro5.result }}';
+            const prometheusAstro7Status = '${{ needs.e2e-prometheus-astro7.result }}';
             const otelStatus = '${{ needs.e2e-otel.result }}';
 
             const getStatusEmoji = (status) => {
@@ -265,9 +315,10 @@ jobs:
             | 🏗️ Build & Test | ${getStatusEmoji(buildStatus)} | TypeScript compilation & unit tests |
             | 🧪 E2E - Prometheus (Astro 6) | ${getStatusEmoji(prometheusStatus)} | Prometheus integration tests |
             | 🧪 E2E - Prometheus (Astro 5) | ${getStatusEmoji(prometheusAstro5Status)} | Prometheus integration tests on Astro 5 |
+            | 🧪 E2E - Prometheus (Astro 7) | ${getStatusEmoji(prometheusAstro7Status)} | Prometheus integration tests on Astro 7 |
             | 🧪 E2E - OpenTelemetry | ${getStatusEmoji(otelStatus)} | OpenTelemetry integration tests |
 
-            **Overall Status:** ${lintStatus === 'success' && buildStatus === 'success' && prometheusStatus === 'success' && prometheusAstro5Status === 'success' && otelStatus === 'success' ? '✅ All checks passed!' : '❌ Some checks failed'}
+            **Overall Status:** ${lintStatus === 'success' && buildStatus === 'success' && prometheusStatus === 'success' && prometheusAstro5Status === 'success' && prometheusAstro7Status === 'success' && otelStatus === 'success' ? '✅ All checks passed!' : '❌ Some checks failed'}
 
             <details>
             <summary>📋 Test Coverage</summary>
