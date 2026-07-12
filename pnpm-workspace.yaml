@@ -3,6 +3,8 @@ packages:
   - playgrounds/*
   - demo
 
+minimumReleaseAge: 0
+
 allowBuilds:
   '@tailwindcss/oxide': true
   esbuild: true
