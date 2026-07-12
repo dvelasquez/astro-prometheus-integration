@@ -21,7 +21,7 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 | Package version | Astro | `@astrojs/node` | Node.js |
 |---|---|---|---|
-| `>= 1.3.0` | `^5.0.0` \| `^6.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `>= 22` |
+| `>= 1.3.0` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `>= 22` |
 
 ## Requirements
 
