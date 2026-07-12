@@ -3,8 +3,8 @@ packages:
   - playgrounds/*
   - demo
 
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - esbuild
-  - protobufjs
-  - sharp
+allowBuilds:
+  '@tailwindcss/oxide': true
+  esbuild: true
+  protobufjs: true
+  sharp: true
