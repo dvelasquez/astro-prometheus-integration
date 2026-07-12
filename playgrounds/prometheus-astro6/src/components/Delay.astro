@@ -1,0 +1,8 @@
+---
+interface Props {
+	delayMs: number;
+}
+const { delayMs } = Astro.props;
+await new Promise((resolve) => setTimeout(resolve, delayMs));
+---
+<slot /> 
