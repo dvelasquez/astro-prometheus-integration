@@ -3,10 +3,6 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
-import type {
-	ObservedEntry,
-	OutboundMetricContext,
-} from "astro-prometheus-node-integration";
 
 // Import the named export 'integration'
 const { default: prometheusNodeIntegration } = await import(
@@ -15,9 +11,6 @@ const { default: prometheusNodeIntegration } = await import(
 
 // https://astro.build/config
 export default defineConfig({
-	security: {
-		checkOrigin: false,
-	},
 	integrations: [
 		prometheusNodeIntegration({
 			enabled: true, // explicitly enable it
@@ -38,37 +31,6 @@ export default defineConfig({
 			experimental: {
 				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
 			},
-			histogramBuckets: {
-				inbound: [0.05, 0.1, 0.25],
-				outbound: [0.1, 0.5, 1],
-			},
-			outboundRequests: {
-				enabled: true,
-				includeErrors: true,
-				labels: {
-					endpoint: (context: OutboundMetricContext) =>
-						context.defaultEndpoint.replace(/\/\d+/g, "/:id"),
-					app: () => "prom-playground",
-				},
-				shouldObserve: (entry: ObservedEntry) => {
-					const resourceTarget =
-						typeof (entry as { name?: unknown }).name === "string"
-							? (entry as { name: string }).name
-							: "";
-					const httpTarget = (() => {
-						const detail = (entry as { detail?: unknown }).detail as
-							| {
-									req?: {
-										url?: string;
-									};
-							  }
-							| undefined;
-						return detail?.req?.url ?? "";
-					})();
-					const target = httpTarget || resourceTarget;
-					return !target.includes("skip-metrics");
-				},
-			},
 		}),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve(
@@ -78,10 +40,8 @@ export default defineConfig({
 	],
 
 	vite: {
-		plugins: [
-			// biome-ignore lint/suspicious/noExplicitAny: Tailwind plugin typings are not compatible with Astro config typing.
-			tailwindcss() as any,
-		],
+		// biome-ignore lint/suspicious/noExplicitAny: tailwindcss plugin type is incompatible with Vite's plugin array type
+		plugins: [tailwindcss() as any],
 	},
 
 	adapter: node({

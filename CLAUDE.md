@@ -85,9 +85,11 @@ Defined similarly via `defineIntegration`. At build time, a Vite plugin prepends
 
 ### Playgrounds
 
-- `playgrounds/prometheus/` — Astro app using `astro-prometheus-node-integration` via `workspace:*`, with Playwright e2e tests under `e2e/`.
-- `playgrounds/prometheus-astro5/` — Same integration tests pinned to an older Astro stack.
-- `playgrounds/prometheus-astro7/` — Same integration tests on Astro 7 + `@astrojs/node` v11.
+See [`playgrounds/README.md`](playgrounds/README.md) for the versioning policy when adding support for a new Astro major.
+
+- `playgrounds/prometheus/` — Main e2e playground on the latest supported Astro stack (currently Astro 7 + `@astrojs/node` v11).
+- `playgrounds/prometheus-astro6/` — Pinned Astro 6 compatibility playground.
+- `playgrounds/prometheus-astro5/` — Pinned Astro 5 compatibility playground.
 - `playgrounds/otel/` — Astro app using `astro-opentelemetry-integration`, with Playwright e2e tests.
 
 The prometheus playground's `dev` script uses `nodemon` to watch the package `dist/` folder, so changes rebuild automatically after running `pnpm prometheus:dev` in parallel.

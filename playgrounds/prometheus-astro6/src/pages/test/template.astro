@@ -8,11 +8,11 @@ export const prerender = false;
 // Handle both GET and POST requests
 const method = Astro.request.method;
 let delayMs: number;
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 let delaySource: string;
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 let submittedData: unknown = null;
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 let message = "";
 
 if (method === "POST") {
@@ -31,7 +31,7 @@ if (method === "POST") {
 			delaySource = "random (invalid form data)";
 			message = "Invalid delay value submitted, using random delay";
 		}
-	} catch (_error) {
+	} catch {
 		delayMs = Math.floor(Math.random() * 1000);
 		delaySource = "random (form processing error)";
 		message = "Error processing form data, using random delay";
