@@ -112,8 +112,8 @@ importers:
   packages/astro-prometheus-node-integration:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.0.0 || ^10.0.0
-        version: 10.0.3(astro@6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: ^9.0.0 || ^10.0.0 || ^11.0.0
+        version: 10.1.4(astro@6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))
       astro:
         specifier: ^5.0.0 || ^6.0.0
         version: 6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
@@ -4203,6 +4203,15 @@ snapshots:
   '@astrojs/node@10.0.3(astro@6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@astrojs/internal-helpers': 0.8.0
+      astro: 6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
+      send: 1.2.1
+      server-destroy: 1.0.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@astrojs/node@10.1.4(astro@6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2))':
+    dependencies:
+      '@astrojs/internal-helpers': 0.10.0
       astro: 6.0.8(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.50.1)(typescript@5.9.3)(yaml@2.8.2)
       send: 1.2.1
       server-destroy: 1.0.1
