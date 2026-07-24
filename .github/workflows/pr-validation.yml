@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v6
@@ -51,7 +51,7 @@ jobs:
     needs: quick-validation
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v6
@@ -84,7 +84,7 @@ jobs:
     needs: quick-validation
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v6
