@@ -1,8 +1,6 @@
 import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
-import { createResolver } from "astro-integration-kit";
-import { hmrIntegration } from "astro-integration-kit/dev";
 import type {
 	ObservedEntry,
 	OutboundMetricContext,
@@ -69,11 +67,6 @@ export default defineConfig({
 					return !target.includes("skip-metrics");
 				},
 			},
-		}),
-		hmrIntegration({
-			directory: createResolver(import.meta.url).resolve(
-				"../../packages/astro-prometheus-node-integration/dist",
-			),
 		}),
 	],
 

@@ -1,4 +1,5 @@
-import { defineIntegration } from "astro-integration-kit";
+import type { AstroIntegration } from "astro";
+import type { z } from "astro/zod";
 import {
 	type IntegrationSchema,
 	integrationSchema,
@@ -18,87 +19,86 @@ export const createSdkBootstrapCode = (
 	return `globalThis.__OTEL_OPTIONS__=${otel};globalThis.__OTEL_PRESETS__=${presets};await import("astro-opentelemetry-integration/sdk");\n`;
 };
 
-export const integration = defineIntegration({
-	name: INTEGRATION_NAME,
-	optionsSchema: integrationSchema,
-	setup({ options }) {
-		if (!options.enabled) {
-			return {
-				hooks: {},
-			};
-		}
+export const integration = (
+	rawOptions?: z.input<typeof integrationSchema>,
+): AstroIntegration => {
+	const options = integrationSchema.parse(rawOptions);
 
-		globalThis.__OTEL_OPTIONS__ = options.otel;
-		globalThis.__OTEL_PRESETS__ = options.presets;
-
+	if (!options.enabled) {
 		return {
-			hooks: {
-				"astro:config:setup": ({
-					addMiddleware,
-					logger,
-					updateConfig,
-					config,
-					command,
-				}) => {
-					logger.info("setting up integration");
-
-					if (
-						!config.adapter ||
-						!ALLOWED_ADAPTERS.includes(config.adapter.name)
-					) {
-						throw new Error(
-							`${INTEGRATION_NAME} currently only works with one of the following adapters: ${ALLOWED_ADAPTERS.join(", ")}`,
-						);
-					}
-
-					if (command === "dev") {
-						logger.info(
-							`prepending ${INTEGRATION_NAME} OpenTelemetry SDK to dev mode`,
-						);
-						import("./sdk.js");
-					}
-
-					const serverEntry = config.build.serverEntry;
-					const sdkBootstrapCode = createSdkBootstrapCode(options);
-
-					// Inject options + SDK load into the server entry.
-					// The SDK package is external, so Vite `define` cannot reach it;
-					// baking options into entry.mjs is what makes standalone Node work.
-					updateConfig({
-						vite: {
-							plugins: [
-								{
-									name: `${INTEGRATION_NAME}-sdk-prepend`,
-									enforce: "pre",
-									generateBundle(_options, bundle) {
-										const entryFileName = serverEntry || "entry.mjs";
-
-										for (const [fileName, chunk] of Object.entries(bundle)) {
-											if (
-												fileName === entryFileName &&
-												chunk.type === "chunk"
-											) {
-												logger.info(
-													`Prepending ${INTEGRATION_NAME} OpenTelemetry SDK to output file: ${fileName}`,
-												);
-												chunk.code = `${sdkBootstrapCode}${chunk.code}`;
-												break;
-											}
-										}
-									},
-								},
-							],
-						},
-					});
-
-					addMiddleware({
-						order: "pre",
-						entrypoint: new URL("./middleware/index.js", import.meta.url),
-					});
-
-					logger.info("integration setup complete");
-				},
-			},
+			name: INTEGRATION_NAME,
+			hooks: {},
 		};
-	},
-});
+	}
+
+	globalThis.__OTEL_OPTIONS__ = options.otel;
+	globalThis.__OTEL_PRESETS__ = options.presets;
+
+	return {
+		name: INTEGRATION_NAME,
+		hooks: {
+			"astro:config:setup": ({
+				addMiddleware,
+				logger,
+				updateConfig,
+				config,
+				command,
+			}) => {
+				logger.info("setting up integration");
+
+				if (
+					!config.adapter ||
+					!ALLOWED_ADAPTERS.includes(config.adapter.name)
+				) {
+					throw new Error(
+						`${INTEGRATION_NAME} currently only works with one of the following adapters: ${ALLOWED_ADAPTERS.join(", ")}`,
+					);
+				}
+
+				if (command === "dev") {
+					logger.info(
+						`prepending ${INTEGRATION_NAME} OpenTelemetry SDK to dev mode`,
+					);
+					import("./sdk.js");
+				}
+
+				const serverEntry = config.build.serverEntry;
+				const sdkBootstrapCode = createSdkBootstrapCode(options);
+
+				// Inject options + SDK load into the server entry.
+				// The SDK package is external, so Vite `define` cannot reach it;
+				// baking options into entry.mjs is what makes standalone Node work.
+				updateConfig({
+					vite: {
+						plugins: [
+							{
+								name: `${INTEGRATION_NAME}-sdk-prepend`,
+								enforce: "pre",
+								generateBundle(_options, bundle) {
+									const entryFileName = serverEntry || "entry.mjs";
+
+									for (const [fileName, chunk] of Object.entries(bundle)) {
+										if (fileName === entryFileName && chunk.type === "chunk") {
+											logger.info(
+												`Prepending ${INTEGRATION_NAME} OpenTelemetry SDK to output file: ${fileName}`,
+											);
+											chunk.code = `${sdkBootstrapCode}${chunk.code}`;
+											break;
+										}
+									}
+								},
+							},
+						],
+					},
+				});
+
+				addMiddleware({
+					order: "pre",
+					entrypoint: new URL("./middleware/index.js", import.meta.url),
+				});
+
+				logger.info("integration setup complete");
+			},
+		},
+	};
+};
