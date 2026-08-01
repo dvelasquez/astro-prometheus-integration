@@ -1,5 +1,11 @@
 # astro-opentelemetry-integration
 
+## 0.2.1
+
+### Patch Changes
+
+- [#357](https://github.com/dvelasquez/astro-prometheus-integration/pull/357) [`9dd12a6`](https://github.com/dvelasquez/astro-prometheus-integration/commit/9dd12a6ad5f301be479b839d753e9e8510d401d1) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Fix standalone Node startup by baking OTel options into the server entry before loading the SDK. Previously options only lived on `globalThis` during Astro config, so `node dist/server/entry.mjs` crashed with `Cannot read properties of undefined (reading 'serviceName')` ([#354](https://github.com/dvelasquez/astro-prometheus-integration/issues/354)).
+
 ## 0.2.0
 
 ### Minor Changes
