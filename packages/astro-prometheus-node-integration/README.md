@@ -19,13 +19,17 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 ## Compatibility
 
-| Package version | Astro | `@astrojs/node` | Node.js |
-|---|---|---|---|
-| `>= 1.3.0` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `>= 22` |
+| Package version | Astro | `@astrojs/node` | `prom-client` | Node.js |
+|---|---|---|---|---|
+| `>= 2.0.0` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `^15.0.0` (peer) | `>= 22` |
+| `1.3.0` – `1.5.x` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `15.x` (direct dependency) | `>= 22` |
+
+Upgrading from v1? See the [Migration guide (v1 → v2)](./MIGRATION.md).
 
 ## Requirements
 
 - This integration requires the `@astrojs/node` adapter. Prometheus metrics require a persistent Node.js server process to aggregate and expose metrics.
+- `prom-client` is a **peer dependency**. Your app must install it so the integration, your application, and any other libraries share a single `prom-client` instance. `astro add` installs non-optional peers automatically.
 - **Not supported:** Serverless adapters (such as Vercel, Netlify, Cloudflare, etc.) are not compatible with this integration. In serverless environments, each request runs in isolation, so metrics cannot be aggregated across requests.
 
 > **Note:** If you deploy to a serverless platform, metrics will not be accurate or useful, as each request is handled by a separate, stateless server instance.
@@ -35,6 +39,8 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 ## Installation
 
 ### Automatic (Recommended)
+
+`astro add` installs the integration, the adapter, and non-optional peer dependencies (including `prom-client`):
 
 ```bash
 pnpm astro add astro-prometheus-node-integration @astrojs/node
@@ -46,17 +52,17 @@ yarn astro add astro-prometheus-node-integration @astrojs/node
 
 ### Manual
 
-1. Install the packages:
+1. Install the packages (include `prom-client` so your app owns the shared instance):
 
 ```bash
-pnpm add astro-prometheus-node-integration @astrojs/node
+pnpm add astro-prometheus-node-integration @astrojs/node prom-client
 # or
-npm install astro-prometheus-node-integration @astrojs/node
+npm install astro-prometheus-node-integration @astrojs/node prom-client
 # or
-yarn add astro-prometheus-node-integration @astrojs/node
+yarn add astro-prometheus-node-integration @astrojs/node prom-client
 ```
 
-1. Add the integration as the first one to your `astro.config.mjs` or `astro.config.mts`:
+2. Add the integration as the first one to your `astro.config.mjs` or `astro.config.mts`:
 
 ```js
 import { defineConfig } from "astro/config";
@@ -70,6 +76,30 @@ export default defineConfig({
   adapter: node({
     mode: "standalone",
   }),
+});
+```
+
+### Single `prom-client` instance
+
+`prom-client` keeps process-wide state (default registry, cluster aggregation via `AggregatorRegistry`). Multiple physical copies of the package break that — especially with pnpm and Node.js `cluster`, where workers and the primary must share the same module instance.
+
+Keep one `prom-client` in your app dependencies, and avoid nested duplicates (for example with `pnpm.overrides` if another library pulls in its own copy).
+
+If your Astro SSR bundle embeds `prom-client`, mark it external so Node resolves the app-owned copy:
+
+```js
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
+import prometheusNodeIntegration from "astro-prometheus-node-integration";
+
+export default defineConfig({
+  integrations: [prometheusNodeIntegration()],
+  adapter: node({ mode: "standalone" }),
+  vite: {
+    ssr: {
+      external: ["prom-client"],
+    },
+  },
 });
 ```
 
