@@ -21,7 +21,7 @@ describe("getAttributes", () => {
 		it("should use global options serviceName when available", () => {
 			// Test the logic directly since constants are evaluated at import time
 			const serviceName =
-				globalThis.__OTEL_OPTIONS__.serviceName ||
+				globalThis.__OTEL_OPTIONS__?.serviceName ||
 				process.env.OTEL_SERVICE_NAME;
 			expect(serviceName).toBe("test-service");
 		});
@@ -29,7 +29,7 @@ describe("getAttributes", () => {
 		it("should fallback to environment variable when global options is not set", () => {
 			globalThis.__OTEL_OPTIONS__ = {};
 			const serviceName =
-				globalThis.__OTEL_OPTIONS__.serviceName ||
+				globalThis.__OTEL_OPTIONS__?.serviceName ||
 				process.env.OTEL_SERVICE_NAME;
 			expect(serviceName).toBe("env-service");
 		});
@@ -37,7 +37,15 @@ describe("getAttributes", () => {
 		it("should fallback to environment variable when global options serviceName is undefined", () => {
 			globalThis.__OTEL_OPTIONS__ = { serviceName: undefined };
 			const serviceName =
-				globalThis.__OTEL_OPTIONS__.serviceName ||
+				globalThis.__OTEL_OPTIONS__?.serviceName ||
+				process.env.OTEL_SERVICE_NAME;
+			expect(serviceName).toBe("env-service");
+		});
+
+		it("should fallback to environment variable when global options object is missing", () => {
+			globalThis.__OTEL_OPTIONS__ = undefined;
+			const serviceName =
+				globalThis.__OTEL_OPTIONS__?.serviceName ||
 				process.env.OTEL_SERVICE_NAME;
 			expect(serviceName).toBe("env-service");
 		});
@@ -46,7 +54,7 @@ describe("getAttributes", () => {
 			globalThis.__OTEL_OPTIONS__ = {};
 			delete process.env.OTEL_SERVICE_NAME;
 			const serviceName =
-				globalThis.__OTEL_OPTIONS__.serviceName ||
+				globalThis.__OTEL_OPTIONS__?.serviceName ||
 				process.env.OTEL_SERVICE_NAME;
 			expect(serviceName).toBeUndefined();
 		});
@@ -56,7 +64,7 @@ describe("getAttributes", () => {
 		it("should use global options serviceVersion when available", () => {
 			// Test the logic directly since constants are evaluated at import time
 			const serviceVersion =
-				globalThis.__OTEL_OPTIONS__.serviceVersion ||
+				globalThis.__OTEL_OPTIONS__?.serviceVersion ||
 				process.env.OTEL_SERVICE_VERSION;
 			expect(serviceVersion).toBe("1.0.0");
 		});
@@ -64,7 +72,7 @@ describe("getAttributes", () => {
 		it("should fallback to environment variable when global options is not set", () => {
 			globalThis.__OTEL_OPTIONS__ = {};
 			const serviceVersion =
-				globalThis.__OTEL_OPTIONS__.serviceVersion ||
+				globalThis.__OTEL_OPTIONS__?.serviceVersion ||
 				process.env.OTEL_SERVICE_VERSION;
 			expect(serviceVersion).toBe("2.0.0");
 		});
@@ -72,7 +80,15 @@ describe("getAttributes", () => {
 		it("should fallback to environment variable when global options serviceVersion is undefined", () => {
 			globalThis.__OTEL_OPTIONS__ = { serviceVersion: undefined };
 			const serviceVersion =
-				globalThis.__OTEL_OPTIONS__.serviceVersion ||
+				globalThis.__OTEL_OPTIONS__?.serviceVersion ||
+				process.env.OTEL_SERVICE_VERSION;
+			expect(serviceVersion).toBe("2.0.0");
+		});
+
+		it("should fallback to environment variable when global options object is missing", () => {
+			globalThis.__OTEL_OPTIONS__ = undefined;
+			const serviceVersion =
+				globalThis.__OTEL_OPTIONS__?.serviceVersion ||
 				process.env.OTEL_SERVICE_VERSION;
 			expect(serviceVersion).toBe("2.0.0");
 		});
@@ -81,7 +97,7 @@ describe("getAttributes", () => {
 			globalThis.__OTEL_OPTIONS__ = {};
 			delete process.env.OTEL_SERVICE_VERSION;
 			const serviceVersion =
-				globalThis.__OTEL_OPTIONS__.serviceVersion ||
+				globalThis.__OTEL_OPTIONS__?.serviceVersion ||
 				process.env.OTEL_SERVICE_VERSION;
 			expect(serviceVersion).toBeUndefined();
 		});
