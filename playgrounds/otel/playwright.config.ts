@@ -39,9 +39,10 @@ export default defineConfig({
 		},
 	],
 
-	/* Run your local preview server before starting the tests */
+	/* Start the standalone Node entry (production path), not `astro preview`.
+	 * Preview loads astro.config in-process and masks missing runtime option injection. */
 	webServer: {
-		command: "pnpm preview",
+		command: "node ./dist/server/entry.mjs",
 		url: "http://localhost:8000",
 		reuseExistingServer: !process.env.CI,
 		timeout: 120 * 1000, // 2 minutes timeout for server startup

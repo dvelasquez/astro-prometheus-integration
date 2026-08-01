@@ -1,6 +1,22 @@
 import { defineIntegration } from "astro-integration-kit";
-import { integrationSchema } from "./integrationSchema.js";
+import {
+	type IntegrationSchema,
+	integrationSchema,
+} from "./integrationSchema.js";
 import { ALLOWED_ADAPTERS, INTEGRATION_NAME } from "./utils/constants.js";
+
+/**
+ * Build server-entry bootstrap that sets runtime options before loading the SDK.
+ * Uses a dynamic import so assignments run before SDK evaluation (static imports are hoisted).
+ * Required for `node dist/server/entry.mjs` where Astro config never runs in-process.
+ */
+export const createSdkBootstrapCode = (
+	options: Pick<IntegrationSchema, "otel" | "presets">,
+): string => {
+	const otel = JSON.stringify(options.otel);
+	const presets = JSON.stringify(options.presets ?? {});
+	return `globalThis.__OTEL_OPTIONS__=${otel};globalThis.__OTEL_PRESETS__=${presets};await import("astro-opentelemetry-integration/sdk");\n`;
+};
 
 export const integration = defineIntegration({
 	name: INTEGRATION_NAME,
@@ -43,9 +59,11 @@ export const integration = defineIntegration({
 					}
 
 					const serverEntry = config.build.serverEntry;
+					const sdkBootstrapCode = createSdkBootstrapCode(options);
 
-					// Inject OpenTelemetry SDK as the first module in the Vite build
-					// This achieves the same effect as `node --import=./sdk.js`
+					// Inject options + SDK load into the server entry.
+					// The SDK package is external, so Vite `define` cannot reach it;
+					// baking options into entry.mjs is what makes standalone Node work.
 					updateConfig({
 						vite: {
 							plugins: [
@@ -63,7 +81,7 @@ export const integration = defineIntegration({
 												logger.info(
 													`Prepending ${INTEGRATION_NAME} OpenTelemetry SDK to output file: ${fileName}`,
 												);
-												chunk.code = `import 'astro-opentelemetry-integration/sdk';\n${chunk.code}`;
+												chunk.code = `${sdkBootstrapCode}${chunk.code}`;
 												break;
 											}
 										}

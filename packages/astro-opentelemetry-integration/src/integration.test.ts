@@ -290,7 +290,7 @@ describe("integration", () => {
 					generateBundle = viteConfig.vite.plugins[0].generateBundle;
 				});
 
-				it("should prepend SDK import to entry chunk", () => {
+				it("should prepend SDK bootstrap with options to entry chunk", () => {
 					const mockBundle = {
 						"entry.mjs": {
 							type: "chunk",
@@ -305,7 +305,7 @@ describe("integration", () => {
 					generateBundle({}, mockBundle);
 
 					expect(mockBundle["entry.mjs"].code).toBe(
-						"import 'astro-opentelemetry-integration/sdk';\nconsole.log('original code');",
+						'globalThis.__OTEL_OPTIONS__={"serviceName":"test-service"};globalThis.__OTEL_PRESETS__={"metricExporter":"prometheus"};await import("astro-opentelemetry-integration/sdk");\nconsole.log(\'original code\');',
 					);
 					expect(mockBundle["other.js"].code).toBe(
 						"console.log('other code');",
@@ -350,7 +350,7 @@ describe("integration", () => {
 					generateBundleNew({}, mockBundle);
 
 					expect(mockBundle["entry.mjs"].code).toBe(
-						"import 'astro-opentelemetry-integration/sdk';\nconsole.log('original code');",
+						'globalThis.__OTEL_OPTIONS__={"serviceName":"test-service"};globalThis.__OTEL_PRESETS__={"metricExporter":"prometheus"};await import("astro-opentelemetry-integration/sdk");\nconsole.log(\'original code\');',
 					);
 				});
 
