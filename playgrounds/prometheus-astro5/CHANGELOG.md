@@ -1,5 +1,12 @@
 # prometheus-playground-astro5
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`9860732`](https://github.com/dvelasquez/astro-prometheus-integration/commit/98607320bc1deca13c4da2d973afdade7fe88356)]:
+  - astro-prometheus-node-integration@1.5.1
+
 ## 0.0.3
 
 ### Patch Changes
