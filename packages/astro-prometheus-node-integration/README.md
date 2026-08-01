@@ -36,20 +36,19 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 ## Installation
 
+`prom-client` is a peer dependency — install it in the **same** command as the integration so your app owns a single shared instance. npm 7+ and pnpm usually auto-install missing peers, but declaring `prom-client` explicitly is required for reliable cluster aggregation and version control.
+
 ### Automatic (Recommended)
 
-```bash
-pnpm astro add astro-prometheus-node-integration @astrojs/node
-pnpm add prom-client
-# or
-npx astro add astro-prometheus-node-integration @astrojs/node
-npm install prom-client
-# or
-yarn astro add astro-prometheus-node-integration @astrojs/node
-yarn add prom-client
-```
+Install `prom-client` first (or in the same shell), then let `astro add` wire the integration and adapter:
 
-`astro add` installs the integration and adapter; install `prom-client` yourself afterward (it is a peer dependency).
+```bash
+pnpm add prom-client && pnpm astro add astro-prometheus-node-integration @astrojs/node
+# or
+npm install prom-client && npx astro add astro-prometheus-node-integration @astrojs/node
+# or
+yarn add prom-client && yarn astro add astro-prometheus-node-integration @astrojs/node
+```
 
 ### Manual
 
@@ -84,7 +83,7 @@ export default defineConfig({
 
 `prom-client` keeps process-wide state (default registry, cluster aggregation via `AggregatorRegistry`). Multiple physical copies of the package break that — especially with pnpm and Node.js `cluster`, where workers and the primary must share the same module instance.
 
-Declare `prom-client` once in your app, and avoid nested duplicates (for example with `pnpm.overrides` if another library pulls in its own copy).
+Keep one `prom-client` in your app dependencies, and avoid nested duplicates (for example with `pnpm.overrides` if another library pulls in its own copy).
 
 If your Astro SSR bundle embeds `prom-client`, mark it external so Node resolves the app-owned copy:
 
