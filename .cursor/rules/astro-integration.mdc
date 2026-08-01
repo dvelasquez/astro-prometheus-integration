@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-This is a project using AstroJS and the astro integration toolkit.
+This is a project using AstroJS.
 
 This project is a prometheus middleware integration for astro.
 

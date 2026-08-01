@@ -1,8 +1,6 @@
 import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
-import { createResolver } from "astro-integration-kit";
-import { hmrIntegration } from "astro-integration-kit/dev";
 
 // Import the named export 'integration'
 const { default: prometheusNodeIntegration } = await import(
@@ -31,11 +29,6 @@ export default defineConfig({
 			experimental: {
 				useOptimizedTTLBMeasurement: false, // Enable optimized TTLB measurement
 			},
-		}),
-		hmrIntegration({
-			directory: createResolver(import.meta.url).resolve(
-				"../../packages/astro-prometheus-node-integration/dist",
-			),
 		}),
 	],
 

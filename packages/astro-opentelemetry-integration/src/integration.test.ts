@@ -1,14 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock the dependencies
-vi.doMock("astro-integration-kit", () => ({
-	defineIntegration: vi.fn((config) => config),
-}));
-
-vi.doMock("./integrationSchema.js", () => ({
-	integrationSchema: { type: "mock-schema" },
-}));
-
 vi.doMock("./utils/constants.js", () => ({
 	ALLOWED_ADAPTERS: ["@astrojs/node", "@astrojs/vercel"],
 	INTEGRATION_NAME: "astro-opentelemetry-integration",
@@ -18,50 +9,65 @@ vi.doMock("./sdk.js", () => ({
 	default: {},
 }));
 
+const enabledOptions = {
+	enabled: true as const,
+	otel: { serviceName: "test-service" },
+	presets: { metricExporter: "prometheus" as const },
+};
+
+const expectedOtel = {
+	serviceName: "test-service",
+	serviceVersion: "unknown_version",
+};
+
+const expectedPresets = {
+	metricExporter: "prometheus",
+	traceExporter: "console",
+};
+
+const expectedBootstrapPrefix =
+	'globalThis.__OTEL_OPTIONS__={"serviceName":"test-service","serviceVersion":"unknown_version"};globalThis.__OTEL_PRESETS__={"metricExporter":"prometheus","traceExporter":"console"};await import("astro-opentelemetry-integration/sdk");\n';
+
 describe("integration", () => {
 	let originalGlobalOptions: typeof globalThis.__OTEL_OPTIONS__;
 	let originalGlobalPresets: typeof globalThis.__OTEL_PRESETS__;
 
 	beforeEach(() => {
-		// Store original global state
 		originalGlobalOptions = globalThis.__OTEL_OPTIONS__;
 		originalGlobalPresets = globalThis.__OTEL_PRESETS__;
 
-		// Clear all mocks
 		vi.clearAllMocks();
 
-		// Reset global state
 		globalThis.__OTEL_OPTIONS__ = undefined;
 		globalThis.__OTEL_PRESETS__ = undefined;
 	});
 
 	afterEach(() => {
-		// Restore original global state
 		globalThis.__OTEL_OPTIONS__ = originalGlobalOptions;
 		globalThis.__OTEL_PRESETS__ = originalGlobalPresets;
 
-		// Clear all mocks
 		vi.clearAllMocks();
 	});
 
-	it("should define integration with correct configuration", async () => {
-		const { defineIntegration } = await import("astro-integration-kit");
+	it("should return an Astro integration with the correct name", async () => {
 		const { integration } = await import("./integration.js");
 
-		expect(defineIntegration).toHaveBeenCalledWith({
-			name: "astro-opentelemetry-integration",
-			optionsSchema: { type: "mock-schema" },
-			setup: expect.any(Function),
-		});
+		const result = integration(enabledOptions);
 
-		expect(integration).toBeDefined();
+		expect(result.name).toBe("astro-opentelemetry-integration");
+		expect(result.hooks).toHaveProperty("astro:config:setup");
 	});
 
-	describe("setup function", () => {
-		let mockLogger: any;
-		let mockAddMiddleware: any;
-		let mockUpdateConfig: any;
-		let mockConfig: any;
+	describe("factory function", () => {
+		let mockLogger: {
+			info: ReturnType<typeof vi.fn>;
+		};
+		let mockAddMiddleware: ReturnType<typeof vi.fn>;
+		let mockUpdateConfig: ReturnType<typeof vi.fn>;
+		let mockConfig: {
+			adapter: { name: string } | null;
+			build: { serverEntry?: string };
+		};
 
 		beforeEach(() => {
 			mockLogger = {
@@ -82,11 +88,10 @@ describe("integration", () => {
 		it("should return empty hooks when integration is disabled", async () => {
 			const { integration } = await import("./integration.js");
 
-			const result = integration.setup({
-				options: { enabled: false },
-			});
+			const result = integration({ enabled: false });
 
 			expect(result).toEqual({
+				name: "astro-opentelemetry-integration",
 				hooks: {},
 			});
 
@@ -97,19 +102,11 @@ describe("integration", () => {
 		it("should set global options when integration is enabled", async () => {
 			const { integration } = await import("./integration.js");
 
-			const mockOptions = {
-				enabled: true,
-				otel: { serviceName: "test-service" },
-				presets: { metricExporter: "prometheus" },
-			};
-
-			const result = integration.setup({
-				options: mockOptions,
-			});
+			const result = integration(enabledOptions);
 
 			expect(result.hooks).toHaveProperty("astro:config:setup");
-			expect(globalThis.__OTEL_OPTIONS__).toBe(mockOptions.otel);
-			expect(globalThis.__OTEL_PRESETS__).toBe(mockOptions.presets);
+			expect(globalThis.__OTEL_OPTIONS__).toEqual(expectedOtel);
+			expect(globalThis.__OTEL_PRESETS__).toEqual(expectedPresets);
 		});
 
 		describe("astro:config:setup hook", () => {
@@ -124,15 +121,9 @@ describe("integration", () => {
 			beforeEach(async () => {
 				const { integration } = await import("./integration.js");
 
-				const result = integration.setup({
-					options: {
-						enabled: true,
-						otel: { serviceName: "test-service" },
-						presets: { metricExporter: "prometheus" },
-					},
-				});
+				const result = integration(enabledOptions);
 
-				setupHook = result.hooks["astro:config:setup"];
+				setupHook = result.hooks["astro:config:setup"] as typeof setupHook;
 			});
 
 			it("should log integration setup start", () => {
@@ -188,7 +179,6 @@ describe("integration", () => {
 			});
 
 			it("should import SDK in dev mode", () => {
-				// Mock the dynamic import - we can't easily spy on it, so we just test that dev mode logs correctly
 				setupHook({
 					addMiddleware: mockAddMiddleware,
 					logger: mockLogger,
@@ -203,7 +193,6 @@ describe("integration", () => {
 			});
 
 			it("should not import SDK in build mode", () => {
-				// Test that the dev-specific logging doesn't happen in build mode
 				setupHook({
 					addMiddleware: mockAddMiddleware,
 					logger: mockLogger,
@@ -305,7 +294,7 @@ describe("integration", () => {
 					generateBundle({}, mockBundle);
 
 					expect(mockBundle["entry.mjs"].code).toBe(
-						'globalThis.__OTEL_OPTIONS__={"serviceName":"test-service"};globalThis.__OTEL_PRESETS__={"metricExporter":"prometheus"};await import("astro-opentelemetry-integration/sdk");\nconsole.log(\'original code\');',
+						`${expectedBootstrapPrefix}console.log('original code');`,
 					);
 					expect(mockBundle["other.js"].code).toBe(
 						"console.log('other code');",
@@ -318,17 +307,12 @@ describe("integration", () => {
 						build: {},
 					};
 
-					// Re-setup with config without serverEntry
 					const { integration } = await import("./integration.js");
-					const result = integration.setup({
-						options: {
-							enabled: true,
-							otel: { serviceName: "test-service" },
-							presets: { metricExporter: "prometheus" },
-						},
-					});
+					const result = integration(enabledOptions);
 
-					const setupHookNew = result.hooks["astro:config:setup"];
+					const setupHookNew = result.hooks[
+						"astro:config:setup"
+					] as typeof setupHook;
 					setupHookNew({
 						addMiddleware: mockAddMiddleware,
 						logger: mockLogger,
@@ -350,7 +334,7 @@ describe("integration", () => {
 					generateBundleNew({}, mockBundle);
 
 					expect(mockBundle["entry.mjs"].code).toBe(
-						'globalThis.__OTEL_OPTIONS__={"serviceName":"test-service"};globalThis.__OTEL_PRESETS__={"metricExporter":"prometheus"};await import("astro-opentelemetry-integration/sdk");\nconsole.log(\'original code\');',
+						`${expectedBootstrapPrefix}console.log('original code');`,
 					);
 				});
 
@@ -401,7 +385,7 @@ describe("integration", () => {
 			it("should work with all allowed adapters", () => {
 				const allowedAdapters = ["@astrojs/node", "@astrojs/vercel"];
 
-				allowedAdapters.forEach((adapterName) => {
+				for (const adapterName of allowedAdapters) {
 					const configWithAdapter = {
 						...mockConfig,
 						adapter: {
@@ -418,7 +402,7 @@ describe("integration", () => {
 							command: "build",
 						});
 					}).not.toThrow();
-				});
+				}
 			});
 		});
 	});

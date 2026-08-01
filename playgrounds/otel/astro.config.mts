@@ -1,8 +1,6 @@
 import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
-import { createResolver } from "astro-integration-kit";
-import { hmrIntegration } from "astro-integration-kit/dev";
 import type { IntegrationSchema } from "astro-opentelemetry-integration";
 
 // Import the named export 'integration'
@@ -60,11 +58,6 @@ export default defineConfig({
 				serviceVersion: "0.0.1",
 			},
 			presets,
-		}),
-		hmrIntegration({
-			directory: createResolver(import.meta.url).resolve(
-				"../../packages/astro-opentelemetry-integration/dist",
-			),
 		}),
 	],
 

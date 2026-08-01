@@ -63,7 +63,7 @@ Both packages are built with `tsup` (ESM only, targeting Node 18+), peer-dependi
 
 ### How astro-prometheus-node-integration works
 
-The integration is defined via `astro-integration-kit`'s `defineIntegration` in `src/integration.ts`. On `astro:config:setup` it:
+The integration is a plain Astro factory in `src/integration.ts` (Zod-validated options). On `astro:config:setup` it:
 
 1. Injects options into the Vite build as `__PROMETHEUS_OPTIONS__` (a build-time constant read at runtime via `src/config/accessors.ts`).
 2. Registers two Astro middlewares (both run server-side, `order: "pre"`):
@@ -81,7 +81,7 @@ The integration is defined via `astro-integration-kit`'s `defineIntegration` in 
 
 ### How astro-opentelemetry-integration works
 
-Defined similarly via `defineIntegration`. At build time, a Vite plugin prepends `import 'astro-opentelemetry-integration/sdk'` to the server entry file, which bootstraps the OTel SDK before any other code runs. Supports configurable metric/trace exporters (proto, http, grpc, prometheus, console) via `src/exporters/`.
+Defined similarly as a plain Astro factory with Zod-validated options. At build time, a Vite plugin prepends `import 'astro-opentelemetry-integration/sdk'` to the server entry file, which bootstraps the OTel SDK before any other code runs. Supports configurable metric/trace exporters (proto, http, grpc, prometheus, console) via `src/exporters/`.
 
 ### Playgrounds
 

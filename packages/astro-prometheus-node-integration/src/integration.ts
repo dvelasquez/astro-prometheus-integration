@@ -1,7 +1,7 @@
 // Integration for Astro Prometheus Node: defines the integration and its options schema using Zod
 
+import type { AstroIntegration } from "astro";
 import { z } from "astro/zod";
-import { defineIntegration } from "astro-integration-kit";
 import { metricsConfigSchema } from "./metrics/config.js";
 import {
 	type OutboundRequestsOptions,
@@ -197,41 +197,43 @@ const registerMiddleware = ({
 	});
 };
 
-export const integration = defineIntegration({
-	name: "astro-prometheus-node-integration",
-	optionsSchema: integrationSchema,
-	setup({ options }) {
-		if (!options.enabled) {
-			return {
-				hooks: {},
-			};
-		}
+export const integration = (
+	rawOptions?: z.input<typeof integrationSchema>,
+): AstroIntegration => {
+	const options = integrationSchema.parse(rawOptions);
 
+	if (!options.enabled) {
 		return {
-			hooks: {
-				"astro:config:setup": ({
-					injectRoute,
-					addMiddleware,
-					logger,
-					updateConfig,
-				}) => {
-					logger.info("setting up integration");
-
-					const outboundRequests = prepareOutboundConfig({ options });
-					applyOutboundGlobalConfig({ outboundRequests });
-
-					const sanitizedOptions = buildSanitizedOptions({
-						options,
-						outboundRequests,
-					});
-
-					setupMetricsRoute({ options, injectRoute });
-					updateViteConfig({ sanitizedOptions, updateConfig });
-					registerMiddleware({ addMiddleware, outboundRequests });
-
-					logger.info("integration setup complete");
-				},
-			},
+			name: "astro-prometheus-node-integration",
+			hooks: {},
 		};
-	},
-});
+	}
+
+	return {
+		name: "astro-prometheus-node-integration",
+		hooks: {
+			"astro:config:setup": ({
+				injectRoute,
+				addMiddleware,
+				logger,
+				updateConfig,
+			}) => {
+				logger.info("setting up integration");
+
+				const outboundRequests = prepareOutboundConfig({ options });
+				applyOutboundGlobalConfig({ outboundRequests });
+
+				const sanitizedOptions = buildSanitizedOptions({
+					options,
+					outboundRequests,
+				});
+
+				setupMetricsRoute({ options, injectRoute });
+				updateViteConfig({ sanitizedOptions, updateConfig });
+				registerMiddleware({ addMiddleware, outboundRequests });
+
+				logger.info("integration setup complete");
+			},
+		},
+	};
+};
