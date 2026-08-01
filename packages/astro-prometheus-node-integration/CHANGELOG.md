@@ -1,5 +1,11 @@
 # astro-prometheus-node-integration
 
+## 1.5.1
+
+### Patch Changes
+
+- [#359](https://github.com/dvelasquez/astro-prometheus-integration/pull/359) [`9860732`](https://github.com/dvelasquez/astro-prometheus-integration/commit/98607320bc1deca13c4da2d973afdade7fe88356) Thanks [@dvelasquez](https://github.com/dvelasquez)! - Remove deprecated `astro-integration-kit` dependency; integrations are now plain Astro factories with Zod-validated options.
+
 ## 1.5.0
 
 ### Minor Changes
