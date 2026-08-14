@@ -23,9 +23,9 @@
 		"test:e2e:build": "pnpm build:all && pnpm test:e2e:ci"
 	},
 	"dependencies": {
-		"@astrojs/node": "11.1.0",
+		"@astrojs/node": "11.1.2",
 		"@tailwindcss/vite": "4.3.3",
-		"astro": "7.2.0",
+		"astro": "7.2.2",
 		"astro-prometheus-node-integration": "workspace:*",
 		"prom-client": "15.1.3",
 		"tailwindcss": "4.3.3"
