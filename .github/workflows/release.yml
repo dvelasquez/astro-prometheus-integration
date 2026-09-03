@@ -51,7 +51,7 @@ jobs:
       - name: Create Release Pull Request or Publish
         id: changesets
         if: ${{ github.event_name == 'push' }}
-        uses: changesets/action@v1
+        uses: changesets/action@v2.1.1
         with:
           version: pnpm run ci:version
           publish: pnpm run ci:publish
