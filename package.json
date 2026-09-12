@@ -35,7 +35,7 @@
 		"test:e2e:ci": "pnpm test:e2e:prometheus && pnpm test:e2e:otel"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.12",
+		"@biomejs/biome": "2.5.13",
 		"@changesets/changelog-github": "1.0.1",
 		"@changesets/cli": "3.0.2",
 		"husky": "9.1.7",
