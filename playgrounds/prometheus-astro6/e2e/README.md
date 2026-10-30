@@ -5,6 +5,7 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 ## 🎯 Test Coverage
 
 ### 1. **Prometheus Integration Tests** (`prometheus-integration.spec.ts`)
+
 - ✅ Metrics endpoint accessibility and format
 - ✅ Custom prefix and label application
 - ✅ Default Node.js metrics collection
@@ -16,16 +17,19 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 - ✅ Integration configuration validation
 
 ### 2. **Standalone Metrics Server Tests** (`standalone-metrics.spec.ts`)
+
 - ✅ Server functionality (when enabled)
 - ✅ Fallback behavior (when disabled)
 - ✅ Port configuration validation
 
 ### 3. **OpenMetrics Tests** (`openmetrics.spec.ts`)
+
 - ✅ Content type handling
 - ✅ Format validation
 - ✅ Configuration switching
 
 ### 4. **Outbound HTTP Metrics Tests** (`outbound-metrics.spec.ts`)
+
 - ✅ Successful outbound request instrumentation
 - ✅ Error response tracking with `error_reason`
 - ✅ Histogram recordings for external calls
@@ -33,6 +37,7 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 - ✅ Filtering logic via `shouldObserve`
 
 ### 5. **Test Utilities** (`utils/metrics-helper.ts`)
+
 - 🔧 Helper class for common testing patterns
 - 🔧 Metric value extraction and validation
 - 🔧 Custom prefix and label verification
@@ -42,13 +47,16 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 ## 🚀 Running the Tests
 
 ### Prerequisites
+
 1. **Build the packages** (required before testing):
+
    ```bash
    cd playground
    npm run build:all
    ```
 
 2. **Install Playwright browsers** (if not already installed):
+
    ```bash
    npx playwright install
    ```
@@ -56,36 +64,43 @@ This directory contains comprehensive end-to-end tests for the Astro Prometheus 
 ### Test Commands
 
 #### Build and Run All E2E Tests (Recommended)
+
 ```bash
 npm run test:e2e:build
 ```
 
 #### Run Tests Only (requires previous build)
+
 ```bash
 npm run test:e2e
 ```
 
 #### Run Tests with UI (Interactive)
+
 ```bash
 npm run test:e2e:ui
 ```
 
 #### Run Tests in Headed Mode (Visible Browser)
+
 ```bash
 npm run test:e2e:headed
 ```
 
 #### Run Tests in Debug Mode
+
 ```bash
 npm run test:e2e:debug
 ```
 
 #### View Test Report
+
 ```bash
 npm run test:e2e:report
 ```
 
 ### Using the Test Runner Script
+
 ```bash
 cd playground
 ./e2e/run-tests.sh
@@ -94,6 +109,7 @@ cd playground
 ## 🔧 Test Configuration
 
 ### Playwright Config (`playwright.config.ts`)
+
 - **Base URL**: `http://localhost:4321`
 - **Web Server**: Automatically starts `npm run preview`
 - **Browser**: Chromium (Chrome)
@@ -102,6 +118,7 @@ cd playground
 - **Traces**: On retry
 
 ### Test Environment
+
 - **Port**: 4321 (Astro preview server)
 - **Metrics Endpoint**: `/_/metrics`
 - **Integration**: Enabled with custom prefix `myapp_`
@@ -112,28 +129,33 @@ cd playground
 The e2e tests use a **build-first approach** for production-like testing:
 
 ### **1. Build Integration Package**
+
 ```bash
 cd packages/astro-prometheus-node-integration
 pnpm build
 ```
 
 ### **2. Build Playground**
+
 ```bash
 cd playground
 pnpm build
 ```
 
 ### **3. Start Preview Server**
+
 ```bash
 pnpm preview
 ```
 
 ### **4. Run E2E Tests**
+
 ```bash
 npm run test:e2e
 ```
 
 ### **Automated Workflow**
+
 ```bash
 # Build both packages and run tests
 npm run test:e2e:build
@@ -145,6 +167,7 @@ npm run test:e2e:build
 ## 📊 Test Scenarios Covered
 
 ### **Metrics Endpoint Validation**
+
 - HTTP 200 OK responses
 - Prometheus text format
 - Custom prefix application
@@ -152,6 +175,7 @@ npm run test:e2e:build
 - Default Node.js metrics
 
 ### **Functionality Testing**
+
 - Page navigation metrics
 - HTTP method handling (GET/POST)
 - Duration measurement
@@ -160,6 +184,7 @@ npm run test:e2e:build
 - Outbound HTTP instrumentation
 
 ### **Configuration Testing**
+
 - Custom metrics URL
 - Prefix application
 - Label propagation
@@ -168,26 +193,28 @@ npm run test:e2e:build
 ## 🛠️ Advanced Features
 
 ### **MetricsHelper Class**
+
 ```typescript
-import { createMetricsHelper } from './utils/metrics-helper';
+import { createMetricsHelper } from "./utils/metrics-helper";
 
 const metricsHelper = createMetricsHelper(page);
 
 // Check metric existence
-await metricsHelper.hasMetric('myapp_http_requests_total');
+await metricsHelper.hasMetric("myapp_http_requests_total");
 
 // Get metric values
-const value = await metricsHelper.getMetricValue('myapp_http_requests_total');
+const value = await metricsHelper.getMetricValue("myapp_http_requests_total");
 
 // Wait for specific values
-await metricsHelper.waitForMetricValue('myapp_http_requests_total', 5);
+await metricsHelper.waitForMetricValue("myapp_http_requests_total", 5);
 
 // Verify configuration
-await metricsHelper.hasCustomPrefix('myapp_');
-await metricsHelper.hasCustomLabels({ env: 'production' });
+await metricsHelper.hasCustomPrefix("myapp_");
+await metricsHelper.hasCustomLabels({ env: "production" });
 ```
 
 ### **Test Utilities**
+
 - **Traffic Generation**: Create test data
 - **Metric Validation**: Comprehensive checking
 - **Error Handling**: Graceful failure handling
@@ -207,6 +234,7 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 ## 🚨 What This Tests
 
 ### **✅ Working Features**
+
 - Metrics endpoint accessibility
 - Custom prefix and labels
 - Default metrics collection
@@ -217,6 +245,7 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 - Form submission handling (POST requests)
 
 ### **⚠️ Edge Cases**
+
 - 404 errors
 - 500 errors
 - Different HTTP methods (GET/POST)
@@ -227,12 +256,14 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 ## 🔍 Debugging & Troubleshooting
 
 ### **Common Issues**
+
 - **Build failures**: Check both packages build successfully
 - **Preview server issues**: Ensure port 4321 is available
 - **Metrics not found**: Wait for collection, check config
 - **Test timeouts**: Increase timeouts, add explicit waits
 
 ### **Debug Commands**
+
 ```bash
 # Interactive debugging
 npm run test:e2e:debug
@@ -250,24 +281,26 @@ npm run test:e2e:build
 ## 📝 Adding New Tests
 
 ### **Test Structure**
-```typescript
-import { test, expect } from '@playwright/test';
-import { createMetricsHelper } from './utils/metrics-helper';
 
-test.describe('New Feature', () => {
-  test('should work correctly', async ({ page }) => {
-    const metricsHelper = createMetricsHelper(page);
-    
-    // Your test logic here
-    await page.goto('/test-page');
-    
-    // Verify metrics
-    await metricsHelper.hasMetric('expected_metric');
-  });
+```typescript
+import { test, expect } from "@playwright/test";
+import { createMetricsHelper } from "./utils/metrics-helper";
+
+test.describe("New Feature", () => {
+	test("should work correctly", async ({ page }) => {
+		const metricsHelper = createMetricsHelper(page);
+
+		// Your test logic here
+		await page.goto("/test-page");
+
+		// Verify metrics
+		await metricsHelper.hasMetric("expected_metric");
+	});
 });
 ```
 
 ### **Best Practices**
+
 1. **Use descriptive test names** that explain the expected behavior
 2. **Group related tests** using `test.describe()`
 3. **Use the MetricsHelper** for common metrics operations

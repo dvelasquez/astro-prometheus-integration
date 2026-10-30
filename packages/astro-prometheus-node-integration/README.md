@@ -19,9 +19,9 @@ An [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) t
 
 ## Compatibility
 
-| Package version | Astro | `@astrojs/node` | `prom-client` | Node.js |
-|---|---|---|---|---|
-| `>= 2.0.0` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `^15.0.0` (peer) | `>= 22` |
+| Package version   | Astro                            | `@astrojs/node`                    | `prom-client`              | Node.js |
+| ----------------- | -------------------------------- | ---------------------------------- | -------------------------- | ------- |
+| `>= 2.0.0`        | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `^15.0.0` (peer)           | `>= 22` |
 | `1.3.0` – `1.5.x` | `^5.0.0` \| `^6.0.0` \| `^7.0.0` | `^9.0.0` \| `^10.0.0` \| `^11.0.0` | `15.x` (direct dependency) | `>= 22` |
 
 Upgrading from v1? See the [Migration guide (v1 → v2)](./MIGRATION.md).
@@ -70,12 +70,10 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [
-    prometheusNodeIntegration(),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [prometheusNodeIntegration()],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -93,13 +91,13 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [prometheusNodeIntegration()],
-  adapter: node({ mode: "standalone" }),
-  vite: {
-    ssr: {
-      external: ["prom-client"],
-    },
-  },
+	integrations: [prometheusNodeIntegration()],
+	adapter: node({ mode: "standalone" }),
+	vite: {
+		ssr: {
+			external: ["prom-client"],
+		},
+	},
 });
 ```
 
@@ -116,12 +114,10 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [
-    prometheusNodeIntegration(),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [prometheusNodeIntegration()],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -133,27 +129,27 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [
-    prometheusNodeIntegration({
-      enabled: true, // Enable/disable integration
-      metricsUrl: "/metrics", // URL for metrics endpoint
-      registerContentType: "PROMETHEUS", // or "OPENMETRICS"
-      collectDefaultMetricsConfig: {
-        prefix: "myapp_", // Prefix for all metrics
-        labels: {
-          env: "production",
-          version: "1.0.0",
-        },
-      },
-      histogramBuckets: {
-        inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],  // Custom inbound buckets
-        outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50],       // Custom outbound buckets
-      },
-    }),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [
+		prometheusNodeIntegration({
+			enabled: true, // Enable/disable integration
+			metricsUrl: "/metrics", // URL for metrics endpoint
+			registerContentType: "PROMETHEUS", // or "OPENMETRICS"
+			collectDefaultMetricsConfig: {
+				prefix: "myapp_", // Prefix for all metrics
+				labels: {
+					env: "production",
+					version: "1.0.0",
+				},
+			},
+			histogramBuckets: {
+				inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10], // Custom inbound buckets
+				outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50], // Custom outbound buckets
+			},
+		}),
+	],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -161,15 +157,15 @@ export default defineConfig({
 
 ## Configuration Options
 
-| Option                      | Type      | Default        | Description                                                                                 |
-|-----------------------------|-----------|----------------|---------------------------------------------------------------------------------------------|
-| `enabled`                   | boolean   | `true`         | Enable or disable the integration. Useful for disabling in development.                      |
-| `metricsUrl`                | string    | `/metrics`     | The URL path where metrics are exposed.                                                      |
-| `registerContentType`       | string    | `PROMETHEUS`   | Content type for the metrics endpoint. Use `PROMETHEUS` or `OPENMETRICS`.                    |
-| `collectDefaultMetricsConfig` | object  | `{}`           | Configuration for [prom-client collectDefaultMetrics](https://github.com/siimon/prom-client#collectdefaultmetricsconfig). Supports `prefix`, `labels`, etc. |
-| `standaloneMetrics`         | object    | `{ enabled: false, port: 7080 }` | Expose metrics on a standalone HTTP server. If enabled, disables the default Astro route and starts a Node.js server on the specified port. |
-| `outboundRequests`          | object    | _disabled_     | Track outbound HTTP/fetch calls made by the Node process. Enable to collect latency, totals, and error counts for external requests. |
-| `histogramBuckets`          | object    | _not set_      | Custom histogram buckets for inbound and outbound metrics. If not provided, prom-client defaults `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` are used. |
+| Option                        | Type    | Default                          | Description                                                                                                                                                            |
+| ----------------------------- | ------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                     | boolean | `true`                           | Enable or disable the integration. Useful for disabling in development.                                                                                                |
+| `metricsUrl`                  | string  | `/metrics`                       | The URL path where metrics are exposed.                                                                                                                                |
+| `registerContentType`         | string  | `PROMETHEUS`                     | Content type for the metrics endpoint. Use `PROMETHEUS` or `OPENMETRICS`.                                                                                              |
+| `collectDefaultMetricsConfig` | object  | `{}`                             | Configuration for [prom-client collectDefaultMetrics](https://github.com/siimon/prom-client#collectdefaultmetricsconfig). Supports `prefix`, `labels`, etc.            |
+| `standaloneMetrics`           | object  | `{ enabled: false, port: 7080 }` | Expose metrics on a standalone HTTP server. If enabled, disables the default Astro route and starts a Node.js server on the specified port.                            |
+| `outboundRequests`            | object  | _disabled_                       | Track outbound HTTP/fetch calls made by the Node process. Enable to collect latency, totals, and error counts for external requests.                                   |
+| `histogramBuckets`            | object  | _not set_                        | Custom histogram buckets for inbound and outbound metrics. If not provided, prom-client defaults `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` are used. |
 
 ### `collectDefaultMetricsConfig` fields
 
@@ -194,11 +190,11 @@ export default defineConfig({
 
 ```js
 prometheusNodeIntegration({
-  histogramBuckets: {
-    inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],  // Custom inbound buckets
-    outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50],      // Custom outbound buckets
-  },
-})
+	histogramBuckets: {
+		inbound: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10], // Custom inbound buckets
+		outbound: [0.1, 0.5, 1, 2, 5, 10, 20, 50], // Custom outbound buckets
+	},
+});
 ```
 
 ### `outboundRequests` fields
@@ -214,19 +210,19 @@ prometheusNodeIntegration({
 
 ```js
 prometheusNodeIntegration({
-  outboundRequests: {
-    enabled: true,
-    includeErrors: false,
-    labels: {
-      endpoint: ({ defaultEndpoint }) =>
-        defaultEndpoint.replace(/\/\d+/g, "/:id"),
-      app: () => process.env.SERVICE_NAME ?? "checkout",
-    },
-    shouldObserve: (entry) => {
-      // Ignore health checks and internal telemetry calls
-      return !entry.name.includes("/health");
-    },
-  },
+	outboundRequests: {
+		enabled: true,
+		includeErrors: false,
+		labels: {
+			endpoint: ({ defaultEndpoint }) =>
+				defaultEndpoint.replace(/\/\d+/g, "/:id"),
+			app: () => process.env.SERVICE_NAME ?? "checkout",
+		},
+		shouldObserve: (entry) => {
+			// Ignore health checks and internal telemetry calls
+			return !entry.name.includes("/health");
+		},
+	},
 });
 ```
 
@@ -273,11 +269,11 @@ prometheusNodeIntegration({
 
 The integration provides the following Prometheus metrics:
 
-| Metric Name                        | Type      | Labels (`method`, `path`, `status`) | Description                                                                                 |
-|-------------------------------------|-----------|-------------------------------------|---------------------------------------------------------------------------------------------|
-| `http_requests_total`               | Counter   | Yes                                 | Total number of HTTP requests received.                                                     |
-| `http_request_duration_seconds`     | Histogram | Yes                                 | Duration (in seconds) of server-side request processing (until response is ready to send).  |
-| `http_server_duration_seconds`      | Histogram | Yes                                 | Full server-side HTTP request duration, including response streaming (time to last byte).    |
+| Metric Name                     | Type      | Labels (`method`, `path`, `status`) | Description                                                                                |
+| ------------------------------- | --------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| `http_requests_total`           | Counter   | Yes                                 | Total number of HTTP requests received.                                                    |
+| `http_request_duration_seconds` | Histogram | Yes                                 | Duration (in seconds) of server-side request processing (until response is ready to send). |
+| `http_server_duration_seconds`  | Histogram | Yes                                 | Full server-side HTTP request duration, including response streaming (time to last byte).  |
 
 ### Metric Details
 
@@ -329,11 +325,11 @@ The optimized method is particularly beneficial for:
 
 When `outboundRequests.enabled` is `true`, the integration registers three additional metrics that mirror the counter/histogram set many teams already use when wrapping Undici:
 
-| Metric Name                     | Type      | Labels (`method`, `host`, `status`, `endpoint`, `app`) | Description |
-|---------------------------------|-----------|--------------------------------------------------------|-------------|
-| `http_responses_total`          | Counter   | Yes                                                    | Total number of outbound HTTP responses observed. |
-| `http_response_duration_seconds`| Histogram | Yes                                                    | Duration (seconds) from request start until the response completes. Buckets use `histogramBuckets.outbound` if configured, otherwise prom-client defaults. |
-| `http_response_error_total`     | Counter   | Yes + `error_reason`                                   | Total number of outbound responses that failed (status ≥ 400 or network error). |
+| Metric Name                      | Type      | Labels (`method`, `host`, `status`, `endpoint`, `app`) | Description                                                                                                                                                |
+| -------------------------------- | --------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `http_responses_total`           | Counter   | Yes                                                    | Total number of outbound HTTP responses observed.                                                                                                          |
+| `http_response_duration_seconds` | Histogram | Yes                                                    | Duration (seconds) from request start until the response completes. Buckets use `histogramBuckets.outbound` if configured, otherwise prom-client defaults. |
+| `http_response_error_total`      | Counter   | Yes + `error_reason`                                   | Total number of outbound responses that failed (status ≥ 400 or network error).                                                                            |
 
 All three metrics share a cached registry entry, respect global prefixes, and automatically deduplicate performance entries emitted by Node.js/Undici.
 
@@ -376,18 +372,18 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [
-    prometheusNodeIntegration({
-      metricsUrl: "/_/metrics",  // Metrics URL is also configurable in this mode
-      standaloneMetrics: {
-        enabled: true, // Enable standalone metrics server
-        port: 8080,    // (Optional) Port for the metrics server (default: 7080)
-      },
-    }),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [
+		prometheusNodeIntegration({
+			metricsUrl: "/_/metrics", // Metrics URL is also configurable in this mode
+			standaloneMetrics: {
+				enabled: true, // Enable standalone metrics server
+				port: 8080, // (Optional) Port for the metrics server (default: 7080)
+			},
+		}),
+	],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 

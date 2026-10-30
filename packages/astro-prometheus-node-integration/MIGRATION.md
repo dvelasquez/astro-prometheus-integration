@@ -58,13 +58,13 @@ import node from "@astrojs/node";
 import prometheusNodeIntegration from "astro-prometheus-node-integration";
 
 export default defineConfig({
-  integrations: [prometheusNodeIntegration()],
-  adapter: node({ mode: "standalone" }),
-  vite: {
-    ssr: {
-      external: ["prom-client"],
-    },
-  },
+	integrations: [prometheusNodeIntegration()],
+	adapter: node({ mode: "standalone" }),
+	vite: {
+		ssr: {
+			external: ["prom-client"],
+		},
+	},
 });
 ```
 

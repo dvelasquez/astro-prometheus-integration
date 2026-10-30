@@ -6,10 +6,10 @@ See [`../README.md`](../README.md) for the playground versioning policy.
 
 ## Stack
 
-| Package | Version |
-|---|---|
-| `astro` | 7.x |
-| `@astrojs/node` | 11.x |
+| Package                             | Version   |
+| ----------------------------------- | --------- |
+| `astro`                             | 7.x       |
+| `@astrojs/node`                     | 11.x      |
 | `astro-prometheus-node-integration` | workspace |
 
 ## Commands

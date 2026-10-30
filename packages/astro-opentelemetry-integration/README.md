@@ -65,12 +65,10 @@ import node from "@astrojs/node";
 import otelIntegration from "astro-opentelemetry-integration";
 
 export default defineConfig({
-  integrations: [
-    otelIntegration(),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [otelIntegration()],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -104,12 +102,10 @@ import node from "@astrojs/node";
 import otelIntegration from "astro-opentelemetry-integration";
 
 export default defineConfig({
-  integrations: [
-    otelIntegration(),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [otelIntegration()],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -121,30 +117,30 @@ import node from "@astrojs/node";
 import otelIntegration from "astro-opentelemetry-integration";
 
 export default defineConfig({
-  integrations: [
-    otelIntegration({
-      enabled: true, // Enable/disable integration
-      otel: {
-        serviceName: "my-astro-app",
-        serviceVersion: "1.0.0",
-      },
-      presets: {
-        metricExporter: "prometheus", // or "http", "grpc", "proto", "none"
-        traceExporter: "http", // or "grpc", "proto", "console"
-        prometheusConfig: {
-          host: "0.0.0.0",
-          port: 9464,
-          endpoint: "/metrics",
-          prefix: "myapp_",
-          appendTimestamp: true,
-          withResourceConstantLabels: "/service/",
-        },
-      },
-    }),
-  ],
-  adapter: node({
-    mode: "standalone",
-  }),
+	integrations: [
+		otelIntegration({
+			enabled: true, // Enable/disable integration
+			otel: {
+				serviceName: "my-astro-app",
+				serviceVersion: "1.0.0",
+			},
+			presets: {
+				metricExporter: "prometheus", // or "http", "grpc", "proto", "none"
+				traceExporter: "http", // or "grpc", "proto", "console"
+				prometheusConfig: {
+					host: "0.0.0.0",
+					port: 9464,
+					endpoint: "/metrics",
+					prefix: "myapp_",
+					appendTimestamp: true,
+					withResourceConstantLabels: "/service/",
+				},
+			},
+		}),
+	],
+	adapter: node({
+		mode: "standalone",
+	}),
 });
 ```
 
@@ -186,47 +182,47 @@ To enable metrics collection, you need to explicitly configure an exporter:
 
 ```js
 otelIntegration({
-  presets: {
-    metricExporter: "prometheus"  // Enable Prometheus metrics
-  }
-})
+	presets: {
+		metricExporter: "prometheus", // Enable Prometheus metrics
+	},
+});
 ```
 
 ---
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | boolean | `true` | Enable or disable the integration. Useful for disabling in development. |
-| `otel` | object | `{}` | OpenTelemetry service configuration. |
-| `presets` | object | `{}` | Exporter and instrumentation presets. |
+| Option    | Type    | Default | Description                                                             |
+| --------- | ------- | ------- | ----------------------------------------------------------------------- |
+| `enabled` | boolean | `true`  | Enable or disable the integration. Useful for disabling in development. |
+| `otel`    | object  | `{}`    | OpenTelemetry service configuration.                                    |
+| `presets` | object  | `{}`    | Exporter and instrumentation presets.                                   |
 
 ### `otel` Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `serviceName` | string | `"unknown_service"` | The name of the service for telemetry identification. |
-| `serviceVersion` | string | `"unknown_version"` | The version of the service. |
+| Option           | Type   | Default             | Description                                           |
+| ---------------- | ------ | ------------------- | ----------------------------------------------------- |
+| `serviceName`    | string | `"unknown_service"` | The name of the service for telemetry identification. |
+| `serviceVersion` | string | `"unknown_version"` | The version of the service.                           |
 
 ### `presets` Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `metricExporter` | string | `"none"` | The metric exporter to use. Options: `"prometheus"`, `"http"`, `"grpc"`, `"proto"`, `"none"`. |
-| `traceExporter` | string | `"console"` | The trace exporter to use. Options: `"http"`, `"grpc"`, `"proto"`, `"console"`. |
-| `prometheusConfig` | object | `{}` | Configuration for the Prometheus exporter. |
+| Option             | Type   | Default     | Description                                                                                   |
+| ------------------ | ------ | ----------- | --------------------------------------------------------------------------------------------- |
+| `metricExporter`   | string | `"none"`    | The metric exporter to use. Options: `"prometheus"`, `"http"`, `"grpc"`, `"proto"`, `"none"`. |
+| `traceExporter`    | string | `"console"` | The trace exporter to use. Options: `"http"`, `"grpc"`, `"proto"`, `"console"`.               |
+| `prometheusConfig` | object | `{}`        | Configuration for the Prometheus exporter.                                                    |
 
 ### `prometheusConfig` Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `host` | string | `"0.0.0.0"` | The host to listen on for the Prometheus metrics server. |
-| `port` | number | `9464` | The port to listen on for the Prometheus metrics server. |
-| `endpoint` | string | `"/metrics"` | The endpoint path for metrics exposure. |
-| `prefix` | string | `"metrics"` | The prefix to use for all metric names. |
-| `appendTimestamp` | boolean | `true` | Whether to append timestamps to metrics. |
-| `withResourceConstantLabels` | string | `"/service/"` | Regular expression for resource constant labels. |
+| Option                       | Type    | Default       | Description                                              |
+| ---------------------------- | ------- | ------------- | -------------------------------------------------------- |
+| `host`                       | string  | `"0.0.0.0"`   | The host to listen on for the Prometheus metrics server. |
+| `port`                       | number  | `9464`        | The port to listen on for the Prometheus metrics server. |
+| `endpoint`                   | string  | `"/metrics"`  | The endpoint path for metrics exposure.                  |
+| `prefix`                     | string  | `"metrics"`   | The prefix to use for all metric names.                  |
+| `appendTimestamp`            | boolean | `true`        | Whether to append timestamps to metrics.                 |
+| `withResourceConstantLabels` | string  | `"/service/"` | Regular expression for resource constant labels.         |
 
 ---
 
@@ -236,51 +232,56 @@ You can configure the integration using environment variables instead of or in a
 
 ### Integration-Specific Variables
 
-| Environment Variable | Description | Default |
-|---------------------|-------------|---------|
-| `OTEL_SERVICE_NAME` | Service name for telemetry | `"unknown_service"` |
-| `OTEL_SERVICE_VERSION` | Service version | `"unknown_version"` |
-| `OTEL_PROMETHEUS_PORT` | Prometheus exporter port | `9464` |
-| `OTEL_PROMETHEUS_ENDPOINT` | Prometheus metrics endpoint | `"/metrics"` |
-| `OTEL_PROMETHEUS_HOST` | Prometheus exporter host | `"0.0.0.0"` |
-| `OTEL_PROMETHEUS_PREFIX` | Prometheus metrics prefix | `"metrics"` |
-| `OTEL_PROMETHEUS_APPEND_TIMESTAMP` | Append timestamp to metrics | `"true"` |
-| `OTEL_PROMETHEUS_RESOURCE_LABELS` | Resource constant labels regex | `"/service/"` |
+| Environment Variable               | Description                    | Default             |
+| ---------------------------------- | ------------------------------ | ------------------- |
+| `OTEL_SERVICE_NAME`                | Service name for telemetry     | `"unknown_service"` |
+| `OTEL_SERVICE_VERSION`             | Service version                | `"unknown_version"` |
+| `OTEL_PROMETHEUS_PORT`             | Prometheus exporter port       | `9464`              |
+| `OTEL_PROMETHEUS_ENDPOINT`         | Prometheus metrics endpoint    | `"/metrics"`        |
+| `OTEL_PROMETHEUS_HOST`             | Prometheus exporter host       | `"0.0.0.0"`         |
+| `OTEL_PROMETHEUS_PREFIX`           | Prometheus metrics prefix      | `"metrics"`         |
+| `OTEL_PROMETHEUS_APPEND_TIMESTAMP` | Append timestamp to metrics    | `"true"`            |
+| `OTEL_PROMETHEUS_RESOURCE_LABELS`  | Resource constant labels regex | `"/service/"`       |
 
 ### Standard OpenTelemetry Variables
 
 The integration also supports standard OpenTelemetry environment variables:
 
 #### General Configuration
-| Environment Variable | Description | Default | Example |
-|---------------------|-------------|---------|---------|
-| `OTEL_RESOURCE_ATTRIBUTES` | Key-value pairs as resource attributes | - | `"key1=value1,key2=value2"` |
+
+| Environment Variable       | Description                            | Default | Example                     |
+| -------------------------- | -------------------------------------- | ------- | --------------------------- |
+| `OTEL_RESOURCE_ATTRIBUTES` | Key-value pairs as resource attributes | -       | `"key1=value1,key2=value2"` |
 
 #### Tracing Configuration
-| Environment Variable | Description | Default | Accepted Values |
-|---------------------|-------------|---------|-----------------|
-| `OTEL_TRACES_SAMPLER` | Sampler used to sample traces | `"parentbased_always_on"` | `"always_on"`, `"always_off"`, `"traceidratio"`, `"parentbased_always_on"`, `"parentbased_always_off"`, `"parentbased_traceidratio"` |
-| `OTEL_TRACES_SAMPLER_ARG` | Arguments for the sampler (e.g., sampling rate) | - | `"0.1"` (for traceidratio) |
-| `OTEL_PROPAGATORS` | Propagators to be used (comma-separated) | `"tracecontext,baggage"` | `"tracecontext"`, `"baggage"`, `"b3"`, `"b3multi"`, `"jaeger"`, `"xray"`, `"ottrace"`, `"none"` |
+
+| Environment Variable      | Description                                     | Default                   | Accepted Values                                                                                                                      |
+| ------------------------- | ----------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `OTEL_TRACES_SAMPLER`     | Sampler used to sample traces                   | `"parentbased_always_on"` | `"always_on"`, `"always_off"`, `"traceidratio"`, `"parentbased_always_on"`, `"parentbased_always_off"`, `"parentbased_traceidratio"` |
+| `OTEL_TRACES_SAMPLER_ARG` | Arguments for the sampler (e.g., sampling rate) | -                         | `"0.1"` (for traceidratio)                                                                                                           |
+| `OTEL_PROPAGATORS`        | Propagators to be used (comma-separated)        | `"tracecontext,baggage"`  | `"tracecontext"`, `"baggage"`, `"b3"`, `"b3multi"`, `"jaeger"`, `"xray"`, `"ottrace"`, `"none"`                                      |
 
 #### OTLP Endpoint Configuration
-| Environment Variable | Description | Default | Example |
-|---------------------|-------------|---------|---------|
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | General OTLP endpoint for both traces and metrics | `"http://localhost:4317"` (gRPC), `"http://localhost:4318"` (HTTP) | `"https://api.honeycomb.io:443"` |
-| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | Specific endpoint for trace data | `"http://localhost:4317"` (gRPC), `"http://localhost:4318/v1/traces"` (HTTP) | `"https://api.honeycomb.io:443/v1/traces"` |
-| `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` | Specific endpoint for metric data | `"http://localhost:4317"` (gRPC), `"http://localhost:4318/v1/metrics"` (HTTP) | `"https://api.honeycomb.io:443/v1/metrics"` |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | Protocol to use for OTLP export | `"grpc"` | `"http/protobuf"`, `"grpc"` |
+
+| Environment Variable                  | Description                                       | Default                                                                       | Example                                     |
+| ------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`         | General OTLP endpoint for both traces and metrics | `"http://localhost:4317"` (gRPC), `"http://localhost:4318"` (HTTP)            | `"https://api.honeycomb.io:443"`            |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`  | Specific endpoint for trace data                  | `"http://localhost:4317"` (gRPC), `"http://localhost:4318/v1/traces"` (HTTP)  | `"https://api.honeycomb.io:443/v1/traces"`  |
+| `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` | Specific endpoint for metric data                 | `"http://localhost:4317"` (gRPC), `"http://localhost:4318/v1/metrics"` (HTTP) | `"https://api.honeycomb.io:443/v1/metrics"` |
+| `OTEL_EXPORTER_OTLP_PROTOCOL`         | Protocol to use for OTLP export                   | `"grpc"`                                                                      | `"http/protobuf"`, `"grpc"`                 |
 
 #### Metrics Configuration
-| Environment Variable | Description | Default | Accepted Values |
-|---------------------|-------------|---------|-----------------|
+
+| Environment Variable           | Description                                        | Default         | Accepted Values                                |
+| ------------------------------ | -------------------------------------------------- | --------------- | ---------------------------------------------- |
 | `OTEL_METRICS_EXEMPLAR_FILTER` | Determines which measurements can become exemplars | `"trace_based"` | `"always_on"`, `"always_off"`, `"trace_based"` |
-| `OTEL_METRIC_EXPORT_INTERVAL` | Time interval (ms) between export attempts | `60000` | `"30000"` |
-| `OTEL_METRIC_EXPORT_TIMEOUT` | Maximum time (ms) to export data | `30000` | `"15000"` |
+| `OTEL_METRIC_EXPORT_INTERVAL`  | Time interval (ms) between export attempts         | `60000`         | `"30000"`                                      |
+| `OTEL_METRIC_EXPORT_TIMEOUT`   | Maximum time (ms) to export data                   | `30000`         | `"15000"`                                      |
 
 #### Advanced Configuration
-| Environment Variable | Description | Example |
-|---------------------|-------------|---------|
+
+| Environment Variable            | Description                | Example                  |
+| ------------------------------- | -------------------------- | ------------------------ |
 | `OTEL_EXPERIMENTAL_CONFIG_FILE` | Path to configuration file | `"/path/to/config.yaml"` |
 
 For more details, see the [OpenTelemetry Environment Variable Specification](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/).
@@ -291,10 +292,10 @@ For more details, see the [OpenTelemetry Environment Variable Specification](htt
 
 The integration provides the following OpenTelemetry metrics:
 
-| Metric Name | Type | Labels | Description |
-|-------------|------|--------|-------------|
-| `http_requests_total` | Counter | `method`, `path`, `status` | Total number of HTTP requests received. |
-| `http_request_duration` | Histogram | `method`, `path`, `status` | Duration of server-side request processing. |
+| Metric Name                    | Type      | Labels                     | Description                                    |
+| ------------------------------ | --------- | -------------------------- | ---------------------------------------------- |
+| `http_requests_total`          | Counter   | `method`, `path`, `status` | Total number of HTTP requests received.        |
+| `http_request_duration`        | Histogram | `method`, `path`, `status` | Duration of server-side request processing.    |
 | `http_server_duration_seconds` | Histogram | `method`, `path`, `status` | Full server-side HTTP request duration (TTLB). |
 
 ### Host Metrics
@@ -317,14 +318,14 @@ Exposes metrics in Prometheus format on a dedicated HTTP server:
 
 ```js
 otelIntegration({
-  presets: {
-    metricExporter: "prometheus",
-    prometheusConfig: {
-      port: 9464,
-      endpoint: "/metrics",
-    },
-  },
-})
+	presets: {
+		metricExporter: "prometheus",
+		prometheusConfig: {
+			port: 9464,
+			endpoint: "/metrics",
+		},
+	},
+});
 ```
 
 **Access metrics at:** `http://localhost:9464/metrics`
@@ -334,13 +335,14 @@ otelIntegration({
 Send telemetry data to OpenTelemetry collectors or backends:
 
 #### HTTP Exporter
+
 ```js
 otelIntegration({
-  presets: {
-    metricExporter: "http",
-    traceExporter: "http",
-  },
-})
+	presets: {
+		metricExporter: "http",
+		traceExporter: "http",
+	},
+});
 ```
 
 **Environment variables:**
@@ -353,13 +355,14 @@ export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics"
 ```
 
 #### gRPC Exporter
+
 ```js
 otelIntegration({
-  presets: {
-    metricExporter: "grpc",
-    traceExporter: "grpc",
-  },
-})
+	presets: {
+		metricExporter: "grpc",
+		traceExporter: "grpc",
+	},
+});
 ```
 
 **Environment variables:**
@@ -372,13 +375,14 @@ export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4317"
 ```
 
 #### Proto Exporter
+
 ```js
 otelIntegration({
-  presets: {
-    metricExporter: "proto",
-    traceExporter: "proto",
-  },
-})
+	presets: {
+		metricExporter: "proto",
+		traceExporter: "proto",
+	},
+});
 ```
 
 **Environment variables:**
@@ -393,10 +397,10 @@ Output telemetry data to the console (useful for development):
 
 ```js
 otelIntegration({
-  presets: {
-    traceExporter: "console",
-  },
-})
+	presets: {
+		traceExporter: "console",
+	},
+});
 ```
 
 ---
