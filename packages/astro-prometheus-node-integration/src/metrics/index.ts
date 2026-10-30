@@ -16,12 +16,18 @@ export const HTTP_RESPONSE_ERROR_TOTAL = "http_response_error_total";
 
 // Returns the metric already registered under `name`, or creates it. Guards
 // against "already registered" errors when caches are lost but the registry
-// keeps its metrics (e.g. module re-evaluation on Vite HMR).
+// keeps its metrics (e.g. module re-evaluation on Vite HMR). A same-named
+// metric of another type is not reused: `create` then throws prom-client's
+// "already registered" error.
 const getOrCreateMetric = <T extends client.Metric>(
 	register: client.Registry,
 	name: string,
+	type: abstract new (...args: never[]) => T,
 	create: () => T,
-): T => (register.getSingleMetric(name) as T | undefined) ?? create();
+): T => {
+	const existing = register.getSingleMetric(name);
+	return existing instanceof type ? existing : create();
+};
 
 interface CreateMetricsForRegistryParams {
 	register: client.Registry;
@@ -39,6 +45,7 @@ const createInboundMetrics = ({
 	const httpRequestsTotal = getOrCreateMetric(
 		register,
 		httpRequestsTotalName,
+		client.Counter,
 		() =>
 			new client.Counter({
 				name: httpRequestsTotalName,
@@ -52,6 +59,7 @@ const createInboundMetrics = ({
 	const httpRequestDuration = getOrCreateMetric(
 		register,
 		httpRequestDurationName,
+		client.Histogram,
 		() =>
 			new client.Histogram({
 				name: httpRequestDurationName,
@@ -66,6 +74,7 @@ const createInboundMetrics = ({
 	const httpServerDurationSeconds = getOrCreateMetric(
 		register,
 		httpServerDurationSecondsName,
+		client.Histogram,
 		() =>
 			new client.Histogram({
 				name: httpServerDurationSecondsName,
@@ -124,6 +133,7 @@ const createOutboundMetrics = ({
 	const httpResponsesTotal = getOrCreateMetric(
 		register,
 		httpResponsesTotalName,
+		client.Counter,
 		() =>
 			new client.Counter({
 				name: httpResponsesTotalName,
@@ -137,6 +147,7 @@ const createOutboundMetrics = ({
 	const httpResponseDuration = getOrCreateMetric(
 		register,
 		httpResponseDurationName,
+		client.Histogram,
 		() =>
 			new client.Histogram({
 				name: httpResponseDurationName,
@@ -151,6 +162,7 @@ const createOutboundMetrics = ({
 	const httpResponseErrorTotal = getOrCreateMetric(
 		register,
 		httpResponseErrorTotalName,
+		client.Counter,
 		() =>
 			new client.Counter({
 				name: httpResponseErrorTotalName,
@@ -293,6 +305,8 @@ interface ClearRegistryParams {
 export const clearRegistry = ({ register }: ClearRegistryParams) => {
 	register.clear();
 	register.resetMetrics();
+	// Cached metrics would point to metrics no longer in the registry
+	clearRegistryMetrics({ register });
 };
 
 // Function to clear metrics for a specific registry (useful for testing)

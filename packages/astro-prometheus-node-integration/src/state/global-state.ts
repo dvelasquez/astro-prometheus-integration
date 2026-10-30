@@ -23,7 +23,7 @@ interface GlobalState {
 	middlewareMetrics: Map<client.Registry, InboundMetrics>;
 	inboundMetrics: Map<client.Registry, InboundMetrics>;
 	outboundMetrics: Map<client.Registry, OutboundMetrics>;
-	outboundObserver: PerformanceObserver | undefined;
+	outboundObserver?: PerformanceObserver | undefined;
 	processedEntries: Map<string, number>;
 }
 
@@ -35,12 +35,13 @@ export const getGlobalState = (): GlobalState => {
 	const store = globalThis as typeof globalThis & {
 		[GLOBAL_STATE_KEY]?: GlobalState;
 	};
-	store[GLOBAL_STATE_KEY] ??= {
-		middlewareMetrics: new Map(),
-		inboundMetrics: new Map(),
-		outboundMetrics: new Map(),
-		outboundObserver: undefined,
-		processedEntries: new Map(),
-	};
-	return store[GLOBAL_STATE_KEY];
+	// Default each field on its own: another copy or version of the package may
+	// have created the object with fewer fields.
+	store[GLOBAL_STATE_KEY] ??= {} as GlobalState;
+	const state = store[GLOBAL_STATE_KEY];
+	state.middlewareMetrics ??= new Map();
+	state.inboundMetrics ??= new Map();
+	state.outboundMetrics ??= new Map();
+	state.processedEntries ??= new Map();
+	return state;
 };

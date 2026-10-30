@@ -106,3 +106,53 @@ describe("outbound observer re-evaluation after HMR", () => {
 		expect(await countMetric("http_responses_total")).toBe(1);
 	});
 });
+
+describe("global state and registry guards", () => {
+	afterEach(() => {
+		client.register.clear();
+		vi.resetModules();
+	});
+
+	it("fills in fields missing from state created by another package copy", async () => {
+		const key = Symbol.for("astro-prometheus-node-integration.state");
+		const store = globalThis as Record<symbol, unknown>;
+		const previous = store[key];
+		store[key] = { inboundMetrics: new Map() };
+		try {
+			const { getGlobalState } = await import("../state/global-state.js");
+			const state = getGlobalState();
+			expect(state.middlewareMetrics).toBeInstanceOf(Map);
+			expect(state.outboundMetrics).toBeInstanceOf(Map);
+			expect(state.processedEntries).toBeInstanceOf(Map);
+		} finally {
+			store[key] = previous;
+		}
+	});
+
+	it("does not reuse a same-named metric of another type", async () => {
+		const { createMetricsForRegistry } = await import("../metrics/index.js");
+		const register = new client.Registry();
+		new client.Histogram({
+			name: "http_requests_total",
+			help: "not a counter",
+			registers: [register],
+		});
+		expect(() => createMetricsForRegistry({ register })).toThrow(
+			/already been registered/,
+		);
+	});
+
+	it("clearRegistry drops cached metrics for that registry", async () => {
+		const { clearRegistry, createMetricsForRegistry } = await import(
+			"../metrics/index.js"
+		);
+		const register = new client.Registry();
+		const first = createMetricsForRegistry({ register });
+		clearRegistry({ register });
+		const second = createMetricsForRegistry({ register });
+		expect(second.httpRequestsTotal).not.toBe(first.httpRequestsTotal);
+		expect(register.getSingleMetric("http_requests_total")).toBe(
+			second.httpRequestsTotal,
+		);
+	});
+});
