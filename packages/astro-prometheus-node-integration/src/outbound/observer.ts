@@ -5,6 +5,7 @@ import {
 	getPrometheusOptions,
 } from "../config/accessors.js";
 import { createOutboundMetricsForRegistry } from "../metrics/index.js";
+import { getGlobalState, type OutboundMetrics } from "../state/global-state.js";
 import type { OutboundRequestsOptions } from "./schema.js";
 import type {
 	ObservedEntry,
@@ -26,16 +27,11 @@ interface NormalizedEntry {
 	entry: ObservedEntry;
 }
 
-const processedEntries = new Map<string, number>();
+// Shared on globalThis so a re-evaluated module (Vite HMR) reuses the running
+// observer instead of starting a second one that double-counts every entry.
+const state = getGlobalState();
+const processedEntries = state.processedEntries;
 const PROCESSED_ENTRY_TTL_MS = 60_000;
-
-let observer: PerformanceObserver | undefined;
-
-interface OutboundMetrics {
-	httpResponsesTotal: client.Counter;
-	httpResponseDuration: client.Histogram;
-	httpResponseErrorTotal: client.Counter;
-}
 
 interface ObserverCallbacks {
 	endpointFn: (ctx: OutboundMetricContext) => string;
@@ -245,7 +241,7 @@ export const initializeOutboundObserver = ({
 		return;
 	}
 
-	if (observer) {
+	if (state.outboundObserver) {
 		return;
 	}
 
@@ -260,7 +256,7 @@ export const initializeOutboundObserver = ({
 	});
 	const callbacks = buildObserverCallbacks({ config });
 
-	observer = new PerformanceObserver((entries) => {
+	const observer = new PerformanceObserver((entries) => {
 		const now = Date.now();
 		pruneProcessedEntries(now);
 
@@ -275,16 +271,17 @@ export const initializeOutboundObserver = ({
 	});
 
 	observer.observe({ entryTypes: ["resource"], buffered: true });
+	state.outboundObserver = observer;
 };
 
 export const resetOutboundObserver = () => {
-	if (observer) {
+	if (state.outboundObserver) {
 		try {
-			observer.disconnect();
+			state.outboundObserver.disconnect();
 		} catch {
 			// ignore disconnect errors
 		}
 	}
-	observer = undefined;
+	state.outboundObserver = undefined;
 	processedEntries.clear();
 };

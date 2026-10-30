@@ -5,13 +5,10 @@ import client from "prom-client";
 import { getPrometheusOptions } from "../config/accessors.js";
 import { createMetricsForRegistry, initRegistry } from "../metrics/index.js";
 import { startStandaloneMetricsServer } from "../routes/standalone-metrics-server.js";
+import { getGlobalState, type InboundMetrics } from "../state/global-state.js";
 import { measureTimeToLastByte } from "./timing-utils.js";
 
-interface MiddlewareMetrics {
-	httpRequestsTotal: client.Counter;
-	httpRequestDuration: client.Histogram;
-	httpServerDurationSeconds: client.Histogram;
-}
+type MiddlewareMetrics = InboundMetrics;
 
 type MiddlewareMode = "factory" | "main";
 
@@ -36,11 +33,11 @@ interface HandleErrorParams {
 	mode: MiddlewareMode;
 }
 
-// Cache metrics per registry to avoid conflicts between different test registries
-const metricsCache = new Map<client.Registry, MiddlewareMetrics>();
-
-// Initialize metrics cache (called once per registry)
+// Initialize metrics cache (called once per registry). The cache is keyed per
+// registry to avoid conflicts between test registries, and lives on globalThis
+// so it survives module re-evaluation on Vite HMR.
 const initializeMetricsCache = async (register: client.Registry) => {
+	const { middlewareMetrics: metricsCache } = getGlobalState();
 	if (!metricsCache.has(register)) {
 		const options = getPrometheusOptions();
 		const inboundBuckets = options?.histogramBuckets?.inbound;
