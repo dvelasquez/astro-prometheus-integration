@@ -1,5 +1,10 @@
 // Metric registration and initialization for Astro Prometheus Node integration
 import client from "prom-client";
+import {
+	getGlobalState,
+	type InboundMetrics,
+	type OutboundMetrics,
+} from "../state/global-state.js";
 import type { MetricsConfigWithUndefined } from "./config.js";
 
 export const HTTP_REQUESTS_TOTAL = "http_requests_total";
@@ -9,24 +14,14 @@ export const HTTP_RESPONSES_TOTAL = "http_responses_total";
 export const HTTP_RESPONSE_DURATION_SECONDS = "http_response_duration_seconds";
 export const HTTP_RESPONSE_ERROR_TOTAL = "http_response_error_total";
 
-// Registry-first approach: Store metrics per registry to avoid conflicts
-const registryMetrics = new Map<
-	client.Registry,
-	{
-		httpRequestsTotal: client.Counter;
-		httpRequestDuration: client.Histogram;
-		httpServerDurationSeconds: client.Histogram;
-	}
->();
-
-const outboundRegistryMetrics = new Map<
-	client.Registry,
-	{
-		httpResponsesTotal: client.Counter;
-		httpResponseDuration: client.Histogram;
-		httpResponseErrorTotal: client.Counter;
-	}
->();
+// Returns the metric already registered under `name`, or creates it. Guards
+// against "already registered" errors when caches are lost but the registry
+// keeps its metrics (e.g. module re-evaluation on Vite HMR).
+const getOrCreateMetric = <T extends client.Metric>(
+	register: client.Registry,
+	name: string,
+	create: () => T,
+): T => (register.getSingleMetric(name) as T | undefined) ?? create();
 
 interface CreateMetricsForRegistryParams {
 	register: client.Registry;
@@ -39,29 +34,47 @@ const createInboundMetrics = ({
 	register,
 	prefix,
 	buckets,
-}: CreateMetricsForRegistryParams) => {
-	const httpRequestsTotal = new client.Counter({
-		name: `${prefix}${HTTP_REQUESTS_TOTAL}`,
-		help: "Total number of HTTP requests",
-		labelNames: ["method", "path", "status"],
-		registers: [register],
-	});
+}: CreateMetricsForRegistryParams): InboundMetrics => {
+	const httpRequestsTotalName = `${prefix}${HTTP_REQUESTS_TOTAL}`;
+	const httpRequestsTotal = getOrCreateMetric(
+		register,
+		httpRequestsTotalName,
+		() =>
+			new client.Counter({
+				name: httpRequestsTotalName,
+				help: "Total number of HTTP requests",
+				labelNames: ["method", "path", "status"],
+				registers: [register],
+			}),
+	);
 
-	const httpRequestDuration = new client.Histogram({
-		name: `${prefix}${HTTP_REQUEST_DURATION}`,
-		help: "Duration in seconds of initial server-side request processing, including middleware and Astro frontmatter, measured until the response is ready to send/stream.",
-		labelNames: ["method", "path", "status"],
-		registers: [register],
-		...(buckets ? { buckets } : {}),
-	});
+	const httpRequestDurationName = `${prefix}${HTTP_REQUEST_DURATION}`;
+	const httpRequestDuration = getOrCreateMetric(
+		register,
+		httpRequestDurationName,
+		() =>
+			new client.Histogram({
+				name: httpRequestDurationName,
+				help: "Duration in seconds of initial server-side request processing, including middleware and Astro frontmatter, measured until the response is ready to send/stream.",
+				labelNames: ["method", "path", "status"],
+				registers: [register],
+				...(buckets ? { buckets } : {}),
+			}),
+	);
 
-	const httpServerDurationSeconds = new client.Histogram({
-		name: `${prefix}${HTTP_SERVER_DURATION_SECONDS}`,
-		help: "Full server-side HTTP request duration in seconds, including processing, Astro rendering, and response streaming.",
-		labelNames: ["method", "path", "status"],
-		registers: [register],
-		...(buckets ? { buckets } : {}),
-	});
+	const httpServerDurationSecondsName = `${prefix}${HTTP_SERVER_DURATION_SECONDS}`;
+	const httpServerDurationSeconds = getOrCreateMetric(
+		register,
+		httpServerDurationSecondsName,
+		() =>
+			new client.Histogram({
+				name: httpServerDurationSecondsName,
+				help: "Full server-side HTTP request duration in seconds, including processing, Astro rendering, and response streaming.",
+				labelNames: ["method", "path", "status"],
+				registers: [register],
+				...(buckets ? { buckets } : {}),
+			}),
+	);
 
 	return {
 		httpRequestsTotal,
@@ -76,7 +89,8 @@ export const createMetricsForRegistry = ({
 	buckets,
 }: CreateMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
-	const existing = registryMetrics.get(register);
+	const { inboundMetrics } = getGlobalState();
+	const existing = inboundMetrics.get(register);
 	if (existing) {
 		return existing;
 	}
@@ -89,7 +103,7 @@ export const createMetricsForRegistry = ({
 	});
 
 	// Store metrics for this registry
-	registryMetrics.set(register, metrics);
+	inboundMetrics.set(register, metrics);
 
 	return metrics;
 };
@@ -105,28 +119,53 @@ const createOutboundMetrics = ({
 	register,
 	prefix,
 	buckets,
-}: CreateOutboundMetricsForRegistryParams) => {
-	const httpResponsesTotal = new client.Counter({
-		name: `${prefix}${HTTP_RESPONSES_TOTAL}`,
-		help: "Total number of outbound HTTP responses",
-		labelNames: ["method", "host", "status", "endpoint", "app"],
-		registers: [register],
-	});
+}: CreateOutboundMetricsForRegistryParams): OutboundMetrics => {
+	const httpResponsesTotalName = `${prefix}${HTTP_RESPONSES_TOTAL}`;
+	const httpResponsesTotal = getOrCreateMetric(
+		register,
+		httpResponsesTotalName,
+		() =>
+			new client.Counter({
+				name: httpResponsesTotalName,
+				help: "Total number of outbound HTTP responses",
+				labelNames: ["method", "host", "status", "endpoint", "app"],
+				registers: [register],
+			}),
+	);
 
-	const httpResponseDuration = new client.Histogram({
-		name: `${prefix}${HTTP_RESPONSE_DURATION_SECONDS}`,
-		help: "Duration in seconds of outbound HTTP responses to other services.",
-		labelNames: ["method", "host", "status", "endpoint", "app"],
-		registers: [register],
-		...(buckets ? { buckets } : {}),
-	});
+	const httpResponseDurationName = `${prefix}${HTTP_RESPONSE_DURATION_SECONDS}`;
+	const httpResponseDuration = getOrCreateMetric(
+		register,
+		httpResponseDurationName,
+		() =>
+			new client.Histogram({
+				name: httpResponseDurationName,
+				help: "Duration in seconds of outbound HTTP responses to other services.",
+				labelNames: ["method", "host", "status", "endpoint", "app"],
+				registers: [register],
+				...(buckets ? { buckets } : {}),
+			}),
+	);
 
-	const httpResponseErrorTotal = new client.Counter({
-		name: `${prefix}${HTTP_RESPONSE_ERROR_TOTAL}`,
-		help: "Total number of outbound HTTP response errors",
-		labelNames: ["method", "host", "status", "endpoint", "error_reason", "app"],
-		registers: [register],
-	});
+	const httpResponseErrorTotalName = `${prefix}${HTTP_RESPONSE_ERROR_TOTAL}`;
+	const httpResponseErrorTotal = getOrCreateMetric(
+		register,
+		httpResponseErrorTotalName,
+		() =>
+			new client.Counter({
+				name: httpResponseErrorTotalName,
+				help: "Total number of outbound HTTP response errors",
+				labelNames: [
+					"method",
+					"host",
+					"status",
+					"endpoint",
+					"error_reason",
+					"app",
+				],
+				registers: [register],
+			}),
+	);
 
 	return {
 		httpResponsesTotal,
@@ -141,7 +180,8 @@ export const createOutboundMetricsForRegistry = ({
 	buckets,
 }: CreateOutboundMetricsForRegistryParams) => {
 	// Guard clause: return cached metrics if they exist
-	const existingOutbound = outboundRegistryMetrics.get(register);
+	const { outboundMetrics } = getGlobalState();
+	const existingOutbound = outboundMetrics.get(register);
 	if (existingOutbound) {
 		return existingOutbound;
 	}
@@ -153,7 +193,7 @@ export const createOutboundMetricsForRegistry = ({
 		...(buckets ? { buckets } : {}),
 	});
 
-	outboundRegistryMetrics.set(register, metrics);
+	outboundMetrics.set(register, metrics);
 
 	return metrics;
 };
@@ -203,6 +243,12 @@ const collectDefaultMetricsIfEnabled = ({
 		...baseConfig,
 	} as client.DefaultMetricsCollectorConfiguration<client.RegistryContentType>;
 
+	// Default metrics are already registered (e.g. module re-evaluated on HMR)
+	const prefix = collectDefaultMetricsConfig?.prefix ?? "";
+	if (register.getSingleMetric(`${prefix}process_cpu_user_seconds_total`)) {
+		return;
+	}
+
 	client.collectDefaultMetrics(config);
 };
 
@@ -251,6 +297,9 @@ export const clearRegistry = ({ register }: ClearRegistryParams) => {
 
 // Function to clear metrics for a specific registry (useful for testing)
 export const clearRegistryMetrics = ({ register }: ClearRegistryParams) => {
-	registryMetrics.delete(register);
-	outboundRegistryMetrics.delete(register);
+	const { middlewareMetrics, inboundMetrics, outboundMetrics } =
+		getGlobalState();
+	middlewareMetrics.delete(register);
+	inboundMetrics.delete(register);
+	outboundMetrics.delete(register);
 };
