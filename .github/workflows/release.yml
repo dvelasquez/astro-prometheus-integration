@@ -53,10 +53,9 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: changesets/action@v2.1.2
         with:
-          version: pnpm run ci:version
-          publish: pnpm run ci:publish
-          commit: "[ci] release"
-          title: "[ci] release"
-        env:
+          version-script: pnpm run ci:version
+          publish-script: pnpm run ci:publish
+          commit-message: "[ci] release"
+          pr-title: "[ci] release"
           # Needs the repo permissions
-          GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
+          github-token: ${{ secrets.COMMIT_TOKEN }}
