@@ -20,6 +20,7 @@ playground/e2e/
 ## 🧪 Test Coverage
 
 ### **1. Prometheus Integration Tests** (Main Suite)
+
 - ✅ **Metrics Endpoint**: Accessibility, format, content type
 - ✅ **Custom Configuration**: Prefix (`myapp_`), labels, default metrics
 - ✅ **Page Navigation**: Multiple routes, HTTP methods (GET/POST), duration metrics
@@ -28,16 +29,19 @@ playground/e2e/
 - ✅ **Integration**: Configuration validation, custom URL support
 
 ### **2. Standalone Metrics Server Tests**
+
 - ✅ Server functionality (when enabled)
 - ✅ Fallback behavior (when disabled)
 - ✅ Port configuration validation
 
 ### **3. OpenMetrics Tests**
+
 - ✅ Content type handling
 - ✅ Format validation
 - ✅ Configuration switching
 
 ### **4. Test Utilities**
+
 - 🔧 **MetricsHelper Class**: Common testing patterns
 - 🔧 **Metric Validation**: Existence, values, labels
 - 🔧 **Traffic Generation**: Test data creation
@@ -46,6 +50,7 @@ playground/e2e/
 ## 🎮 How to Use
 
 ### **Build Workflow (Recommended)**
+
 ```bash
 cd playground
 
@@ -57,6 +62,7 @@ npm run test:e2e:build
 ```
 
 ### **Manual Workflow**
+
 ```bash
 # 1. Build integration package
 cd ../packages/astro-prometheus-node-integration
@@ -71,6 +77,7 @@ npm run test:e2e
 ```
 
 ### **Other Test Commands**
+
 ```bash
 # Run with UI (interactive)
 npm run test:e2e:ui
@@ -85,6 +92,7 @@ npm run test:e2e:report
 ## 🔧 Configuration
 
 ### **Playwright Config** (`playwright.config.ts`)
+
 - ✅ **Web Server**: Auto-starts `npm run preview`
 - ✅ **Base URL**: `http://localhost:4321`
 - ✅ **Browser**: Chromium (Chrome)
@@ -93,6 +101,7 @@ npm run test:e2e:report
 - ✅ **Traces**: On retry
 
 ### **Test Environment**
+
 - **Port**: 4321 (Astro preview server)
 - **Metrics Endpoint**: `/_/metrics`
 - **Integration**: Enabled with custom prefix `myapp_`
@@ -116,6 +125,7 @@ This approach provides:
 ## 📊 Test Scenarios Covered
 
 ### **Metrics Endpoint Validation**
+
 - HTTP 200 OK responses
 - Prometheus text format
 - Custom prefix application
@@ -123,6 +133,7 @@ This approach provides:
 - Default Node.js metrics
 
 ### **Functionality Testing**
+
 - Page navigation metrics
 - HTTP method handling (GET/POST)
 - Duration measurement
@@ -131,6 +142,7 @@ This approach provides:
 - Form submission processing
 
 ### **Configuration Testing**
+
 - Custom metrics URL
 - Prefix application
 - Label propagation
@@ -139,24 +151,26 @@ This approach provides:
 ## 🛠️ Advanced Features
 
 ### **MetricsHelper Class**
+
 ```typescript
 const metricsHelper = createMetricsHelper(page);
 
 // Check metric existence
-await metricsHelper.hasMetric('myapp_http_requests_total');
+await metricsHelper.hasMetric("myapp_http_requests_total");
 
 // Get metric values
-const value = await metricsHelper.getMetricValue('myapp_http_requests_total');
+const value = await metricsHelper.getMetricValue("myapp_http_requests_total");
 
 // Wait for specific values
-await metricsHelper.waitForMetricValue('myapp_http_requests_total', 5);
+await metricsHelper.waitForMetricValue("myapp_http_requests_total", 5);
 
 // Verify configuration
-await metricsHelper.hasCustomPrefix('myapp_');
-await metricsHelper.hasCustomLabels({ env: 'production' });
+await metricsHelper.hasCustomPrefix("myapp_");
+await metricsHelper.hasCustomLabels({ env: "production" });
 ```
 
 ### **Test Utilities**
+
 - **Traffic Generation**: Create test data
 - **Metric Validation**: Comprehensive checking
 - **Error Handling**: Graceful failure handling
@@ -178,6 +192,7 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 ## 🚨 What This Tests
 
 ### **✅ Working Features**
+
 - Metrics endpoint accessibility
 - Custom prefix and labels
 - Default metrics collection
@@ -189,6 +204,7 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 - Build process validation
 
 ### **⚠️ Edge Cases**
+
 - 404 errors
 - 500 errors
 - Different HTTP methods (GET/POST)
@@ -201,12 +217,14 @@ await metricsHelper.hasCustomLabels({ env: 'production' });
 ## 🔍 Debugging & Troubleshooting
 
 ### **Common Issues**
+
 - **Build failures**: Check both packages build successfully
 - **Preview server issues**: Ensure port 4321 is available
 - **Metrics not found**: Wait for collection, check config
 - **Test timeouts**: Increase timeouts, add explicit waits
 
 ### **Debug Commands**
+
 ```bash
 # Interactive debugging
 npm run test:e2e:debug
@@ -224,24 +242,26 @@ npm run test:e2e:build
 ## 📝 Adding New Tests
 
 ### **Test Structure**
-```typescript
-import { test, expect } from '@playwright/test';
-import { createMetricsHelper } from './utils/metrics-helper';
 
-test.describe('New Feature', () => {
-  test('should work correctly', async ({ page }) => {
-    const metricsHelper = createMetricsHelper(page);
-    
-    // Your test logic here
-    await page.goto('/test-page');
-    
-    // Verify metrics
-    await metricsHelper.hasMetric('expected_metric');
-  });
+```typescript
+import { test, expect } from "@playwright/test";
+import { createMetricsHelper } from "./utils/metrics-helper";
+
+test.describe("New Feature", () => {
+	test("should work correctly", async ({ page }) => {
+		const metricsHelper = createMetricsHelper(page);
+
+		// Your test logic here
+		await page.goto("/test-page");
+
+		// Verify metrics
+		await metricsHelper.hasMetric("expected_metric");
+	});
 });
 ```
 
 ### **Best Practices**
+
 1. **Use descriptive test names** that explain the expected behavior
 2. **Group related tests** using `test.describe()`
 3. **Use the MetricsHelper** for common metrics operations

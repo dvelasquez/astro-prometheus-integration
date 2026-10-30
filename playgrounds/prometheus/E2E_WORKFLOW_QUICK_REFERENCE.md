@@ -9,7 +9,7 @@ npm run test:e2e:build
 
 This command:
 1. ✅ Builds `astro-prometheus-node-integration` package
-2. ✅ Builds playground application  
+2. ✅ Builds playground application
 3. ✅ Starts preview server
 4. ✅ Runs all e2e tests
 5. ✅ Cleans up automatically
@@ -31,15 +31,15 @@ npm run test:e2e
 
 ## 📋 **Available Commands**
 
-| Command | Description |
-|---------|-------------|
-| `npm run test:e2e:build` | **Build both packages + run tests** |
-| `npm run test:e2e` | Run tests only (requires previous build) |
-| `npm run test:e2e:ui` | Interactive testing with UI |
-| `npm run test:e2e:headed` | Visible browser testing |
-| `npm run test:e2e:debug` | Debug mode with breakpoints |
-| `npm run test:e2e:report` | View test results report |
-| `./e2e/run-tests.sh` | Shell script alternative |
+| Command                   | Description                              |
+| ------------------------- | ---------------------------------------- |
+| `npm run test:e2e:build`  | **Build both packages + run tests**      |
+| `npm run test:e2e`        | Run tests only (requires previous build) |
+| `npm run test:e2e:ui`     | Interactive testing with UI              |
+| `npm run test:e2e:headed` | Visible browser testing                  |
+| `npm run test:e2e:debug`  | Debug mode with breakpoints              |
+| `npm run test:e2e:report` | View test results report                 |
+| `./e2e/run-tests.sh`      | Shell script alternative                 |
 
 ## 🎯 **What Gets Tested**
 
@@ -55,13 +55,14 @@ npm run test:e2e
 ## 🏗️ **Build Process**
 
 1. **Integration Package** → `pnpm build` in `packages/astro-prometheus-node-integration`
-2. **Playground** → `pnpm build` in `playground`  
+2. **Playground** → `pnpm build` in `playground`
 3. **Preview Server** → `npm run preview` (auto-started by Playwright)
 4. **E2E Tests** → Run against `http://localhost:4321`
 
 ## 🚨 **Troubleshooting**
 
 ### **Build Fails**
+
 ```bash
 # Check integration package
 cd ../packages/astro-prometheus-node-integration
@@ -73,11 +74,13 @@ pnpm build
 ```
 
 ### **Preview Server Issues**
+
 - Ensure port 4321 is available
 - Check `pnpm preview` works manually
 - Verify both packages built successfully
 
 ### **Tests Fail**
+
 ```bash
 # Debug mode
 npm run test:e2e:debug
@@ -91,7 +94,7 @@ npm run test:e2e:report
 ## 📊 **Test Results**
 
 - **Screenshots**: Auto-captured on failure
-- **Videos**: Recorded on failure  
+- **Videos**: Recorded on failure
 - **Traces**: Generated on retry
 - **Reports**: HTML report with detailed results
 

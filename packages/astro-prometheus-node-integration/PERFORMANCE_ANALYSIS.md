@@ -18,12 +18,12 @@ The current implementation has a **significant performance bottleneck** where th
 
 ### Test Results (50 requests)
 
-| Metric | Current Implementation | Optimized Implementation | Improvement |
-|--------|----------------------|-------------------------|-------------|
-| **Total Time** | 28.56ms | 1.49ms | **94.8% faster** |
-| **Average per Request** | 0.57ms | 0.03ms | **94.8% faster** |
-| **getMetricsAsJSON() calls** | 50 | 1 | **98% reduction** |
-| **Performance Overhead** | 100% of requests | 0% of requests | **Eliminated** |
+| Metric                       | Current Implementation | Optimized Implementation | Improvement       |
+| ---------------------------- | ---------------------- | ------------------------ | ----------------- |
+| **Total Time**               | 28.56ms                | 1.49ms                   | **94.8% faster**  |
+| **Average per Request**      | 0.57ms                 | 0.03ms                   | **94.8% faster**  |
+| **getMetricsAsJSON() calls** | 50                     | 1                        | **98% reduction** |
+| **Performance Overhead**     | 100% of requests       | 0% of requests           | **Eliminated**    |
 
 ### Scalability Impact
 

@@ -11,7 +11,7 @@ concurrency:
 permissions:
   pull-requests: write
   issues: write
-  
+
 jobs:
   quick-validation:
     name: ⚡ Quick Validation
@@ -28,8 +28,8 @@ jobs:
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
@@ -61,8 +61,8 @@ jobs:
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
@@ -94,8 +94,8 @@ jobs:
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
@@ -123,33 +123,33 @@ jobs:
           script: |
             const prometheusStatus = '${{ needs.e2e-prometheus-pr.result }}';
             const otelStatus = '${{ needs.e2e-otel-pr.result }}';
-            
+
             let comment = '## 🧪 E2E Test Results\n\n';
-            
+
             // Prometheus results
             if (prometheusStatus === 'success') {
               comment += '✅ **Prometheus Integration**: All tests passed\n';
             } else {
               comment += '❌ **Prometheus Integration**: Tests failed\n';
             }
-            
+
             // OpenTelemetry results
             if (otelStatus === 'success') {
               comment += '✅ **OpenTelemetry Integration**: All tests passed\n';
             } else {
               comment += '❌ **OpenTelemetry Integration**: Tests failed\n';
             }
-            
+
             comment += '\n### 📊 Test Coverage\n';
             comment += '- **Prometheus**: OpenMetrics format, integration functionality, standalone metrics\n';
             comment += '- **OpenTelemetry**: Prometheus preset, HTTP mock-server, gRPC mock-server\n';
-            
+
             if (prometheusStatus === 'success' && otelStatus === 'success') {
               comment += '\n🎉 **All E2E tests passed!** Ready for review.';
             } else {
               comment += '\n⚠️ **Some tests failed.** Please check the Actions tab for details.';
             }
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

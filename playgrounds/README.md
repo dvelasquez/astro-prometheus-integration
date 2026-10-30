@@ -14,12 +14,12 @@ The main playground always tracks the **latest supported** Astro version. Pinned
 
 ### Current layout
 
-| Directory | Role | Astro | `@astrojs/node` |
-|---|---|---|---|
-| `prometheus/` | Main playground (latest) | 7.x | 11.x |
-| `prometheus-astro6/` | Pinned compatibility | 6.x | 10.x |
-| `prometheus-astro5/` | Pinned compatibility | 5.x | 9.x |
-| `otel/` | OpenTelemetry integration | (see package.json) | — |
+| Directory            | Role                      | Astro              | `@astrojs/node` |
+| -------------------- | ------------------------- | ------------------ | --------------- |
+| `prometheus/`        | Main playground (latest)  | 7.x                | 11.x            |
+| `prometheus-astro6/` | Pinned compatibility      | 6.x                | 10.x            |
+| `prometheus-astro5/` | Pinned compatibility      | 5.x                | 9.x             |
+| `otel/`              | OpenTelemetry integration | (see package.json) | —               |
 
 ### Example: upgrading from Astro 6 → 7
 
