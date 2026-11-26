@@ -189,10 +189,10 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: 11.1.11
-        version: 11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
+        version: 11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
       astro:
         specifier: 7.4.8
-        version: 7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+        version: 7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../packages/astro-opentelemetry-integration
@@ -204,7 +204,7 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: ^9.0.0 || ^10.0.0 || ^11.0.0
-        version: 11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
+        version: 11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
       '@opentelemetry/api':
         specifier: 1.10.0
         version: 1.10.0
@@ -255,23 +255,23 @@ importers:
         version: 1.45.0
       astro:
         specifier: ^5.0.0 || ^6.0.0 || ^7.0.0
-        version: 7.4.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+        version: 7.4.8(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
     devDependencies:
       tsup:
         specifier: 9.0.0
         version: 9.0.0(jiti@2.7.0)(postcss@8.5.32)(typescript@5.9.3)(yaml@2.9.1)
       vitest:
         specifier: 5.1.0
-        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.11)(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
   packages/astro-prometheus-node-integration:
     dependencies:
       '@astrojs/node':
         specifier: ^9.0.0 || ^10.0.0 || ^11.0.0
-        version: 11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
+        version: 11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
       astro:
         specifier: ^5.0.0 || ^6.0.0 || ^7.0.0
-        version: 7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+        version: 7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
     devDependencies:
       parse-prometheus-text-format:
         specifier: 1.1.1
@@ -284,19 +284,19 @@ importers:
         version: 9.0.0(jiti@2.7.0)(postcss@8.5.32)(typescript@5.9.3)(yaml@2.9.1)
       vitest:
         specifier: 5.1.0
-        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.11)(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
 
   playgrounds/otel:
     dependencies:
       '@astrojs/node':
         specifier: 11.1.11
-        version: 11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
+        version: 11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
       '@tailwindcss/vite':
         specifier: 4.3.5
-        version: 4.3.5(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 4.3.5(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
       astro:
         specifier: 7.4.8
-        version: 7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+        version: 7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
       astro-opentelemetry-integration:
         specifier: workspace:*
         version: link:../../packages/astro-opentelemetry-integration
@@ -311,8 +311,8 @@ importers:
         specifier: 1.65.0
         version: 1.65.0
       '@types/node':
-        specifier: 26.6.6
-        version: 26.6.6
+        specifier: 26.6.11
+        version: 26.6.11
       nodemon:
         specifier: 3.1.14
         version: 3.1.14
@@ -324,13 +324,13 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: 11.1.11
-        version: 11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
+        version: 11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)
       '@tailwindcss/vite':
         specifier: 4.3.5
-        version: 4.3.5(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 4.3.5(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
       astro:
         specifier: 7.4.8
-        version: 7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+        version: 7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
       astro-prometheus-node-integration:
         specifier: workspace:*
         version: link:../../packages/astro-prometheus-node-integration
@@ -348,8 +348,8 @@ importers:
         specifier: 1.65.0
         version: 1.65.0
       '@types/node':
-        specifier: 26.6.6
-        version: 26.6.6
+        specifier: 26.6.11
+        version: 26.6.11
       nodemon:
         specifier: 3.1.14
         version: 3.1.14
@@ -2929,8 +2929,8 @@ packages:
   '@types/node@24.13.2':
     resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
 
-  '@types/node@26.6.6':
-    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
+  '@types/node@26.6.11':
+    resolution: {integrity: sha512-uUyQ2XLEz+EXh34lmS3GhKrkqn/8FU7KUiKRpk347At2bmnMVWss45yz8b4FG/tUtmV1tV/+TVkITItPROyeeQ==}
 
   '@types/pg-pool@2.0.7':
     resolution: {integrity: sha512-U4CwmGVQcbEuqpyju8/ptOKg6gEC+Tqsvj2xS9o1g71bUh8twxnC6ZL5rZKCsGN0iyH0CwgUyc9VR5owNQF9Ng==}
@@ -5528,19 +5528,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)':
+  '@astrojs/node@11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.13.1
-      astro: 7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      astro: 7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
       send: 1.2.1(supports-color@5.5.0)
       server-destroy: 1.0.1
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@11.1.11(astro@7.4.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)':
+  '@astrojs/node@11.1.11(astro@7.4.8(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(supports-color@5.5.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.13.1
-      astro: 7.4.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+      astro: 7.4.8(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       send: 1.2.1(supports-color@5.5.0)
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -7544,12 +7544,12 @@ snapshots:
       tailwindcss: 4.3.1
       vite: 7.3.2(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
 
-  '@tailwindcss/vite@4.3.5(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))':
+  '@tailwindcss/vite@4.3.5(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@tailwindcss/node': 4.3.5
       '@tailwindcss/oxide': 4.3.5
       tailwindcss: 4.3.5
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
 
   '@tybys/wasm-util@0.10.3':
     dependencies:
@@ -7563,7 +7563,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
 
   '@types/debug@4.1.12':
     dependencies:
@@ -7589,7 +7589,7 @@ snapshots:
 
   '@types/memcached@2.2.10':
     dependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
 
   '@types/ms@2.1.0': {}
 
@@ -7601,7 +7601,7 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@types/node@26.6.6':
+  '@types/node@26.6.11':
     dependencies:
       undici-types: 8.9.0
 
@@ -7611,7 +7611,7 @@ snapshots:
 
   '@types/pg@8.15.6':
     dependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -7619,23 +7619,23 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitest/mocker@5.1.0(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))':
+  '@vitest/mocker@5.1.0(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.1.0
       estree-walker: 3.0.3
       magic-string: 1.4.3
     optionalDependencies:
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
 
-  '@vitest/mocker@5.1.0(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))':
+  '@vitest/mocker@5.1.0(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.1.0
       estree-walker: 3.0.3
       magic-string: 1.4.3
     optionalDependencies:
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
   '@vitest/spy@5.1.0': {}
 
@@ -7944,7 +7944,7 @@ snapshots:
       - uploadthing
       - yaml
 
-  astro@7.4.8(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1):
+  astro@7.4.8(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       '@astrojs/compiler-rs': 0.5.3
       '@astrojs/internal-helpers': 0.13.1
@@ -7994,12 +7994,12 @@ snapshots:
       unifont: 1.0.3
       unstorage: 1.17.6
       verkit: 0.5.0
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
-      vitefu: 1.1.3(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      vitefu: 1.1.3(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
       xxhash-wasm: 1.1.0
       zod: 4.6.7
     optionalDependencies:
-      sharp: 0.35.4(@types/node@26.6.6)
+      sharp: 0.35.4(@types/node@26.6.11)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -8033,7 +8033,7 @@ snapshots:
       - uploadthing
       - yaml
 
-  astro@7.4.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1):
+  astro@7.4.8(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       '@astrojs/compiler-rs': 0.5.3
       '@astrojs/internal-helpers': 0.13.1
@@ -8083,12 +8083,12 @@ snapshots:
       unifont: 1.0.3
       unstorage: 1.17.6
       verkit: 0.5.0
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
-      vitefu: 1.1.3(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+      vitefu: 1.1.3(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       xxhash-wasm: 1.1.0
       zod: 4.6.7
     optionalDependencies:
-      sharp: 0.35.4(@types/node@26.6.6)
+      sharp: 0.35.4(@types/node@26.6.11)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -9560,7 +9560,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
       long: 5.3.2
 
   pstree.remy@1.1.8: {}
@@ -9856,7 +9856,7 @@ snapshots:
       '@img/sharp-win32-x64': 0.34.3
     optional: true
 
-  sharp@0.35.4(@types/node@26.6.6):
+  sharp@0.35.4(@types/node@26.6.11):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -9887,7 +9887,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.4
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
     optional: true
 
   shebang-command@2.0.0:
@@ -10262,7 +10262,7 @@ snapshots:
       lightningcss: 1.32.0
       yaml: 2.9.1
 
-  vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1):
+  vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -10270,13 +10270,13 @@ snapshots:
       rolldown: 1.2.18
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
       esbuild: 0.27.3
       fsevents: 2.3.3
       jiti: 2.7.0
       yaml: 2.9.1
 
-  vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1):
+  vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -10284,7 +10284,7 @@ snapshots:
       rolldown: 1.2.18
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
       esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
@@ -10298,18 +10298,18 @@ snapshots:
     optionalDependencies:
       vite: 7.3.2(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
 
-  vitefu@1.1.3(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)):
+  vitefu@1.1.3(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)):
     optionalDependencies:
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
 
-  vitefu@1.1.3(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
+  vitefu@1.1.3(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     optionalDependencies:
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
-  vitest@5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)):
+  vitest@5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.11)(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.2
-      '@vitest/mocker': 5.1.0(vite@8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
+      '@vitest/mocker': 5.1.0(vite@8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -10320,18 +10320,18 @@ snapshots:
       tinybench: 6.2.2
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.27.3)(jiti@2.7.0)(yaml@2.9.1)
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@opentelemetry/api': 1.10.0
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
     transitivePeerDependencies:
       - msw
 
-  vitest@5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
+  vitest@5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.11)(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.2
-      '@vitest/mocker': 5.1.0(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+      '@vitest/mocker': 5.1.0(vite@8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -10342,11 +10342,11 @@ snapshots:
       tinybench: 6.2.2
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.7(@types/node@26.6.11)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@opentelemetry/api': 1.10.0
-      '@types/node': 26.6.6
+      '@types/node': 26.6.11
     transitivePeerDependencies:
       - msw
 
